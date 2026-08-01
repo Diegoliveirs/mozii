@@ -50,7 +50,7 @@ export function PaginaMomentos() {
   const dias = montarLinhaDoTempo(linhaDoTempo.data ?? [], marcos)
 
   return (
-    <main className="px-5 pt-8 pb-8">
+    <main className="area-segura-topo px-5 pt-8 pb-8">
       <div className="flex items-center justify-between">
         <h1 className="font-voz text-3xl text-neve">{textos.momentos.titulo}</h1>
         <button

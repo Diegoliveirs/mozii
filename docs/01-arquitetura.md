@@ -54,3 +54,11 @@ Registro cronológico. Cada entrada tem 3–5 linhas: contexto → decisão → 
 **2026-08-01 — Código de convite inválido retorna NULL, não exception.** Um `RAISE` desfaria a transação e apagaria o registro em `tentativas_entrada`, zerando o controle de força bruta. O app traduz NULL para "código inválido". (Lição herdada do Mozii original.)
 
 **2026-08-01 — Textos de interface centralizados em `src/lib/textos.ts`.** Nenhum texto direto no JSX: revisão de tom e busca de frases acontecem num lugar só.
+
+**2026-08-01 — Um canal realtime POR TABELA.** Num canal compartilhado, uma única tabela com problema (ex.: migration ainda não aplicada) derrubava todas as inscrições juntas — mordeu duas vezes durante o desenvolvimento. Canais isolados: a falha de um não silencia os outros.
+
+**2026-08-01 — Favoritos são da pessoa, não do casal (migration 007).** Os E2E expuseram que favoritos amarrados ao casal ficavam invisíveis após um novo pareamento, mas ainda bloqueavam filme e posição (os UNIQUE são por pessoa). Agora acompanham a pessoa; o par os vê pela relação de perfis.
+
+**2026-08-01 — Regras de iOS (pedido do Diego).** Nada importante sob o notch (`.area-segura-topo` + `env(safe-area-inset-top)`); zoom bloqueado de verdade (`travarZoom.ts` contra pinça e toque duplo, que ignoram o viewport); botão voltar em toda tela interna (`CabecalhoPagina`, com fallback para a rota-mãe quando não há histórico).
+
+**2026-08-01 — Ícones da PWA rasterizados com o Chromium do Playwright.** O `@vite-pwa/assets-generator` depende do sharp (binário nativo bloqueado pelo npm); `scripts/gerar-icones.mjs` usa o Edge que os E2E já usam — zero dependência nova.

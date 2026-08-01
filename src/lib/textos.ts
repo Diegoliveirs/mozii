@@ -254,6 +254,11 @@ export const textos = {
     excluirContaConfirmar: 'Excluir sua conta de verdade?',
   },
 
+  atualizacao: {
+    disponivel: 'Nova versão do Mozii disponível!',
+    atualizar: 'Atualizar',
+  },
+
   configuracao: {
     titulo: 'Falta configurar o ambiente',
     explicacao:

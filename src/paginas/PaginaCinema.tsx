@@ -16,7 +16,7 @@ export function PaginaCinema() {
   }
 
   return (
-    <main className="px-5 pt-8">
+    <main className="area-segura-topo px-5 pt-8">
       <h1 className="font-voz text-3xl text-neve">{textos.cinema.titulo}</h1>
 
       <div className="mt-4 flex rounded-xl bg-veu p-1" role="tablist">

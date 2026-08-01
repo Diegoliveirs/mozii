@@ -4,9 +4,13 @@ import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { App } from './App'
 import { ProvedorRepositorios } from './dados/ContextoRepositorios'
+import { AvisoAtualizacao } from './componentes/ui/AvisoAtualizacao'
 import { FaltaConfiguracao } from './componentes/ui/FaltaConfiguracao'
 import { variaveisFaltando } from './lib/ambiente'
+import { travarZoom } from './lib/travarZoom'
 import './index.css'
+
+travarZoom()
 
 // Estado de servidor fica no TanStack Query; 30s de frescor evita
 // refetch em cascata ao navegar entre páginas.
@@ -39,6 +43,7 @@ async function iniciar() {
         <ProvedorRepositorios repositorios={criarRepositoriosSupabase()}>
           <BrowserRouter>
             <App />
+            <AvisoAtualizacao />
           </BrowserRouter>
         </ProvedorRepositorios>
       </QueryClientProvider>

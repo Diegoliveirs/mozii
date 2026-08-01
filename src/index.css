@@ -59,6 +59,15 @@ select {
   font-size: 16px;
 }
 
+/*
+ * Área segura do iPhone: com viewport-fit=cover, o app desenha sob o notch
+ * e a status bar. Esta classe empurra o conteúdo para baixo do recorte —
+ * NADA importante fica embaixo dele.
+ */
+.area-segura-topo {
+  padding-top: env(safe-area-inset-top);
+}
+
 /* Entrada suave de página — usada pela casca do app na troca de rota */
 @keyframes entrada-pagina {
   from {

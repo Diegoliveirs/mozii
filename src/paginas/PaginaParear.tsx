@@ -45,7 +45,7 @@ export function PaginaParear() {
   // Depois de criar: só o código, grande, e o botão de seguir.
   if (codigoCriado) {
     return (
-      <main className="entrada-pagina mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 px-6 text-center">
+      <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 px-6 text-center">
         <h1 className="font-voz text-3xl text-neve">{textos.parear.codigoCriadoTitulo}</h1>
         <p className="text-nevoa">{textos.parear.codigoCriadoDica}</p>
         <p
@@ -66,7 +66,7 @@ export function PaginaParear() {
   }
 
   return (
-    <main className="entrada-pagina mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
+    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
       <h1 className="font-voz text-3xl text-neve">{textos.parear.titulo}</h1>
       <p className="mt-2 text-nevoa">{textos.parear.subtitulo}</p>
 

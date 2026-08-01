@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { FolhaBuscarFilme } from '../componentes/filmes/FolhaBuscarFilme'
 import { Poster } from '../componentes/filmes/Poster'
+import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
 import { EstrelasNota } from '../componentes/mural/EstrelasNota'
 import { useRepositorios } from '../dados/ContextoRepositorios'
 import type { RefFilme } from '../dominio/tipos'
@@ -90,114 +91,116 @@ export function PaginaNovaPublicacao() {
   }
 
   return (
-    <main className="px-5 pt-8">
-      <h1 className="font-voz text-3xl text-neve">{textos.novo.titulo}</h1>
+    <main>
+      {/* O voltar aqui É o "cancelar" da publicação */}
+      <CabecalhoPagina titulo={textos.novo.titulo} fallback="/" />
+      <div className="px-5">
+        <textarea
+          rows={4}
+          maxLength={2000}
+          placeholder={textos.novo.dicaTexto}
+          value={corpo}
+          onChange={(evento) => setCorpo(evento.target.value)}
+          className="mt-2 w-full resize-none rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none placeholder:text-cinza focus:border-rosa"
+        />
 
-      <textarea
-        rows={4}
-        maxLength={2000}
-        placeholder={textos.novo.dicaTexto}
-        value={corpo}
-        onChange={(evento) => setCorpo(evento.target.value)}
-        className="mt-5 w-full resize-none rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none placeholder:text-cinza focus:border-rosa"
-      />
-
-      {/* Filme escolhido → avaliação */}
-      {filme && (
-        <div className="mt-3 rounded-2xl bg-cartao p-4">
-          <div className="flex items-center gap-3">
-            <Poster
-              caminho={filme.caminhoPoster}
-              titulo={filme.titulo}
-              largura={185}
-              className="w-12"
-            />
-            <div className="min-w-0 flex-1">
-              <p className="truncate font-medium text-neve">{filme.titulo}</p>
-              <p className="mt-1 text-sm text-nevoa">{textos.novo.notaRotulo}</p>
-              <EstrelasNota valor={nota} aoMudar={setNota} />
+        {/* Filme escolhido → avaliação */}
+        {filme && (
+          <div className="mt-3 rounded-2xl bg-cartao p-4">
+            <div className="flex items-center gap-3">
+              <Poster
+                caminho={filme.caminhoPoster}
+                titulo={filme.titulo}
+                largura={185}
+                className="w-12"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium text-neve">{filme.titulo}</p>
+                <p className="mt-1 text-sm text-nevoa">{textos.novo.notaRotulo}</p>
+                <EstrelasNota valor={nota} aoMudar={setNota} />
+              </div>
+              <button
+                type="button"
+                aria-label={textos.novo.removerFilme}
+                onClick={() => {
+                  setFilme(null)
+                  setNota(0)
+                }}
+                className="text-cinza"
+              >
+                ✕
+              </button>
             </div>
+          </div>
+        )}
+
+        {/* Foto escolhida (só em publicação de texto) */}
+        {previewFoto && !filme && (
+          <div className="relative mt-3">
+            <img src={previewFoto} alt="" className="max-h-72 w-full rounded-xl object-cover" />
             <button
               type="button"
-              aria-label={textos.novo.removerFilme}
-              onClick={() => {
-                setFilme(null)
-                setNota(0)
-              }}
-              className="text-cinza"
+              aria-label={textos.novo.removerFoto}
+              onClick={() => setFoto(null)}
+              className="absolute top-2 right-2 rounded-full bg-abismo/80 px-2.5 py-1 text-neve"
             >
               ✕
             </button>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Foto escolhida (só em publicação de texto) */}
-      {previewFoto && !filme && (
-        <div className="relative mt-3">
-          <img src={previewFoto} alt="" className="max-h-72 w-full rounded-xl object-cover" />
-          <button
-            type="button"
-            aria-label={textos.novo.removerFoto}
-            onClick={() => setFoto(null)}
-            className="absolute top-2 right-2 rounded-full bg-abismo/80 px-2.5 py-1 text-neve"
-          >
-            ✕
-          </button>
-        </div>
-      )}
-
-      <div className="mt-4 flex gap-2">
-        {!filme && (
-          <>
+        <div className="mt-4 flex gap-2">
+          {!filme && (
+            <>
+              <button
+                type="button"
+                onClick={() => campoFoto.current?.click()}
+                className="rounded-xl border border-linha-forte px-4 py-2.5 text-sm text-nevoa"
+              >
+                {textos.novo.foto}
+              </button>
+              <input
+                ref={campoFoto}
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(evento) => setFoto(evento.target.files?.[0] ?? null)}
+              />
+            </>
+          )}
+          {!foto && (
             <button
               type="button"
-              onClick={() => campoFoto.current?.click()}
+              onClick={() => setBuscaAberta(true)}
               className="rounded-xl border border-linha-forte px-4 py-2.5 text-sm text-nevoa"
             >
-              {textos.novo.foto}
+              {filme ? textos.novo.trocarFilme : textos.novo.avaliarFilme}
             </button>
-            <input
-              ref={campoFoto}
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(evento) => setFoto(evento.target.files?.[0] ?? null)}
-            />
-          </>
-        )}
-        {!foto && (
-          <button
-            type="button"
-            onClick={() => setBuscaAberta(true)}
-            className="rounded-xl border border-linha-forte px-4 py-2.5 text-sm text-nevoa"
-          >
-            {filme ? textos.novo.trocarFilme : textos.novo.avaliarFilme}
-          </button>
+          )}
+        </div>
+
+        {erro && <p className="mt-3 text-sm text-rosa-suave">{erro}</p>}
+
+        <button
+          type="button"
+          onClick={aoPublicar}
+          disabled={publicando}
+          className="mt-5 w-full rounded-xl bg-rosa py-3 font-medium text-neve disabled:opacity-60"
+        >
+          {publicando ? textos.novo.publicando : textos.novo.publicar}
+        </button>
+
+        {buscaAberta && (
+          <FolhaBuscarFilme
+            aoEscolher={(escolhido) => {
+              setFilme(escolhido)
+              setFoto(null)
+              setBuscaAberta(false)
+            }}
+            aoFechar={() => setBuscaAberta(false)}
+          />
         )}
       </div>
-
-      {erro && <p className="mt-3 text-sm text-rosa-suave">{erro}</p>}
-
-      <button
-        type="button"
-        onClick={aoPublicar}
-        disabled={publicando}
-        className="mt-5 w-full rounded-xl bg-rosa py-3 font-medium text-neve disabled:opacity-60"
-      >
-        {publicando ? textos.novo.publicando : textos.novo.publicar}
-      </button>
-
-      {buscaAberta && (
-        <FolhaBuscarFilme
-          aoEscolher={(escolhido) => {
-            setFilme(escolhido)
-            setFoto(null)
-            setBuscaAberta(false)
-          }}
-          aoFechar={() => setBuscaAberta(false)}
-        />
-      )}
     </main>
   )
 }

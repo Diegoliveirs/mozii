@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ModalCompartilhar } from '../componentes/compartilhar/ModalCompartilhar'
+import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
 import { CartaoPublicacao } from '../componentes/mural/CartaoPublicacao'
 import { EstrelasNota } from '../componentes/mural/EstrelasNota'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
@@ -38,10 +39,20 @@ export function PaginaPublicacao() {
   const [corpoEditado, setCorpoEditado] = useState('')
 
   if (publicacao.isPending) {
-    return <main className="px-5 pt-8 text-cinza">{textos.comuns.carregando}</main>
+    return (
+      <main>
+        <CabecalhoPagina titulo={textos.publicacao.titulo} fallback="/" />
+        <p className="px-5 pt-4 text-cinza">{textos.comuns.carregando}</p>
+      </main>
+    )
   }
   if (!publicacao.data) {
-    return <main className="px-5 pt-8 text-nevoa">{textos.publicacao.naoEncontrada}</main>
+    return (
+      <main>
+        <CabecalhoPagina titulo={textos.publicacao.titulo} fallback="/" />
+        <p className="px-5 pt-4 text-nevoa">{textos.publicacao.naoEncontrada}</p>
+      </main>
+    )
   }
 
   const dados = publicacao.data
@@ -68,10 +79,10 @@ export function PaginaPublicacao() {
   }
 
   return (
-    <main className="px-5 pt-8 pb-8">
-      <h1 className="font-voz text-3xl text-neve">{textos.publicacao.titulo}</h1>
+    <main className="pb-8">
+      <CabecalhoPagina titulo={textos.publicacao.titulo} fallback="/" />
 
-      <div className="mt-5">
+      <div className="mt-2 px-5">
         {editando ? (
           <div className="rounded-2xl bg-cartao p-4">
             <p className="text-sm text-nevoa">{textos.novo.notaRotulo}</p>
@@ -118,14 +129,14 @@ export function PaginaPublicacao() {
         <button
           type="button"
           onClick={() => setCompartilhando(true)}
-          className="mt-4 w-full rounded-xl border border-rosa py-3 font-medium text-rosa-suave"
+          className="mx-5 mt-4 w-[calc(100%-2.5rem)] rounded-xl border border-rosa py-3 font-medium text-rosa-suave"
         >
           {textos.compartilhar.botaoAbrir}
         </button>
       )}
 
       {souAutor && !editando && (
-        <div className="mt-6 flex flex-col items-start gap-3">
+        <div className="mt-6 flex flex-col items-start gap-3 px-5">
           {dados.tipo === 'avaliacao' && (
             <button type="button" onClick={comecarEdicao} className="text-sm text-nevoa underline">
               {textos.publicacao.editar}

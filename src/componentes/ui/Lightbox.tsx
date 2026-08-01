@@ -76,11 +76,12 @@ export function Lightbox({
         </>
       )}
 
+      {/* Abaixo do notch do iPhone, sempre */}
       <button
         type="button"
         aria-label="Fechar"
         onClick={aoFechar}
-        className="absolute top-4 right-4 rounded-full bg-cartao/80 px-3 py-2 text-neve"
+        className="absolute top-[max(1rem,env(safe-area-inset-top))] right-4 rounded-full bg-cartao/80 px-3 py-2 text-neve"
       >
         ✕
       </button>

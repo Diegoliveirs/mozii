@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { urlBackdrop, urlLogoProvedor } from '../api/tmdb'
 import { Poster } from '../componentes/filmes/Poster'
 import { FolhaAdicionarALista } from '../componentes/filmes/FolhaAdicionarALista'
+import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
 import { ModalAgendarSessao } from '../componentes/sessoes/ModalAgendarSessao'
 import { useFilmeTmdb, useOndeAssistir } from '../hooks/useTmdb'
 import { textos } from '../lib/textos'
@@ -17,10 +18,18 @@ export function PaginaFilme() {
   const [agendando, setAgendando] = useState(false)
 
   if (filme.isLoading) {
-    return <main className="px-5 pt-8 text-cinza">{textos.comuns.carregando}</main>
+    return (
+      <main>
+        <CabecalhoPagina titulo={textos.comuns.carregando} fallback="/cinema" />
+      </main>
+    )
   }
   if (!filme.data) {
-    return <main className="px-5 pt-8 text-nevoa">{textos.filme.naoEncontrado}</main>
+    return (
+      <main>
+        <CabecalhoPagina titulo={textos.filme.naoEncontrado} fallback="/cinema" />
+      </main>
+    )
   }
 
   const dados = filme.data
@@ -34,6 +43,7 @@ export function PaginaFilme() {
 
   return (
     <main>
+      <CabecalhoPagina titulo={dados.titulo} fallback="/cinema" />
       {fundo && (
         <div className="relative h-44 w-full">
           <img src={fundo} alt="" className="h-full w-full object-cover opacity-50" />
@@ -50,7 +60,8 @@ export function PaginaFilme() {
             className="w-28 shadow-lg"
           />
           <div className="pb-1">
-            <h1 className="font-voz text-2xl leading-tight text-neve">{dados.titulo}</h1>
+            {/* O h1 é o do cabeçalho; aqui é só o destaque visual do herói */}
+            <p className="font-voz text-2xl leading-tight text-neve">{dados.titulo}</p>
             <p className="mt-1 text-sm text-nevoa">
               {[
                 dados.anoLancamento,

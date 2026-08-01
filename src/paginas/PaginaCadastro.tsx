@@ -28,7 +28,7 @@ export function PaginaCadastro() {
   }
 
   return (
-    <main className="entrada-pagina mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
+    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
       <h1 className="font-voz text-3xl text-neve">{textos.cadastro.titulo}</h1>
       <p className="mt-1 text-rosa-suave">{textos.app.slogan}</p>
 

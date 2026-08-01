@@ -29,6 +29,12 @@ Mesma identidade do Mozii original: fundo escuro quente, rosa como cor de afeto,
 | `neve` / `nevoa` / `cinza`    | `#f2edf5` / `#c3bccd` / `#8d8499` | textos (forte → discreto)       |
 | `--font-voz`                  | Georgia serif                     | títulos afetivos (`font-voz`)   |
 
+## iOS (regras do Diego — não relaxar)
+
+1. **Notch:** o app usa `viewport-fit=cover` (desenha sob o recorte). A classe `.area-segura-topo` (`padding-top: env(safe-area-inset-top)`) vai em toda tela raiz/pública e no `CabecalhoPagina`; controles de overlay no topo (ex.: fechar do lightbox) usam `top: max(1rem, env(safe-area-inset-top))`. **Nada importante fica embaixo do notch.**
+2. **Zoom desativado de verdade:** o viewport declara `maximum-scale=1, user-scalable=no`, mas o Safari do iPhone ignora isso na pinça e no toque duplo — `lib/travarZoom.ts` bloqueia os dois gestos (chamado no `main.tsx`). Campos com 16px evitam o terceiro caso (auto-zoom ao focar).
+3. **Voltar em toda tela interna:** `CabecalhoPagina` (botão ← + título) nas telas Filme, Lista, Publicação, Nova publicação e Ajustes — o usuário cancela qualquer ação sem precisar voltar à página inicial. Sem histórico (link direto/PWA), o voltar cai na rota-mãe (`fallback`). As 4 raízes da navegação não têm voltar.
+
 ## Convenções de componente
 
 - **Mobile-first sempre:** layout `max-w-md` centralizado; o app é desenhado para 390×844.

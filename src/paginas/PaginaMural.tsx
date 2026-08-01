@@ -9,7 +9,7 @@ export function PaginaMural() {
   const membros = casal.data?.membros ?? []
 
   return (
-    <main className="px-5 pt-8 pb-4">
+    <main className="area-segura-topo px-5 pt-8 pb-4">
       <h1 className="font-voz text-3xl text-neve">{textos.mural.titulo}</h1>
       {casal.data && (
         <p className="mt-1 text-rosa-suave">

@@ -33,7 +33,7 @@ export function PaginaPerfil() {
   }
 
   return (
-    <main className="px-5 pt-8 pb-8">
+    <main className="area-segura-topo px-5 pt-8 pb-8">
       <div className="flex items-center justify-between">
         <h1 className="font-voz text-3xl text-neve">{textos.perfil.titulo}</h1>
         <Link to="/ajustes" aria-label={textos.ajustes.titulo} className="text-xl">

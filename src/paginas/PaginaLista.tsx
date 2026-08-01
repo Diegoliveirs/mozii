@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
 import { ModalSorteio } from '../componentes/filmes/ModalSorteio'
 import { Poster } from '../componentes/filmes/Poster'
@@ -42,145 +43,147 @@ export function PaginaLista() {
   }
 
   return (
-    <main className="px-5 pt-8">
-      <h1 className="font-voz text-3xl text-neve">{lista?.nome ?? '…'}</h1>
-      {lista && (
-        <p className="mt-1 text-sm text-cinza">
-          {textos.lista.progresso(lista.qtdAssistidos, lista.qtdItens)}
-        </p>
-      )}
+    <main>
+      <CabecalhoPagina titulo={lista?.nome ?? '…'} fallback="/cinema?aba=listas" />
+      <div className="px-5">
+        {lista && (
+          <p className="text-sm text-cinza">
+            {textos.lista.progresso(lista.qtdAssistidos, lista.qtdItens)}
+          </p>
+        )}
 
-      <div className="mt-4 flex gap-2">
-        <button
-          type="button"
-          onClick={() => setSorteioAberto(true)}
-          disabled={naoAssistidos.length === 0}
-          className="flex-1 rounded-xl bg-rosa py-3 font-medium text-neve disabled:opacity-50"
-        >
-          {textos.sorteio.botao}
-        </button>
-        <Link
-          to="/cinema"
-          className="rounded-xl border border-linha-forte px-4 py-3 text-sm text-nevoa"
-        >
-          {textos.lista.adicionarFilme}
-        </Link>
-      </div>
+        <div className="mt-3 flex gap-2">
+          <button
+            type="button"
+            onClick={() => setSorteioAberto(true)}
+            disabled={naoAssistidos.length === 0}
+            className="flex-1 rounded-xl bg-rosa py-3 font-medium text-neve disabled:opacity-50"
+          >
+            {textos.sorteio.botao}
+          </button>
+          <Link
+            to="/cinema"
+            className="rounded-xl border border-linha-forte px-4 py-3 text-sm text-nevoa"
+          >
+            {textos.lista.adicionarFilme}
+          </Link>
+        </div>
 
-      {itens.data?.length === 0 && (
-        <p className="mt-6 text-center text-sm text-nevoa">{textos.lista.vazia}</p>
-      )}
+        {itens.data?.length === 0 && (
+          <p className="mt-6 text-center text-sm text-nevoa">{textos.lista.vazia}</p>
+        )}
 
-      {(itens.data?.length ?? 0) > 0 && naoAssistidos.length === 0 && (
-        <p className="mt-4 rounded-xl bg-cartao p-3 text-center text-sm text-rosa-suave">
-          {textos.sorteio.todosAssistidos}
-        </p>
-      )}
+        {(itens.data?.length ?? 0) > 0 && naoAssistidos.length === 0 && (
+          <p className="mt-4 rounded-xl bg-cartao p-3 text-center text-sm text-rosa-suave">
+            {textos.sorteio.todosAssistidos}
+          </p>
+        )}
 
-      <ul className="mt-4 space-y-3 pb-8">
-        {itens.data?.map((item) => (
-          <li key={item.id} className="flex items-center gap-3 rounded-xl bg-cartao p-2.5">
-            <Link to={`/filme/${item.filme.tmdbId}`} className="shrink-0">
-              <Poster
-                caminho={item.filme.caminhoPoster}
-                titulo={item.filme.titulo}
-                largura={185}
-                className={`w-14 ${item.assistido ? 'opacity-50' : ''}`}
-              />
-            </Link>
-
-            <div className="min-w-0 flex-1">
-              <Link
-                to={`/filme/${item.filme.tmdbId}`}
-                className={`block truncate ${item.assistido ? 'text-cinza line-through' : 'text-neve'}`}
-              >
-                {item.filme.titulo}
+        <ul className="mt-4 space-y-3 pb-8">
+          {itens.data?.map((item) => (
+            <li key={item.id} className="flex items-center gap-3 rounded-xl bg-cartao p-2.5">
+              <Link to={`/filme/${item.filme.tmdbId}`} className="shrink-0">
+                <Poster
+                  caminho={item.filme.caminhoPoster}
+                  titulo={item.filme.titulo}
+                  largura={185}
+                  className={`w-14 ${item.assistido ? 'opacity-50' : ''}`}
+                />
               </Link>
-              <p className="text-xs text-cinza">
-                {item.filme.anoLancamento && `${item.filme.anoLancamento} · `}
-                {textos.lista.adicionadoPor(nomeDe(item.adicionadoPor))}
-              </p>
-            </div>
 
-            <button
-              type="button"
-              aria-label={
-                item.assistido ? textos.lista.desmarcarAssistido : textos.lista.marcarAssistido
-              }
-              onClick={() =>
-                marcar.mutate({
-                  itemId: item.id,
-                  listaId: item.listaId,
-                  assistido: !item.assistido,
-                  filme: item.filme,
-                  nomeLista: lista?.nome ?? '',
-                })
-              }
-              className={`rounded-full px-2.5 py-1 text-lg ${
-                item.assistido ? 'bg-rosa/20 text-rosa-suave' : 'bg-veu text-cinza'
-              }`}
-            >
-              ✓
-            </button>
+              <div className="min-w-0 flex-1">
+                <Link
+                  to={`/filme/${item.filme.tmdbId}`}
+                  className={`block truncate ${item.assistido ? 'text-cinza line-through' : 'text-neve'}`}
+                >
+                  {item.filme.titulo}
+                </Link>
+                <p className="text-xs text-cinza">
+                  {item.filme.anoLancamento && `${item.filme.anoLancamento} · `}
+                  {textos.lista.adicionadoPor(nomeDe(item.adicionadoPor))}
+                </p>
+              </div>
 
-            {!item.assistido && (
               <button
                 type="button"
-                aria-label={`${textos.sessao.modalTitulo}: ${item.filme.titulo}`}
-                onClick={() => setAgendandoItem(item)}
-                className="text-lg"
+                aria-label={
+                  item.assistido ? textos.lista.desmarcarAssistido : textos.lista.marcarAssistido
+                }
+                onClick={() =>
+                  marcar.mutate({
+                    itemId: item.id,
+                    listaId: item.listaId,
+                    assistido: !item.assistido,
+                    filme: item.filme,
+                    nomeLista: lista?.nome ?? '',
+                  })
+                }
+                className={`rounded-full px-2.5 py-1 text-lg ${
+                  item.assistido ? 'bg-rosa/20 text-rosa-suave' : 'bg-veu text-cinza'
+                }`}
               >
-                🍿
+                ✓
               </button>
-            )}
 
-            <button
-              type="button"
-              aria-label={textos.lista.removerItem}
-              onClick={() => remover.mutate({ itemId: item.id, listaId: item.listaId })}
-              className="pr-1 text-cinza"
-            >
-              ✕
-            </button>
-          </li>
-        ))}
-      </ul>
+              {!item.assistido && (
+                <button
+                  type="button"
+                  aria-label={`${textos.sessao.modalTitulo}: ${item.filme.titulo}`}
+                  onClick={() => setAgendandoItem(item)}
+                  className="text-lg"
+                >
+                  🍿
+                </button>
+              )}
 
-      <button
-        type="button"
-        onClick={() => setConfirmandoExclusao(true)}
-        className="mb-8 text-sm text-rosa-suave underline"
-      >
-        {textos.lista.excluir}
-      </button>
+              <button
+                type="button"
+                aria-label={textos.lista.removerItem}
+                onClick={() => remover.mutate({ itemId: item.id, listaId: item.listaId })}
+                className="pr-1 text-cinza"
+              >
+                ✕
+              </button>
+            </li>
+          ))}
+        </ul>
 
-      {sorteioAberto && naoAssistidos.length > 0 && (
-        <ModalSorteio
-          naoAssistidos={naoAssistidos}
-          aoFechar={() => setSorteioAberto(false)}
-          aoAgendar={(item) => {
-            setSorteioAberto(false)
-            setAgendandoItem(item)
-          }}
+        <button
+          type="button"
+          onClick={() => setConfirmandoExclusao(true)}
+          className="mb-8 text-sm text-rosa-suave underline"
+        >
+          {textos.lista.excluir}
+        </button>
+
+        {sorteioAberto && naoAssistidos.length > 0 && (
+          <ModalSorteio
+            naoAssistidos={naoAssistidos}
+            aoFechar={() => setSorteioAberto(false)}
+            aoAgendar={(item) => {
+              setSorteioAberto(false)
+              setAgendandoItem(item)
+            }}
+          />
+        )}
+
+        {agendandoItem && (
+          <ModalAgendarSessao
+            filme={agendandoItem.filme}
+            itemListaId={agendandoItem.id}
+            aoFechar={() => setAgendandoItem(null)}
+          />
+        )}
+
+        <DialogoConfirmar
+          aberto={confirmandoExclusao}
+          titulo={textos.lista.excluirConfirmar}
+          descricao={textos.lista.excluirExplicacao}
+          rotuloConfirmar={textos.comuns.confirmar}
+          aoConfirmar={aoExcluirLista}
+          aoCancelar={() => setConfirmandoExclusao(false)}
         />
-      )}
-
-      {agendandoItem && (
-        <ModalAgendarSessao
-          filme={agendandoItem.filme}
-          itemListaId={agendandoItem.id}
-          aoFechar={() => setAgendandoItem(null)}
-        />
-      )}
-
-      <DialogoConfirmar
-        aberto={confirmandoExclusao}
-        titulo={textos.lista.excluirConfirmar}
-        descricao={textos.lista.excluirExplicacao}
-        rotuloConfirmar={textos.comuns.confirmar}
-        aoConfirmar={aoExcluirLista}
-        aoCancelar={() => setConfirmandoExclusao(false)}
-      />
+      </div>
     </main>
   )
 }
