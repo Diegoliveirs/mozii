@@ -1,0 +1,18 @@
+{
+  "name": "Mozii",
+  "short_name": "Mozii",
+  "description": "O cantinho de filmes do casal",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#16131c",
+  "theme_color": "#16131c",
+  "icons": [
+    {
+      "src": "/icone.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+@import 'tailwindcss';
+
+/*
+ * Tema do Mozii — Tailwind v4, configurado inline (sem tailwind.config.js).
+ * Cada token vira uma classe utilitária: --color-noite → bg-noite, text-noite etc.
+ *
+ * A identidade visual é a mesma do Mozii original: fundo escuro quente,
+ * rosa como cor de afeto e dourado para as estrelas de avaliação.
+ */
+@theme {
+  /* Fundos, do mais raso ao mais profundo */
+  --color-noite: #16131c; /* fundo padrão do app */
+  --color-abismo: #0e0b12; /* fundo atrás de modais e da navegação */
+  --color-cartao: #221d2b; /* superfícies elevadas (cartões) */
+  --color-veu: #2e2839; /* camadas sobre o cartão (chips, campos) */
+
+  /* Traços e divisores */
+  --color-linha: #2a2533;
+  --color-linha-forte: #3a3346;
+
+  /* Cores de destaque */
+  --color-rosa: #d4537e; /* ações principais e afeto */
+  --color-rosa-suave: #ed93b1; /* variação para textos e detalhes */
+  --color-estrela: #efb927; /* nota preenchida */
+  --color-estrela-apagada: #4a4356; /* nota vazia */
+
+  /* Textos, do mais forte ao mais discreto */
+  --color-neve: #f2edf5;
+  --color-nevoa: #c3bccd;
+  --color-cinza: #8d8499;
+
+  /* Fonte "de voz": usada em títulos afetivos e citações */
+  --font-voz: Georgia, 'Times New Roman', serif;
+}
+
+/* Comportamento de app nativo: sem seleção acidental, sem elástico no scroll */
+html {
+  background-color: var(--color-noite);
+  overscroll-behavior-y: none;
+}
+
+body {
+  margin: 0;
+  color: var(--color-neve);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+}
+
+/* Campos com 16px no mínimo: evita o zoom automático do iOS ao focar */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
+/* Entrada suave de página — usada pela casca do app na troca de rota */
+@keyframes entrada-pagina {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.entrada-pagina {
+  animation: entrada-pagina 180ms ease-out;
+}

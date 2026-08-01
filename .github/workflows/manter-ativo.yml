@@ -1,0 +1,34 @@
+# O plano gratuito do Supabase pausa projetos após ~7 dias sem atividade.
+# Este ping diário conta como atividade e evita a pausa.
+#
+# Requer dois segredos no repositório GitHub (Settings → Secrets → Actions),
+# cadastrados pelo Diego:
+#   SUPABASE_URL      → https://<ref>.supabase.co
+#   SUPABASE_ANON_KEY → chave anon do projeto
+name: Manter Supabase ativo
+
+on:
+  schedule:
+    # Todo dia às 9h UTC (6h em Brasília)
+    - cron: '0 9 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consulta mínima via REST
+        run: |
+          codigo=$(curl -s -o /dev/null -w "%{http_code}" \
+            "$SUPABASE_URL/rest/v1/casais?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+          echo "Resposta do Supabase: $codigo"
+          # 200 = ok; 401/404 também provam que o projeto está de pé,
+          # mas qualquer 5xx ou timeout falha o job para o Diego investigar.
+          if [ "$codigo" -ge 500 ] || [ "$codigo" -eq 000 ]; then
+            exit 1
+          fi
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}

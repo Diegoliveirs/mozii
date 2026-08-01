@@ -1,0 +1,30 @@
+# Configuração do Supabase CLI para desenvolvimento LOCAL (`supabase start`).
+# O projeto hospedado (produção) é criado e administrado pelo Diego no dashboard;
+# nada aqui altera o projeto hospedado.
+project_id = "mozii"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+
+[db]
+port = 54322
+major_version = 17
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+# Endereço do app durante o desenvolvimento local
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173"]
+minimum_password_length = 8
+
+[auth.email]
+enable_signup = true
+# Sem confirmação de e-mail no ambiente local: agiliza testes E2E.
+# Em produção, ligar "Confirm email" no dashboard (ver docs/07-deploy-e-ambientes.md).
+enable_confirmations = false

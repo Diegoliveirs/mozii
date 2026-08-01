@@ -1,0 +1,35 @@
+# CI do Mozii: qualquer push ou PR passa por lint, formato, tipos, testes e build.
+# O job de Playwright (E2E com Supabase local) será adicionado na Fase 1,
+# quando existirem fluxos reais para testar.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verificar:
+    name: Lint, tipos, testes e build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Lint (oxlint)
+        run: npm run lint
+
+      - name: Formato (prettier)
+        run: npm run formato:conferir
+
+      - name: Testes unitários (vitest)
+        run: npm run testes:unitarios
+
+      - name: Build (tsc + vite)
+        run: npm run build
