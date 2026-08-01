@@ -8,7 +8,7 @@
 
 ## Roteiro da 001_casal.sql
 
-**Status:** ⏳ aguardando aplicação pelo Diego
+**Status:** ✅ aplicada pelo Diego em 2026-08-01 — conferências ok
 **Arquivo:** `supabase/migrations/001_casal.sql`
 
 ### Pré-requisito (uma vez só): criar o projeto Supabase novo

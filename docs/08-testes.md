@@ -31,7 +31,17 @@ Os specs mais importantes do projeto. Antes de o Diego aplicar qualquer migratio
 - Terceira pessoa não entra no casal por nenhum caminho.
 - Colunas protegidas (`casal_id`, `exclusao_solicitada_em`) não mudam via UPDATE direto.
 
-## Estado atual (Fase 0)
+## Estado atual (Fase 1)
 
-- `src/lib/__testes__/ambiente.teste.ts` — detecção de variáveis de ambiente ausentes.
-- `testes/e2e/fumaca.spec.ts` — a tela inicial carrega sem erros de console.
+Unitários (`src/lib/__testes__/`):
+
+- `ambiente.teste.ts` — detecção de variáveis de ambiente ausentes.
+- `codigo.teste.ts` — normalização do código de convite.
+
+E2E (`testes/e2e/`):
+
+- `fumaca.spec.ts` — sem sessão, a raiz redireciona para `/entrar` sem erros de console.
+- `fluxo-casal.spec.ts` — a jornada completa: duas janelas, um cria o espaço, o outro erra o código (vê "código inválido"), entra com o certo e o Mural mostra os dois nomes; cadastro com e-mail existente mostra mensagem amigável.
+- `apoio.ts` — prepara os 2 usuários fixos de teste **usando só a chave anon** (nada de service role): entra-ou-cadastra, cancela exclusão pendente e sai do casal. Exige "Confirm email" desligado no projeto.
+
+> Observação: cada execução deixa um casal vazio para trás (não há RPC para apagar casais). A migration 002 incluirá um job de limpeza de casais sem membros.

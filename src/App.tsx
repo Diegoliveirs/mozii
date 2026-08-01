@@ -1,14 +1,34 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { PaginaInicial } from './paginas/PaginaInicial'
+import { ExigirAutenticacao } from './componentes/guardas/ExigirAutenticacao'
+import { ExigirCasal } from './componentes/guardas/ExigirCasal'
+import { CascaApp } from './componentes/layout/CascaApp'
+import { PaginaAjustes } from './paginas/PaginaAjustes'
+import { PaginaCadastro } from './paginas/PaginaCadastro'
+import { PaginaEntrar } from './paginas/PaginaEntrar'
+import { PaginaMural } from './paginas/PaginaMural'
+import { PaginaParear } from './paginas/PaginaParear'
 
 /**
- * Mapa de rotas do app. Na Fase 1 entram as guardas
- * ExigirAutenticacao e ExigirCasal envolvendo as rotas privadas.
+ * Mapa de rotas. Aninhamento das guardas:
+ * público → ExigirAutenticacao → /parear → ExigirCasal → CascaApp → páginas.
  */
 export function App() {
   return (
     <Routes>
-      <Route path="/" element={<PaginaInicial />} />
+      <Route path="/entrar" element={<PaginaEntrar />} />
+      <Route path="/cadastro" element={<PaginaCadastro />} />
+
+      <Route element={<ExigirAutenticacao />}>
+        <Route path="/parear" element={<PaginaParear />} />
+
+        <Route element={<ExigirCasal />}>
+          <Route element={<CascaApp />}>
+            <Route path="/" element={<PaginaMural />} />
+            <Route path="/ajustes" element={<PaginaAjustes />} />
+          </Route>
+        </Route>
+      </Route>
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

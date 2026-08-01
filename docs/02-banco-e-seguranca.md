@@ -10,14 +10,14 @@
 
 ## Mapa planejado das migrations
 
-| #   | Arquivo            | Conteúdo                                                                               | Status                            |
-| --- | ------------------ | -------------------------------------------------------------------------------------- | --------------------------------- |
-| 001 | `001_casal.sql`    | casais, perfis, tentativas_entrada, RPCs de pareamento, exclusão com carência, pg_cron | ✍️ escrita — aguardando aplicação |
-| 002 | `002_filmes.sql`   | cache do TMDB + RPC `gravar_filme()`                                                   | Fase 2                            |
-| 003 | `003_listas.sql`   | listas e itens                                                                         | Fase 2                            |
-| 004 | `004_mural.sql`    | publicações, comentários, reações                                                      | Fase 3                            |
-| 005 | `005_momentos.sql` | momentos, favoritos, bucket de fotos                                                   | Fase 4                            |
-| 006 | `006_sessoes.sql`  | sessões de cinema + publicação realtime                                                | Fase 5                            |
+| #   | Arquivo            | Conteúdo                                                                               | Status                   |
+| --- | ------------------ | -------------------------------------------------------------------------------------- | ------------------------ |
+| 001 | `001_casal.sql`    | casais, perfis, tentativas_entrada, RPCs de pareamento, exclusão com carência, pg_cron | ✅ aplicada (2026-08-01) |
+| 002 | `002_filmes.sql`   | cache do TMDB + RPC `gravar_filme()`                                                   | Fase 2                   |
+| 003 | `003_listas.sql`   | listas e itens                                                                         | Fase 2                   |
+| 004 | `004_mural.sql`    | publicações, comentários, reações                                                      | Fase 3                   |
+| 005 | `005_momentos.sql` | momentos, favoritos, bucket de fotos                                                   | Fase 4                   |
+| 006 | `006_sessoes.sql`  | sessões de cinema + publicação realtime                                                | Fase 5                   |
 
 ## Schema atual (após a 001)
 

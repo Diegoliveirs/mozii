@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test'
 
 /**
- * Teste de fumaça da Fase 0: o app sobe, renderiza a tela inicial
- * e não emite nenhum erro no console do navegador.
+ * Teste de fumaça: o app sobe, a raiz redireciona quem não tem sessão
+ * para a tela de entrar, e nada explode no console do navegador.
  */
-test('a tela inicial carrega sem erros', async ({ page }) => {
+test('sem sessão, a raiz leva para a tela de entrar, sem erros', async ({ page }) => {
   const errosDeConsole: string[] = []
   page.on('console', (mensagem) => {
     if (mensagem.type() === 'error') errosDeConsole.push(mensagem.text())
@@ -12,7 +12,8 @@ test('a tela inicial carrega sem erros', async ({ page }) => {
 
   await page.goto('/')
 
-  await expect(page.getByRole('heading', { name: 'Olá, Mozii 💜' })).toBeVisible()
+  await expect(page).toHaveURL(/\/entrar$/)
+  await expect(page.getByRole('heading', { name: 'Que bom te ver' })).toBeVisible()
   await expect(page.getByText('vocês, em um só lugar')).toBeVisible()
 
   expect(errosDeConsole).toEqual([])
