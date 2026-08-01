@@ -101,3 +101,22 @@ export interface Reacao {
   autorId: string
   emoji: string
 }
+
+/** Uma memória do diário do casal. */
+export interface Momento {
+  id: string
+  autorId: string
+  legenda: string | null
+  /** Quando aconteceu (pode ser retroativo) — a linha do tempo ordena por isto. */
+  aconteceuEm: string
+  caminhosFotos: string[]
+  criadoEm: string
+}
+
+/** Um dos até 5 filmes favoritos de uma pessoa. */
+export interface Favorito {
+  id: string
+  perfilId: string
+  filme: RefFilme
+  posicao: number
+}

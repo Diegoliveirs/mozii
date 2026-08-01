@@ -8,8 +8,10 @@ import { PaginaCinema } from './paginas/PaginaCinema'
 import { PaginaEntrar } from './paginas/PaginaEntrar'
 import { PaginaFilme } from './paginas/PaginaFilme'
 import { PaginaLista } from './paginas/PaginaLista'
+import { PaginaMomentos } from './paginas/PaginaMomentos'
 import { PaginaMural } from './paginas/PaginaMural'
 import { PaginaNovaPublicacao } from './paginas/PaginaNovaPublicacao'
+import { PaginaPerfil } from './paginas/PaginaPerfil'
 import { PaginaParear } from './paginas/PaginaParear'
 import { PaginaPublicacao } from './paginas/PaginaPublicacao'
 
@@ -34,6 +36,9 @@ export function App() {
             <Route path="/cinema" element={<PaginaCinema />} />
             <Route path="/filme/:tmdbId" element={<PaginaFilme />} />
             <Route path="/listas/:listaId" element={<PaginaLista />} />
+            <Route path="/momentos" element={<PaginaMomentos />} />
+            <Route path="/perfil" element={<PaginaPerfil />} />
+            <Route path="/perfil/:membroId" element={<PaginaPerfil />} />
             <Route path="/ajustes" element={<PaginaAjustes />} />
           </Route>
         </Route>

@@ -8,11 +8,12 @@ export const chaveComentarios = (publicacaoId: string) =>
   ['mural', 'comentarios', publicacaoId] as const
 export const chaveReacoes = (ids: string[]) => ['mural', 'reacoes', ids] as const
 
-export function useFeedInfinito() {
+export function useFeedInfinito(autorId?: string) {
   const { mural } = useRepositorios()
   return useInfiniteQuery({
-    queryKey: chaveFeed,
-    queryFn: ({ pageParam }) => mural.feed(pageParam),
+    // Com autorId a chave muda: o feed pessoal (Pegadas) tem cache próprio.
+    queryKey: autorId ? [...chaveFeed, autorId] : chaveFeed,
+    queryFn: ({ pageParam }) => mural.feed(pageParam, autorId),
     initialPageParam: null as string | null,
     getNextPageParam: (ultima) => ultima.proximoCursor,
   })

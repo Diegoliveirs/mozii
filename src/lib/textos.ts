@@ -99,6 +99,16 @@ export const textos = {
     assistiu: (nome: string, filme: string) => `${nome} marcou ${filme} como assistido`,
   },
 
+  compartilhar: {
+    titulo: 'Compartilhar nos Stories',
+    botaoAbrir: '📤 Compartilhar',
+    tema: 'Tema',
+    compartilhar: 'Compartilhar',
+    baixar: 'Baixar imagem',
+    gerando: 'Gerando o cartão…',
+    erro: 'Não consegui gerar a imagem. Tenta de novo?',
+  },
+
   reacoes: {
     rapidas: ['❤️', '😂', '😍', '😮', '😢', '🔥'],
     reagir: 'Reagir',
@@ -108,7 +118,44 @@ export const textos = {
   navegacao: {
     mural: 'Mural',
     cinema: 'Cinema',
+    momentos: 'Momentos',
+    perfil: 'Perfil',
     ajustes: 'Ajustes',
+  },
+
+  momentos: {
+    titulo: 'Momentos',
+    vazio: 'O diário de vocês começa aqui. Registrem a primeira memória! 📔',
+    nova: 'Nova memória',
+    legendaDica: 'O que aconteceu?',
+    dataRotulo: 'Quando foi?',
+    fotosRotulo: '📷 Fotos',
+    salvar: 'Guardar memória',
+    salvando: 'Guardando…',
+    faltaConteudo: 'Uma memória precisa de legenda ou de pelo menos uma foto.',
+    excluir: 'Excluir memória',
+    excluirConfirmar: 'Excluir esta memória?',
+    excluirExplicacao: 'A memória, as fotos e o espelho no Mural somem para vocês dois.',
+    hoje: 'Hoje',
+    ontem: 'Ontem',
+  },
+
+  perfil: {
+    titulo: 'Perfil',
+    stats: {
+      avaliados: 'filmes avaliados',
+      media: 'nota média',
+      esteAno: 'este ano',
+      listas: 'listas criadas',
+    },
+    favoritos: 'Favoritos',
+    favoritosDica: 'Toque num espaço vazio para escolher um favorito.',
+    removerFavorito: 'Remover dos favoritos',
+    avaliacoesRecentes: 'Avaliações recentes',
+    semAvaliacoes: 'Nenhuma avaliação ainda.',
+    histograma: 'Distribuição das notas',
+    pegadas: 'Minhas Pegadas',
+    pegadasDe: (nome: string) => `Pegadas de ${nome}`,
   },
 
   cinema: {
@@ -165,6 +212,8 @@ export const textos = {
     titulo: 'Ajustes',
     nomeRotulo: 'Seu nome',
     nomeSalvo: 'Nome salvo!',
+    avatarRotulo: 'Trocar foto de perfil',
+    avatarSalvo: 'Foto atualizada!',
     casalTitulo: 'Nosso espaço',
     codigoConvite: 'Código de convite',
     codigoDica: 'Seu par usa este código para entrar.',

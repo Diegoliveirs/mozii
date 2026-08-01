@@ -55,7 +55,8 @@ test('o casal se forma: um cria o espaço, o outro entra com o código', async (
   await expect(paginaDois.getByRole('heading', { name: 'Mural' })).toBeVisible()
   await expect(paginaDois.getByText('Pessoa Um ♥ Pessoa Dois')).toBeVisible()
 
-  // ── Ajustes: sem código de convite quando o casal está completo ─────
+  // ── Ajustes (via engrenagem do Perfil): sem código com o casal completo ──
+  await paginaDois.getByRole('link', { name: 'Perfil', exact: true }).click()
   await paginaDois.getByRole('link', { name: 'Ajustes' }).click()
   await expect(paginaDois.getByText('Pessoa Um', { exact: false })).toBeVisible()
   await expect(paginaDois.getByText('Código de convite')).toHaveCount(0)

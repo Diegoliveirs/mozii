@@ -1,7 +1,9 @@
 import type {
   Casal,
   Comentario,
+  Favorito,
   MetaAtividade,
+  Momento,
   Perfil,
   Publicacao,
   Reacao,
@@ -104,6 +106,42 @@ export function paraComentario(linha: LinhaComentario): Comentario {
     autorId: linha.autor_id,
     corpo: linha.corpo,
     criadoEm: linha.criado_em,
+  }
+}
+
+interface LinhaMomento {
+  id: string
+  autor_id: string
+  legenda: string | null
+  aconteceu_em: string
+  caminhos_fotos: string[]
+  criado_em: string
+}
+
+export function paraMomento(linha: LinhaMomento): Momento {
+  return {
+    id: linha.id,
+    autorId: linha.autor_id,
+    legenda: linha.legenda,
+    aconteceuEm: linha.aconteceu_em,
+    caminhosFotos: linha.caminhos_fotos,
+    criadoEm: linha.criado_em,
+  }
+}
+
+export interface LinhaFavorito {
+  id: string
+  perfil_id: string
+  posicao: number
+  filmes: LinhaFilme
+}
+
+export function paraFavorito(linha: LinhaFavorito): Favorito {
+  return {
+    id: linha.id,
+    perfilId: linha.perfil_id,
+    posicao: linha.posicao,
+    filme: paraFilme(linha.filmes),
   }
 }
 

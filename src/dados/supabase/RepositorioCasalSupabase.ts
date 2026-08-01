@@ -59,6 +59,14 @@ export const repositorioCasalSupabase: RepositorioCasal = {
     if (error) throw error
   },
 
+  async atualizarAvatar(caminho: string) {
+    const { error } = await supabase
+      .from('perfis')
+      .update({ url_avatar: caminho })
+      .eq('id', await idDoUsuario())
+    if (error) throw error
+  },
+
   async atualizarNomeExibicao(nome: string) {
     const { error } = await supabase
       .from('perfis')

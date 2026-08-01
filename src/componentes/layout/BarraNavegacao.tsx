@@ -5,8 +5,11 @@ const esquerda = [
   { para: '/', rotulo: textos.navegacao.mural, icone: '💬' },
   { para: '/cinema', rotulo: textos.navegacao.cinema, icone: '🎬' },
 ]
-// As abas Momentos e Perfil entram na Fase 4.
-const direita = [{ para: '/ajustes', rotulo: textos.navegacao.ajustes, icone: '⚙️' }]
+// Ajustes mora na engrenagem do Perfil (como o resto que é "de conta").
+const direita = [
+  { para: '/momentos', rotulo: textos.navegacao.momentos, icone: '📔' },
+  { para: '/perfil', rotulo: textos.navegacao.perfil, icone: '👤' },
+]
 
 function Aba({ para, rotulo, icone }: { para: string; rotulo: string; icone: string }) {
   return (

@@ -27,13 +27,14 @@ async function sessaoAtual(): Promise<{ usuarioId: string; casalId: string }> {
 
 /** O Mural: publicações, comentários, reações e o canal de tempo real. */
 export const repositorioMuralSupabase: RepositorioMural = {
-  async feed(cursor: string | null): Promise<PaginaDeFeed> {
+  async feed(cursor: string | null, autorId?: string): Promise<PaginaDeFeed> {
     let consulta = supabase
       .from('publicacoes')
       .select(COLUNAS)
       .order('criado_em', { ascending: false })
       .limit(TAMANHO_PAGINA)
     if (cursor) consulta = consulta.lt('criado_em', cursor)
+    if (autorId) consulta = consulta.eq('autor_id', autorId)
 
     const { data, error } = await consulta
     if (error) throw error
@@ -43,6 +44,17 @@ export const repositorioMuralSupabase: RepositorioMural = {
       itens,
       proximoCursor: itens.length === TAMANHO_PAGINA ? itens[itens.length - 1].criadoEm : null,
     }
+  },
+
+  async avaliacoesDe(autorId: string): Promise<Publicacao[]> {
+    const { data, error } = await supabase
+      .from('publicacoes')
+      .select(COLUNAS)
+      .eq('autor_id', autorId)
+      .eq('tipo', 'avaliacao')
+      .order('criado_em', { ascending: false })
+    if (error) throw error
+    return (data as unknown as LinhaPublicacao[]).map(paraPublicacao)
   },
 
   async publicacao(id: string): Promise<Publicacao | null> {
@@ -195,7 +207,7 @@ export const repositorioMuralSupabase: RepositorioMural = {
     // filtro; as demais não têm a coluna — a RLS de SELECT escopa a entrega.
     const canal = supabase.channel(`casal-${casalId}`)
 
-    const tabelasComFiltro = ['publicacoes', 'listas']
+    const tabelasComFiltro = ['publicacoes', 'listas', 'momentos', 'favoritos']
     const tabelasSemFiltro = ['comentarios', 'reacoes', 'itens_lista']
 
     for (const tabela of tabelasComFiltro) {

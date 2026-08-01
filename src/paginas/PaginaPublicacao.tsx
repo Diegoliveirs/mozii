@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { ModalCompartilhar } from '../componentes/compartilhar/ModalCompartilhar'
 import { CartaoPublicacao } from '../componentes/mural/CartaoPublicacao'
 import { EstrelasNota } from '../componentes/mural/EstrelasNota'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
@@ -31,6 +32,7 @@ export function PaginaPublicacao() {
   const excluir = useExcluirPublicacao()
 
   const [confirmandoExclusao, setConfirmandoExclusao] = useState(false)
+  const [compartilhando, setCompartilhando] = useState(false)
   const [editando, setEditando] = useState(false)
   const [notaEditada, setNotaEditada] = useState(0)
   const [corpoEditado, setCorpoEditado] = useState('')
@@ -112,6 +114,16 @@ export function PaginaPublicacao() {
         )}
       </div>
 
+      {dados.tipo === 'avaliacao' && !editando && (
+        <button
+          type="button"
+          onClick={() => setCompartilhando(true)}
+          className="mt-4 w-full rounded-xl border border-rosa py-3 font-medium text-rosa-suave"
+        >
+          {textos.compartilhar.botaoAbrir}
+        </button>
+      )}
+
       {souAutor && !editando && (
         <div className="mt-6 flex flex-col items-start gap-3">
           {dados.tipo === 'avaliacao' && (
@@ -127,6 +139,14 @@ export function PaginaPublicacao() {
             {textos.publicacao.excluir}
           </button>
         </div>
+      )}
+
+      {compartilhando && (
+        <ModalCompartilhar
+          publicacao={dados}
+          nomes={(casal.data?.membros ?? []).map((membro) => membro.nomeExibicao)}
+          aoFechar={() => setCompartilhando(false)}
+        />
       )}
 
       <DialogoConfirmar

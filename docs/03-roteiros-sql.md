@@ -197,4 +197,55 @@ where pubname = 'supabase_realtime' order by tablename;
 
 ---
 
-_Roteiros das migrations 005–006 serão adicionados nas fases correspondentes._
+## Roteiro da 005_momentos.sql
+
+**Status:** ⏳ aguardando aplicação pelo Diego
+**Arquivo:** `supabase/migrations/005_momentos.sql`
+
+### O que esta migration cria
+
+- `momentos` — diário do casal: fotos (array de caminhos do bucket `fotos`) + legenda + `aconteceu_em` retroativa; precisa de legenda OU ao menos 1 foto; exclusão só pelo autor.
+- `favoritos` — até **5 filmes por pessoa**, garantidos pela estrutura (`unique (perfil_id, posicao)` com posição 1–5); o casal vê os favoritos um do outro.
+- Tempo real para as duas tabelas.
+- Sem UPDATE em nenhuma das duas (menos caminhos = menos brechas): memória se apaga e refaz; favorito troca de posição removendo e recriando.
+
+### Como aplicar
+
+1. SQL Editor → colar `005_momentos.sql` inteiro → executar.
+
+### Queries de conferência
+
+```sql
+-- 1. Tabelas com RLS (esperado: favoritos e momentos, ambas true)
+select tablename, rowsecurity from pg_tables
+where schemaname = 'public' and tablename in ('momentos','favoritos')
+order by tablename;
+```
+
+```sql
+-- 2. Policies (esperado: 3 em cada)
+select tablename, count(*) from pg_policies
+where schemaname = 'public' and tablename in ('momentos','favoritos')
+group by tablename order by tablename;
+```
+
+```sql
+-- 3. Sem UPDATE concedido (esperado: 0 linhas)
+select table_name, privilege_type from information_schema.role_table_grants
+where table_name in ('momentos','favoritos') and grantee = 'authenticated'
+  and privilege_type = 'UPDATE';
+```
+
+```sql
+-- 4. Tempo real (esperado: 7 tabelas na publication, incluindo momentos e favoritos)
+select tablename from pg_publication_tables
+where pubname = 'supabase_realtime' order by tablename;
+```
+
+### Depois de aplicar
+
+- [ ] Avisar no chat que a 005 foi aplicada e as conferências bateram.
+
+---
+
+_O roteiro da migration 006 será adicionado na Fase 5._

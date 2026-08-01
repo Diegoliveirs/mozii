@@ -17,6 +17,8 @@ const invalidacoesPorTabela: Record<string, string[][]> = {
   reacoes: [['mural', 'reacoes']],
   listas: [['listas']],
   itens_lista: [['listas']],
+  momentos: [['momentos']],
+  favoritos: [['favoritos']],
 }
 
 export function useTempoReal() {

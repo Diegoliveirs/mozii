@@ -1,13 +1,15 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSair } from '../hooks/useAutenticacao'
 import {
+  useAtualizarAvatar,
   useAtualizarNomeExibicao,
   useCasalComMembros,
   useMeuPerfil,
   useSairDoCasal,
   useSolicitarExclusaoConta,
 } from '../hooks/useCasal'
+import { AvatarPerfil } from '../componentes/mural/AvatarPerfil'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
 import { textos } from '../lib/textos'
 
@@ -16,7 +18,9 @@ export function PaginaAjustes() {
   const perfil = useMeuPerfil()
   const casal = useCasalComMembros()
   const atualizarNome = useAtualizarNomeExibicao()
+  const atualizarAvatar = useAtualizarAvatar()
   const sairConta = useSair()
+  const campoAvatar = useRef<HTMLInputElement>(null)
   const sairCasal = useSairDoCasal()
   const solicitarExclusao = useSolicitarExclusaoConta()
 
@@ -55,8 +59,37 @@ export function PaginaAjustes() {
     <main className="px-5 pt-8">
       <h1 className="font-voz text-3xl text-neve">{textos.ajustes.titulo}</h1>
 
-      {/* Nome de exibição */}
+      {/* Foto e nome de exibição */}
       <form onSubmit={aoSalvarNome} className="mt-6 rounded-2xl bg-cartao p-5">
+        <div className="mb-4 flex items-center gap-4">
+          <AvatarPerfil
+            nome={perfil.data?.nomeExibicao ?? ''}
+            indice={0}
+            caminhoAvatar={perfil.data?.urlAvatar ?? null}
+            tamanho="grande"
+          />
+          <button
+            type="button"
+            onClick={() => campoAvatar.current?.click()}
+            disabled={atualizarAvatar.isPending}
+            className="rounded-xl border border-linha-forte px-4 py-2 text-sm text-nevoa disabled:opacity-60"
+          >
+            {textos.ajustes.avatarRotulo}
+          </button>
+          <input
+            ref={campoAvatar}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={(evento) => {
+              const arquivo = evento.target.files?.[0]
+              if (arquivo) atualizarAvatar.mutate(arquivo)
+            }}
+          />
+          {atualizarAvatar.isSuccess && (
+            <span className="text-sm text-rosa-suave">{textos.ajustes.avatarSalvo}</span>
+          )}
+        </div>
         <label className="flex flex-col gap-1.5 text-sm text-nevoa">
           {textos.ajustes.nomeRotulo}
           <input

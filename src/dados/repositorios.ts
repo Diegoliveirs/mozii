@@ -2,9 +2,11 @@ import type {
   Casal,
   CasalComMembros,
   Comentario,
+  Favorito,
   ItemLista,
   Lista,
   MetaAtividade,
+  Momento,
   PaginaDeFeed,
   Perfil,
   Publicacao,
@@ -41,6 +43,8 @@ export interface RepositorioCasal {
   entrarNoCasal(codigo: string): Promise<Casal | null>
   sairDoCasal(): Promise<void>
   atualizarNomeExibicao(nome: string): Promise<void>
+  /** Recebe o CAMINHO no bucket (não URL) — a exibição assina na hora. */
+  atualizarAvatar(caminho: string): Promise<void>
   atualizarDataAniversario(data: string | null): Promise<void>
   solicitarExclusaoConta(): Promise<void>
   cancelarExclusaoConta(): Promise<void>
@@ -63,8 +67,13 @@ export interface RepositorioListas {
 }
 
 export interface RepositorioMural {
-  /** Uma página do feed; `cursor` é o `criadoEm` do último item da anterior. */
-  feed(cursor: string | null): Promise<PaginaDeFeed>
+  /**
+   * Uma página do feed; `cursor` é o `criadoEm` do último item da anterior.
+   * Com `autorId`, vira o feed pessoal ("Minhas Pegadas" do perfil).
+   */
+  feed(cursor: string | null, autorId?: string): Promise<PaginaDeFeed>
+  /** Todas as avaliações de uma pessoa — base das estatísticas e do histograma. */
+  avaliacoesDe(autorId: string): Promise<Publicacao[]>
   publicacao(id: string): Promise<Publicacao | null>
   criarTexto(dados: { corpo: string | null; caminhoFoto: string | null }): Promise<Publicacao>
   criarAvaliacao(dados: {
@@ -101,10 +110,34 @@ export interface RepositorioArquivos {
   apagarFotos(caminhos: string[]): Promise<void>
 }
 
+export interface RepositorioMomentos {
+  linhaDoTempo(): Promise<Momento[]>
+  /**
+   * Cria a memória E o espelho dela no Mural (publicação tipo 'momento').
+   * Se o espelho falhar, a memória é desfeita — ou existe nas duas telas,
+   * ou não existe em nenhuma.
+   */
+  criar(dados: {
+    legenda: string | null
+    aconteceuEm: string
+    caminhosFotos: string[]
+  }): Promise<Momento>
+  /** Apaga a memória, o espelho no Mural e as fotos (melhor esforço). */
+  excluir(momento: Momento): Promise<void>
+}
+
+export interface RepositorioFavoritos {
+  favoritosDe(perfilId: string): Promise<Favorito[]>
+  definir(posicao: number, filme: RefFilme): Promise<void>
+  remover(favoritoId: string): Promise<void>
+}
+
 export interface Repositorios {
   autenticacao: RepositorioAutenticacao
   casal: RepositorioCasal
   listas: RepositorioListas
   mural: RepositorioMural
   arquivos: RepositorioArquivos
+  momentos: RepositorioMomentos
+  favoritos: RepositorioFavoritos
 }

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tansta
 import { useRepositorios } from '../dados/ContextoRepositorios'
 import { useAutenticacao } from './useAutenticacao'
 import type { Perfil } from '../dominio/tipos'
+import { redimensionarFoto } from '../lib/imagem'
 
 export const chavePerfil = ['perfil'] as const
 export const chaveCasal = ['casal'] as const
@@ -74,6 +75,22 @@ export function useAtualizarNomeExibicao() {
   const clienteQuery = useQueryClient()
   return useMutation({
     mutationFn: (nome: string) => casal.atualizarNomeExibicao(nome),
+    onSuccess: () => {
+      clienteQuery.invalidateQueries({ queryKey: chavePerfil })
+      clienteQuery.invalidateQueries({ queryKey: chaveCasal })
+    },
+  })
+}
+
+/** Troca a foto de perfil: redimensiona para 400px, sobe e grava o caminho. */
+export function useAtualizarAvatar() {
+  const { casal, arquivos } = useRepositorios()
+  const clienteQuery = useQueryClient()
+  return useMutation({
+    mutationFn: async (arquivo: File) => {
+      const caminho = await arquivos.enviarFoto(await redimensionarFoto(arquivo, 400))
+      await casal.atualizarAvatar(caminho)
+    },
     onSuccess: () => {
       clienteQuery.invalidateQueries({ queryKey: chavePerfil })
       clienteQuery.invalidateQueries({ queryKey: chaveCasal })
