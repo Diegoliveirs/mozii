@@ -36,9 +36,9 @@ O hub Cinema tem duas abas guardadas na URL (`?aba=listas`). A busca consulta o 
 
 O Mural é o feed infinito do casal (cursor por `criado_em`, páginas de 20). Quatro tipos de publicação: **texto** (com foto opcional, redimensionada para WebP no navegador e guardada no bucket privado), **avaliação** (filme + nota com meia estrela + texto), **atividade** (linha discreta gerada pelo app ao mexer nas listas) e **momento** (espelho do diário, chega na Fase 4). Reações por **emoji livre** (chips agrupados, fileira rápida + campo para qualquer emoji; tocar de novo desfaz) e comentários inline — os dois com update otimista e rollback. O composer fica no botão rosa central; a publicação tem página própria com conversa aberta, edição (avaliações, só do autor) e exclusão (só do autor). O **tempo real** monta um canal por casal na casca do app: cada mudança do par invalida as queries certas e a tela atualiza sozinha — comprovado por E2E com duas janelas.
 
-### 12. Ajustes e exclusão de conta (entregue na Fase 1, sem avatar)
+### 12. Ajustes e exclusão de conta (Fases 1 e 4)
 
-Ajustes traz: editar o nome, ver quem está no espaço (com o código de convite enquanto falta o par), sair da conta e a zona de perigo (sair do espaço / excluir conta, ambos com diálogo de confirmação). O upload de avatar chega na Fase 4 junto com o Storage — decisão registrada para não criar bucket antes da migration 005.
+Ajustes traz: trocar a foto de perfil (400px WebP, entregue na Fase 4 junto com o Storage), editar o nome, ver quem está no espaço (com o código de convite enquanto falta o par), sair da conta e a zona de perigo (sair do espaço / excluir conta, ambos com diálogo de confirmação).
 
 Pedir exclusão grava `exclusao_solicitada_em`; um job do pg_cron apaga a conta de verdade após 30 minutos. Entrar no app dentro da carência cancela automaticamente (o app chamará `cancelar_exclusao_conta()` a cada entrada). Cascata: excluir a conta leva o perfil junto (e, nas próximas fases, publicações, listas e momentos).
 
