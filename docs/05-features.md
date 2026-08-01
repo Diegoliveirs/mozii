@@ -6,15 +6,15 @@ Estado de cada função do app. Uma feature só muda para ✅ com esta página a
 | --- | -------------------------------------------------------- | ---- | ------------------------------------------------- |
 | 1   | Autenticação (e-mail + senha)                            | 1    | ✅                                                |
 | 2   | Pareamento por código de convite (máx. 2)                | 1    | ✅                                                |
-| 3   | Mural (feed do casal, 4 tipos de publicação)             | 3    | 🔜                                                |
-| 4   | Reações por emoji livre + comentários                    | 3    | 🔜                                                |
+| 3   | Mural (feed do casal, 4 tipos de publicação)             | 3    | ✅                                                |
+| 4   | Reações por emoji livre + comentários                    | 3    | ✅                                                |
 | 5   | Listas de filmes (ilimitadas)                            | 2    | ✅                                                |
 | 6   | Busca TMDB + página do filme + onde assistir             | 2    | ✅                                                |
 | 7   | Sorteio "O que ver hoje" (caça-níquel)                   | 2    | ✅                                                |
 | 8   | Momentos (diário de fotos do casal)                      | 4    | 🔜                                                |
 | 9   | Perfil estilo Letterboxd + favoritos + histograma        | 4    | 🔜                                                |
 | 10  | Cartão de compartilhar (Stories 1080×1920, 3 temas)      | 4    | 🔜                                                |
-| 11  | Tempo real (mudanças do par sem recarregar)              | 3    | 🔜                                                |
+| 11  | Tempo real (mudanças do par sem recarregar)              | 3    | ✅                                                |
 | 12  | Ajustes (nome, avatar, sair, excluir conta com carência) | 1/6  | ✅ parcial — avatar chega com o Storage na Fase 4 |
 | 13  | **Sessão de cinema agendada** (nova)                     | 5    | 🔜                                                |
 
@@ -31,6 +31,10 @@ Uma pessoa cria o casal e recebe um código de 6 caracteres (sem 0/O/1/I); a out
 ### 5–7. Cinema: listas, busca e sorteio (entregues na Fase 2)
 
 O hub Cinema tem duas abas guardadas na URL (`?aba=listas`). A busca consulta o TMDB em pt-BR com debounce de 400 ms; a página do filme traz backdrop, sinopse, gêneros, duração e **Onde assistir** (streaming ou aluguel na região BR + link JustWatch, atribuição exigida pelo TMDB). Filmes entram em listas pela folha "Em qual lista?" — que também cria listas na hora — e cada filme tocado é gravado no cache `filmes` via RPC validada. Na lista: marcar assistido, remover, excluir a lista e o **sorteio caça-níquel** (roda só entre os não-assistidos, pôsteres desfocados com atrasos crescentes até travar no sorteado, com "Sortear de novo").
+
+### 3, 4 e 11. Mural, reações/comentários e tempo real (entregues na Fase 3)
+
+O Mural é o feed infinito do casal (cursor por `criado_em`, páginas de 20). Quatro tipos de publicação: **texto** (com foto opcional, redimensionada para WebP no navegador e guardada no bucket privado), **avaliação** (filme + nota com meia estrela + texto), **atividade** (linha discreta gerada pelo app ao mexer nas listas) e **momento** (espelho do diário, chega na Fase 4). Reações por **emoji livre** (chips agrupados, fileira rápida + campo para qualquer emoji; tocar de novo desfaz) e comentários inline — os dois com update otimista e rollback. O composer fica no botão rosa central; a publicação tem página própria com conversa aberta, edição (avaliações, só do autor) e exclusão (só do autor). O **tempo real** monta um canal por casal na casca do app: cada mudança do par invalida as queries certas e a tela atualiza sozinha — comprovado por E2E com duas janelas.
 
 ### 12. Ajustes e exclusão de conta (entregue na Fase 1, sem avatar)
 

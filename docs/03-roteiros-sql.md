@@ -141,7 +141,7 @@ select jobname, schedule from cron.job order by jobname;
 
 ## Roteiro da 004_mural.sql
 
-**Status:** ⏳ aguardando aplicação pelo Diego
+**Status:** ✅ aplicada pelo Diego em 2026-08-01 — conferências ok
 **Arquivo:** `supabase/migrations/004_mural.sql`
 
 ### Mudanças de sequência (registradas)
