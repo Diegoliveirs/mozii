@@ -199,7 +199,7 @@ where pubname = 'supabase_realtime' order by tablename;
 
 ## Roteiro da 005_momentos.sql
 
-**Status:** ⏳ aguardando aplicação pelo Diego
+**Status:** ✅ aplicada pelo Diego em 2026-08-01 — conferências ok
 **Arquivo:** `supabase/migrations/005_momentos.sql`
 
 ### O que esta migration cria

@@ -2,21 +2,21 @@
 
 Estado de cada função do app. Uma feature só muda para ✅ com esta página atualizada e os testes verdes.
 
-| #   | Feature                                                  | Fase | Status                                            |
-| --- | -------------------------------------------------------- | ---- | ------------------------------------------------- |
-| 1   | Autenticação (e-mail + senha)                            | 1    | ✅                                                |
-| 2   | Pareamento por código de convite (máx. 2)                | 1    | ✅                                                |
-| 3   | Mural (feed do casal, 4 tipos de publicação)             | 3    | ✅                                                |
-| 4   | Reações por emoji livre + comentários                    | 3    | ✅                                                |
-| 5   | Listas de filmes (ilimitadas)                            | 2    | ✅                                                |
-| 6   | Busca TMDB + página do filme + onde assistir             | 2    | ✅                                                |
-| 7   | Sorteio "O que ver hoje" (caça-níquel)                   | 2    | ✅                                                |
-| 8   | Momentos (diário de fotos do casal)                      | 4    | 🔜                                                |
-| 9   | Perfil estilo Letterboxd + favoritos + histograma        | 4    | 🔜                                                |
-| 10  | Cartão de compartilhar (Stories 1080×1920, 3 temas)      | 4    | 🔜                                                |
-| 11  | Tempo real (mudanças do par sem recarregar)              | 3    | ✅                                                |
-| 12  | Ajustes (nome, avatar, sair, excluir conta com carência) | 1/6  | ✅ parcial — avatar chega com o Storage na Fase 4 |
-| 13  | **Sessão de cinema agendada** (nova)                     | 5    | 🔜                                                |
+| #   | Feature                                                  | Fase | Status |
+| --- | -------------------------------------------------------- | ---- | ------ |
+| 1   | Autenticação (e-mail + senha)                            | 1    | ✅     |
+| 2   | Pareamento por código de convite (máx. 2)                | 1    | ✅     |
+| 3   | Mural (feed do casal, 4 tipos de publicação)             | 3    | ✅     |
+| 4   | Reações por emoji livre + comentários                    | 3    | ✅     |
+| 5   | Listas de filmes (ilimitadas)                            | 2    | ✅     |
+| 6   | Busca TMDB + página do filme + onde assistir             | 2    | ✅     |
+| 7   | Sorteio "O que ver hoje" (caça-níquel)                   | 2    | ✅     |
+| 8   | Momentos (diário de fotos do casal)                      | 4    | ✅     |
+| 9   | Perfil estilo Letterboxd + favoritos + histograma        | 4    | ✅     |
+| 10  | Cartão de compartilhar (Stories 1080×1920, 3 temas)      | 4    | ✅     |
+| 11  | Tempo real (mudanças do par sem recarregar)              | 3    | ✅     |
+| 12  | Ajustes (nome, avatar, sair, excluir conta com carência) | 1/4  | ✅     |
+| 13  | **Sessão de cinema agendada** (nova)                     | 5    | 🔜     |
 
 ## Detalhes por feature
 
@@ -41,6 +41,10 @@ O Mural é o feed infinito do casal (cursor por `criado_em`, páginas de 20). Qu
 Ajustes traz: editar o nome, ver quem está no espaço (com o código de convite enquanto falta o par), sair da conta e a zona de perigo (sair do espaço / excluir conta, ambos com diálogo de confirmação). O upload de avatar chega na Fase 4 junto com o Storage — decisão registrada para não criar bucket antes da migration 005.
 
 Pedir exclusão grava `exclusao_solicitada_em`; um job do pg_cron apaga a conta de verdade após 30 minutos. Entrar no app dentro da carência cancela automaticamente (o app chamará `cancelar_exclusao_conta()` a cada entrada). Cascata: excluir a conta leva o perfil junto (e, nas próximas fases, publicações, listas e momentos).
+
+### 8–10. Momentos, perfil e cartão de compartilhar (entregues na Fase 4)
+
+**Momentos**: diário do casal com linha do tempo agrupada por dia e ordenada por `aconteceu_em` (data retroativa permitida); memórias com várias fotos (lightbox com teclado e contador), marcos de aniversário calculados a partir da data guardada no casal, e espelho no Mural com desfazer atômico. **Perfil**: seletor entre os dois, 4 estatísticas calculadas no cliente, 5 favoritos por pessoa (limite estrutural no banco), avaliações recentes, histograma de notas e as "Pegadas". **Cartão**: 1080×1920 desenhado em canvas puro com 3 temas, estrelas fracionárias, validação de blob em branco e Web Share com fallback de download. Avatar (400px WebP) editável nos Ajustes.
 
 ### 13. Sessão de cinema agendada (desenho aprovado)
 

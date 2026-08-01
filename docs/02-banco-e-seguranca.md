@@ -16,7 +16,7 @@
 | 002 | `002_filmes.sql`   | cache do TMDB + RPC `gravar_filme()` + limpeza de casais vazios                        | ✅ aplicada (2026-08-01) |
 | 003 | `003_listas.sql`   | listas e itens                                                                         | ✅ aplicada (2026-08-01) |
 | 004 | `004_mural.sql`    | publicações, comentários, reações, **bucket fotos** e **realtime** (antecipados)       | ✅ aplicada (2026-08-01) |
-| 005 | `005_momentos.sql` | momentos, favoritos                                                                    | Fase 4                   |
+| 005 | `005_momentos.sql` | momentos, favoritos                                                                    | ✅ aplicada (2026-08-01) |
 | 006 | `006_sessoes.sql`  | sessões de cinema                                                                      | Fase 5                   |
 
 ## Schema atual (após a 001)
