@@ -1,0 +1,131 @@
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { urlBackdrop, urlLogoProvedor } from '../api/tmdb'
+import { Poster } from '../componentes/filmes/Poster'
+import { FolhaAdicionarALista } from '../componentes/filmes/FolhaAdicionarALista'
+import { useFilmeTmdb, useOndeAssistir } from '../hooks/useTmdb'
+import { textos } from '../lib/textos'
+
+/** Página do filme: dados do TMDB, onde assistir no Brasil e adicionar à lista. */
+export function PaginaFilme() {
+  const { tmdbId } = useParams()
+  const id = tmdbId ? Number(tmdbId) : null
+  const filme = useFilmeTmdb(id)
+  const ondeAssistir = useOndeAssistir(id)
+  const [folhaAberta, setFolhaAberta] = useState(false)
+
+  if (filme.isLoading) {
+    return <main className="px-5 pt-8 text-cinza">{textos.comuns.carregando}</main>
+  }
+  if (!filme.data) {
+    return <main className="px-5 pt-8 text-nevoa">{textos.filme.naoEncontrado}</main>
+  }
+
+  const dados = filme.data
+  const fundo = urlBackdrop(dados.caminhoBackdrop)
+  const provedores =
+    ondeAssistir.data && ondeAssistir.data.streaming.length > 0
+      ? { rotulo: textos.filme.ondeAssistir, lista: ondeAssistir.data.streaming }
+      : ondeAssistir.data && ondeAssistir.data.aluguel.length > 0
+        ? { rotulo: textos.filme.aluguel, lista: ondeAssistir.data.aluguel }
+        : null
+
+  return (
+    <main>
+      {fundo && (
+        <div className="relative h-44 w-full">
+          <img src={fundo} alt="" className="h-full w-full object-cover opacity-50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-noite to-transparent" />
+        </div>
+      )}
+
+      <div className={`px-5 ${fundo ? '-mt-16' : 'pt-8'}`}>
+        <div className="flex items-end gap-4">
+          <Poster
+            caminho={dados.caminhoPoster}
+            titulo={dados.titulo}
+            largura={342}
+            className="w-28 shadow-lg"
+          />
+          <div className="pb-1">
+            <h1 className="font-voz text-2xl leading-tight text-neve">{dados.titulo}</h1>
+            <p className="mt-1 text-sm text-nevoa">
+              {[
+                dados.anoLancamento,
+                dados.duracaoMinutos ? textos.filme.duracao(dados.duracaoMinutos) : null,
+              ]
+                .filter(Boolean)
+                .join(' · ')}
+            </p>
+          </div>
+        </div>
+
+        {dados.generos.length > 0 && (
+          <p className="mt-3 text-sm text-cinza">{dados.generos.join(' · ')}</p>
+        )}
+
+        {dados.sinopse && (
+          <p className="mt-3 text-sm leading-relaxed text-nevoa">{dados.sinopse}</p>
+        )}
+
+        <button
+          type="button"
+          onClick={() => setFolhaAberta(true)}
+          className="mt-5 w-full rounded-xl bg-rosa py-3 font-medium text-neve"
+        >
+          {textos.filme.adicionarALista}
+        </button>
+
+        {/* Onde assistir (região BR) — atribuição JustWatch exigida pelo TMDB */}
+        <section className="mt-6 pb-8">
+          <h2 className="font-medium text-neve">{textos.filme.ondeAssistir}</h2>
+          {provedores ? (
+            <>
+              <ul className="mt-3 flex flex-wrap gap-3">
+                {provedores.lista.map((provedor) => (
+                  <li
+                    key={provedor.nome}
+                    className="flex items-center gap-2 rounded-xl bg-cartao px-3 py-2"
+                  >
+                    {urlLogoProvedor(provedor.caminhoLogo) && (
+                      <img
+                        src={urlLogoProvedor(provedor.caminhoLogo)!}
+                        alt=""
+                        className="h-6 w-6 rounded"
+                      />
+                    )}
+                    <span className="text-sm text-nevoa">{provedor.nome}</span>
+                  </li>
+                ))}
+              </ul>
+              {ondeAssistir.data?.linkJustWatch && (
+                <a
+                  href={ondeAssistir.data.linkJustWatch}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-block text-sm text-rosa-suave underline"
+                >
+                  {textos.filme.verNoJustWatch}
+                </a>
+              )}
+            </>
+          ) : (
+            <p className="mt-2 text-sm text-cinza">{textos.filme.semProvedores}</p>
+          )}
+        </section>
+      </div>
+
+      {folhaAberta && (
+        <FolhaAdicionarALista
+          filme={{
+            tmdbId: dados.tmdbId,
+            titulo: dados.titulo,
+            caminhoPoster: dados.caminhoPoster,
+            anoLancamento: dados.anoLancamento,
+          }}
+          aoFechar={() => setFolhaAberta(false)}
+        />
+      )}
+    </main>
+  )
+}

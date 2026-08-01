@@ -1,4 +1,4 @@
-import type { Casal, Perfil } from '../../dominio/tipos'
+import type { Casal, Perfil, RefFilme } from '../../dominio/tipos'
 
 /**
  * Tradução linha-do-banco (snake_case) → domínio (camelCase).
@@ -25,6 +25,22 @@ export function paraPerfil(linha: LinhaPerfil): Perfil {
     nomeExibicao: linha.nome_exibicao,
     urlAvatar: linha.url_avatar,
     casalId: linha.casal_id,
+  }
+}
+
+interface LinhaFilme {
+  tmdb_id: number
+  titulo: string
+  caminho_poster: string | null
+  ano_lancamento: number | null
+}
+
+export function paraFilme(linha: LinhaFilme): RefFilme {
+  return {
+    tmdbId: linha.tmdb_id,
+    titulo: linha.titulo,
+    caminhoPoster: linha.caminho_poster,
+    anoLancamento: linha.ano_lancamento,
   }
 }
 

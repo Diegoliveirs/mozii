@@ -28,3 +28,31 @@ export interface CasalComMembros {
   casal: Casal
   membros: Perfil[]
 }
+
+/** Filme como vive no nosso cache (tabela `filmes`). */
+export interface RefFilme {
+  tmdbId: number
+  titulo: string
+  caminhoPoster: string | null
+  anoLancamento: number | null
+}
+
+export interface Lista {
+  id: string
+  nome: string
+  criadoPor: string
+  criadoEm: string
+  qtdItens: number
+  qtdAssistidos: number
+  /** Até 3 pôsteres para a capa em mosaico. */
+  postersCapa: string[]
+}
+
+export interface ItemLista {
+  id: string
+  listaId: string
+  filme: RefFilme
+  assistido: boolean
+  adicionadoPor: string
+  criadoEm: string
+}

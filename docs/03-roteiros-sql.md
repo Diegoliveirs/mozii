@@ -87,4 +87,56 @@ where tgrelid = 'public.perfis'::regclass and not tgisinternal;
 
 ---
 
-_Roteiros das migrations 002–006 serão adicionados nas fases correspondentes._
+## Roteiro da 002_filmes.sql + 003_listas.sql (aplicar as duas em sequência)
+
+**Status:** ⏳ aguardando aplicação pelo Diego
+**Arquivos:** `supabase/migrations/002_filmes.sql` e `003_listas.sql`
+
+### O que criam
+
+- **002:** tabela `filmes` (cache global do TMDB — leitura livre, escrita **só** pela RPC `gravar_filme()` com validação) e o job `limpar-casais-vazios` (recolhe casais sem membros há mais de 1 dia, inclusive os que os testes E2E deixam).
+- **003:** tabelas `listas` e `itens_lista`, ambas no escopo do casal via RLS. Os dois membros veem, adicionam, marcam como assistido e excluem; `unique (lista_id, tmdb_id)` impede filme repetido na lista; UPDATE limitado por coluna (`nome` na lista, `assistido` no item).
+
+### Como aplicar
+
+1. SQL Editor do projeto → colar o conteúdo de `002_filmes.sql` → executar (a última linha retorna o id do job do cron).
+2. Depois, colar o conteúdo de `003_listas.sql` → executar.
+
+### Queries de conferência
+
+```sql
+-- 1. Tabelas novas com RLS ligada (esperado: filmes, itens_lista, listas — todas true)
+select tablename, rowsecurity from pg_tables
+where schemaname = 'public' and tablename in ('filmes','listas','itens_lista')
+order by tablename;
+```
+
+```sql
+-- 2. Policies (esperado: 1 em filmes, 4 em listas, 4 em itens_lista)
+select tablename, count(*) from pg_policies
+where schemaname = 'public' and tablename in ('filmes','listas','itens_lista')
+group by tablename order by tablename;
+```
+
+```sql
+-- 3. Escrita direta em filmes está BLOQUEADA (esperado: 0 linhas — nenhum
+--    privilégio de insert/update/delete para authenticated)
+select privilege_type from information_schema.role_table_grants
+where table_name = 'filmes' and grantee = 'authenticated'
+  and privilege_type in ('INSERT','UPDATE','DELETE');
+```
+
+```sql
+-- 4. A RPC existe e o cron novo está agendado (esperado: gravar_filme + 3 jobs no total)
+select proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public' and proname = 'gravar_filme';
+select jobname, schedule from cron.job order by jobname;
+```
+
+### Depois de aplicar
+
+- [ ] Avisar no chat que a 002 e a 003 foram aplicadas e as conferências bateram.
+
+---
+
+_Roteiros das migrations 004–006 serão adicionados nas fases correspondentes._

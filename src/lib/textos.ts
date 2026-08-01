@@ -67,7 +67,58 @@ export const textos = {
 
   navegacao: {
     mural: 'Mural',
+    cinema: 'Cinema',
     ajustes: 'Ajustes',
+  },
+
+  cinema: {
+    titulo: 'Cinema',
+    abaBuscar: 'Buscar',
+    abaListas: 'Listas',
+    buscarDica: 'Busque um filme…',
+    buscando: 'Buscando…',
+    semResultados: 'Nada encontrado com esse nome.',
+    novaListaDica: 'Nome da nova lista',
+    novaListaBotao: 'Criar lista',
+    semListas: 'Vocês ainda não têm listas. Que tal uma "Para ver juntos"?',
+  },
+
+  filme: {
+    adicionarALista: 'Adicionar à lista',
+    ondeAssistir: 'Onde assistir',
+    aluguel: 'Para alugar',
+    semProvedores: 'Sem streaming no Brasil por enquanto.',
+    verNoJustWatch: 'Ver todas as opções no JustWatch',
+    duracao: (minutos: number) => `${Math.floor(minutos / 60)}h ${minutos % 60}min`,
+    naoEncontrado: 'Filme não encontrado.',
+  },
+
+  folhaLista: {
+    titulo: 'Em qual lista?',
+    jaEsta: 'já está',
+    adicionado: 'Adicionado!',
+  },
+
+  lista: {
+    progresso: (assistidos: number, total: number) => `${assistidos} de ${total} assistidos`,
+    vazia: 'Lista vazia — busque um filme para adicionar.',
+    adicionarFilme: 'Adicionar filme',
+    adicionadoPor: (nome: string) => `por ${nome}`,
+    marcarAssistido: 'Marcar como assistido',
+    desmarcarAssistido: 'Desmarcar assistido',
+    removerItem: 'Remover da lista',
+    excluir: 'Excluir lista',
+    excluirConfirmar: 'Excluir esta lista?',
+    excluirExplicacao: 'A lista e os itens dela somem para vocês dois.',
+  },
+
+  sorteio: {
+    botao: '🎲 O que ver hoje',
+    titulo: 'O que ver hoje',
+    rolando: 'Sorteando…',
+    verFilme: 'Ver o filme',
+    sortearDeNovo: 'Sortear de novo',
+    todosAssistidos: 'Vocês já viram tudo desta lista! 🎉',
   },
 
   ajustes: {

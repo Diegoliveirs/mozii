@@ -4,7 +4,10 @@ import { ExigirCasal } from './componentes/guardas/ExigirCasal'
 import { CascaApp } from './componentes/layout/CascaApp'
 import { PaginaAjustes } from './paginas/PaginaAjustes'
 import { PaginaCadastro } from './paginas/PaginaCadastro'
+import { PaginaCinema } from './paginas/PaginaCinema'
 import { PaginaEntrar } from './paginas/PaginaEntrar'
+import { PaginaFilme } from './paginas/PaginaFilme'
+import { PaginaLista } from './paginas/PaginaLista'
 import { PaginaMural } from './paginas/PaginaMural'
 import { PaginaParear } from './paginas/PaginaParear'
 
@@ -24,6 +27,9 @@ export function App() {
         <Route element={<ExigirCasal />}>
           <Route element={<CascaApp />}>
             <Route path="/" element={<PaginaMural />} />
+            <Route path="/cinema" element={<PaginaCinema />} />
+            <Route path="/filme/:tmdbId" element={<PaginaFilme />} />
+            <Route path="/listas/:listaId" element={<PaginaLista />} />
             <Route path="/ajustes" element={<PaginaAjustes />} />
           </Route>
         </Route>

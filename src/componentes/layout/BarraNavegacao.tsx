@@ -3,8 +3,9 @@ import { textos } from '../../lib/textos'
 
 const abas = [
   { para: '/', rotulo: textos.navegacao.mural, icone: '💬' },
+  { para: '/cinema', rotulo: textos.navegacao.cinema, icone: '🎬' },
   { para: '/ajustes', rotulo: textos.navegacao.ajustes, icone: '⚙️' },
-  // As abas Cinema, Momentos e Perfil entram nas Fases 2–4.
+  // As abas Momentos e Perfil entram nas Fases 3–4.
 ]
 
 /** Navegação inferior fixa, estilo app nativo. */

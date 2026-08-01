@@ -88,8 +88,25 @@ async function rpc(token: string, funcao: string): Promise<void> {
 }
 
 /** Deixa o usuário no estado inicial: logável, sem casal, sem exclusão pendente. */
-export async function prepararUsuario(usuario: typeof USUARIO_UM): Promise<void> {
+export async function prepararUsuario(usuario: typeof USUARIO_UM): Promise<string> {
   const token = await entrarOuCadastrar(usuario)
   await rpc(token, 'cancelar_exclusao_conta')
   await rpc(token, 'sair_do_casal')
+  return token
+}
+
+/** Cria um casal para o usuário (fixture de testes que não são sobre parear). */
+export async function criarCasalPara(token: string): Promise<void> {
+  await rpc(token, 'criar_casal')
+}
+
+/**
+ * As tabelas de uma fase já existem no banco? Usado para pular specs com
+ * uma mensagem clara enquanto o Diego ainda não aplicou as migrations.
+ */
+export async function tabelaExiste(token: string, tabela: string): Promise<boolean> {
+  const resposta = await fetch(`${URL_SUPABASE}/rest/v1/${tabela}?select=*&limit=1`, {
+    headers: { apikey: CHAVE_ANON, Authorization: `Bearer ${token}` },
+  })
+  return resposta.ok
 }

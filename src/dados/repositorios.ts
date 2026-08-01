@@ -1,4 +1,12 @@
-import type { Casal, CasalComMembros, Perfil, UsuarioAutenticado } from '../dominio/tipos'
+import type {
+  Casal,
+  CasalComMembros,
+  ItemLista,
+  Lista,
+  Perfil,
+  RefFilme,
+  UsuarioAutenticado,
+} from '../dominio/tipos'
 
 /**
  * Contrato da camada de dados. As telas e hooks só conhecem estas interfaces;
@@ -33,7 +41,24 @@ export interface RepositorioCasal {
   cancelarExclusaoConta(): Promise<void>
 }
 
+export interface RepositorioListas {
+  listas(): Promise<Lista[]>
+  itensDaLista(listaId: string): Promise<ItemLista[]>
+  criarLista(nome: string): Promise<Lista>
+  excluirLista(listaId: string): Promise<void>
+  /**
+   * Adiciona um filme à lista. Antes do INSERT, grava o filme no cache
+   * global via RPC `gravar_filme()` — único caminho de escrita permitido.
+   */
+  adicionarFilme(listaId: string, filme: RefFilme): Promise<void>
+  removerItem(itemId: string): Promise<void>
+  marcarAssistido(itemId: string, assistido: boolean): Promise<void>
+  /** Ids das listas do casal que já contêm este filme. */
+  listasQueContem(tmdbId: number): Promise<string[]>
+}
+
 export interface Repositorios {
   autenticacao: RepositorioAutenticacao
   casal: RepositorioCasal
+  listas: RepositorioListas
 }
