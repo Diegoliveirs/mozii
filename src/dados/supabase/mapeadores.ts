@@ -1,4 +1,13 @@
-import type { Casal, Perfil, RefFilme } from '../../dominio/tipos'
+import type {
+  Casal,
+  Comentario,
+  MetaAtividade,
+  Perfil,
+  Publicacao,
+  Reacao,
+  RefFilme,
+  TipoPublicacao,
+} from '../../dominio/tipos'
 
 /**
  * Tradução linha-do-banco (snake_case) → domínio (camelCase).
@@ -50,5 +59,66 @@ export function paraCasal(linha: LinhaCasal): Casal {
     codigoConvite: linha.codigo_convite,
     dataAniversario: linha.data_aniversario,
     criadoEm: linha.criado_em,
+  }
+}
+
+export interface LinhaPublicacao {
+  id: string
+  autor_id: string
+  tipo: TipoPublicacao
+  corpo: string | null
+  caminho_foto: string | null
+  nota: number | string | null
+  meta_atividade: MetaAtividade | null
+  criado_em: string
+  filmes: LinhaFilme | null
+}
+
+export function paraPublicacao(linha: LinhaPublicacao): Publicacao {
+  return {
+    id: linha.id,
+    autorId: linha.autor_id,
+    tipo: linha.tipo,
+    corpo: linha.corpo,
+    caminhoFoto: linha.caminho_foto,
+    filme: linha.filmes ? paraFilme(linha.filmes) : null,
+    // numeric chega como string do PostgREST; o app trabalha com número.
+    nota: linha.nota === null ? null : Number(linha.nota),
+    metaAtividade: linha.meta_atividade,
+    criadoEm: linha.criado_em,
+  }
+}
+
+interface LinhaComentario {
+  id: string
+  publicacao_id: string
+  autor_id: string
+  corpo: string
+  criado_em: string
+}
+
+export function paraComentario(linha: LinhaComentario): Comentario {
+  return {
+    id: linha.id,
+    publicacaoId: linha.publicacao_id,
+    autorId: linha.autor_id,
+    corpo: linha.corpo,
+    criadoEm: linha.criado_em,
+  }
+}
+
+interface LinhaReacao {
+  id: string
+  publicacao_id: string
+  autor_id: string
+  emoji: string
+}
+
+export function paraReacao(linha: LinhaReacao): Reacao {
+  return {
+    id: linha.id,
+    publicacaoId: linha.publicacao_id,
+    autorId: linha.autor_id,
+    emoji: linha.emoji,
   }
 }

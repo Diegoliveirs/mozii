@@ -1,9 +1,14 @@
 import type {
   Casal,
   CasalComMembros,
+  Comentario,
   ItemLista,
   Lista,
+  MetaAtividade,
+  PaginaDeFeed,
   Perfil,
+  Publicacao,
+  Reacao,
   RefFilme,
   UsuarioAutenticado,
 } from '../dominio/tipos'
@@ -57,8 +62,49 @@ export interface RepositorioListas {
   listasQueContem(tmdbId: number): Promise<string[]>
 }
 
+export interface RepositorioMural {
+  /** Uma página do feed; `cursor` é o `criadoEm` do último item da anterior. */
+  feed(cursor: string | null): Promise<PaginaDeFeed>
+  publicacao(id: string): Promise<Publicacao | null>
+  criarTexto(dados: { corpo: string | null; caminhoFoto: string | null }): Promise<Publicacao>
+  criarAvaliacao(dados: {
+    filme: RefFilme
+    nota: number
+    corpo: string | null
+  }): Promise<Publicacao>
+  editarAvaliacao(id: string, dados: { nota: number; corpo: string | null }): Promise<void>
+  excluirPublicacao(id: string): Promise<void>
+  /**
+   * Atividade gerada NO CLIENTE ("X adicionou Y à lista Z") — decisão de
+   * projeto: o formato pertence ao app, o banco só valida a presença do meta.
+   */
+  registrarAtividade(meta: MetaAtividade): Promise<void>
+  comentarios(publicacaoId: string): Promise<Comentario[]>
+  comentar(publicacaoId: string, corpo: string): Promise<Comentario>
+  /** Reações e contagens em LOTE — uma consulta para o feed inteiro. */
+  reacoesDe(publicacaoIds: string[]): Promise<Reacao[]>
+  contagemComentarios(publicacaoIds: string[]): Promise<Record<string, number>>
+  /** Reagiu com o mesmo emoji de novo = desfaz (toggle). */
+  alternarReacao(publicacaoId: string, emoji: string): Promise<void>
+  /**
+   * Tempo real: chama `aoEvento(tabela)` a cada mudança nas tabelas do
+   * casal. Retorna a função que cancela a inscrição.
+   */
+  subscreverAoCasal(casalId: string, aoEvento: (tabela: string) => void): () => void
+}
+
+export interface RepositorioArquivos {
+  /** Envia a foto (já redimensionada) e retorna o caminho `{casal}/{uuid}.webp`. */
+  enviarFoto(foto: Blob): Promise<string>
+  /** URL assinada temporária para exibir uma foto privada. */
+  urlFoto(caminho: string): Promise<string>
+  apagarFotos(caminhos: string[]): Promise<void>
+}
+
 export interface Repositorios {
   autenticacao: RepositorioAutenticacao
   casal: RepositorioCasal
   listas: RepositorioListas
+  mural: RepositorioMural
+  arquivos: RepositorioArquivos
 }

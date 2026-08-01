@@ -139,4 +139,62 @@ select jobname, schedule from cron.job order by jobname;
 
 ---
 
-_Roteiros das migrations 004–006 serão adicionados nas fases correspondentes._
+## Roteiro da 004_mural.sql
+
+**Status:** ⏳ aguardando aplicação pelo Diego
+**Arquivo:** `supabase/migrations/004_mural.sql`
+
+### Mudanças de sequência (registradas)
+
+Duas coisas previstas para depois entraram nesta migration, por dependência real:
+
+- **Bucket `fotos`** (estava na 005): publicação com foto precisa dele agora.
+- **Publicação realtime** (estava na 006): o tempo real é o coração da Fase 3.
+
+### O que esta migration cria
+
+- `publicacoes` — os 4 tipos do Mural (`texto`, `avaliacao`, `atividade`, `momento`), cada um com CHECK do que exige e proíbe; nota com meia estrela (0.5 a 5); edição limitada a `corpo`/`nota` e só pelo autor.
+- `comentarios` e `reacoes` (emoji livre, `unique` por pessoa+emoji+publicação).
+- Bucket privado `fotos` (50 MB, webp/jpeg/png) com RLS por pasta `{casal_id}/`.
+- Tempo real: `publicacoes`, `comentarios`, `reacoes`, `listas` e `itens_lista` na publication `supabase_realtime` com `replica identity full`.
+
+### Como aplicar
+
+1. SQL Editor → colar `004_mural.sql` inteiro → executar.
+
+### Queries de conferência
+
+```sql
+-- 1. Tabelas novas com RLS (esperado: comentarios, publicacoes, reacoes — todas true)
+select tablename, rowsecurity from pg_tables
+where schemaname = 'public' and tablename in ('publicacoes','comentarios','reacoes')
+order by tablename;
+```
+
+```sql
+-- 2. Policies (esperado: 4 em publicacoes, 3 em comentarios, 3 em reacoes)
+select tablename, count(*) from pg_policies
+where schemaname = 'public' and tablename in ('publicacoes','comentarios','reacoes')
+group by tablename order by tablename;
+```
+
+```sql
+-- 3. Bucket e as 3 policies de storage (esperado: 1 bucket 'fotos' privado + 3 policies fotos_*)
+select id, public from storage.buckets where id = 'fotos';
+select policyname from pg_policies
+where schemaname = 'storage' and policyname like 'fotos_%' order by policyname;
+```
+
+```sql
+-- 4. Tempo real ligado (esperado: 5 tabelas na publication)
+select tablename from pg_publication_tables
+where pubname = 'supabase_realtime' order by tablename;
+```
+
+### Depois de aplicar
+
+- [ ] Avisar no chat que a 004 foi aplicada e as conferências bateram.
+
+---
+
+_Roteiros das migrations 005–006 serão adicionados nas fases correspondentes._

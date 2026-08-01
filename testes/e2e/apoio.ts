@@ -72,7 +72,7 @@ export async function entrarOuCadastrar(usuario: typeof USUARIO_UM): Promise<str
   return dados.access_token
 }
 
-async function rpc(token: string, funcao: string): Promise<void> {
+async function rpc(token: string, funcao: string, argumentos: unknown = {}): Promise<unknown> {
   const resposta = await fetch(`${URL_SUPABASE}/rest/v1/rpc/${funcao}`, {
     method: 'POST',
     headers: {
@@ -80,11 +80,13 @@ async function rpc(token: string, funcao: string): Promise<void> {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: '{}',
+    body: JSON.stringify(argumentos),
   })
   if (!resposta.ok) {
     throw new Error(`rpc ${funcao} falhou: ${await resposta.text()}`)
   }
+  const texto = await resposta.text()
+  return texto ? JSON.parse(texto) : null
 }
 
 /** Deixa o usuário no estado inicial: logável, sem casal, sem exclusão pendente. */
@@ -98,6 +100,16 @@ export async function prepararUsuario(usuario: typeof USUARIO_UM): Promise<strin
 /** Cria um casal para o usuário (fixture de testes que não são sobre parear). */
 export async function criarCasalPara(token: string): Promise<void> {
   await rpc(token, 'criar_casal')
+}
+
+/**
+ * Forma o casal completo: o primeiro cria, o segundo entra com o código.
+ * Os casais das execuções anteriores ficam vazios e o job diário
+ * `limpar-casais-vazios` os recolhe (com as publicações, em cascata).
+ */
+export async function formarCasal(tokenUm: string, tokenDois: string): Promise<void> {
+  const casal = (await rpc(tokenUm, 'criar_casal')) as { codigo_convite: string }
+  await rpc(tokenDois, 'entrar_no_casal', { codigo: casal.codigo_convite })
 }
 
 /**

@@ -109,6 +109,8 @@ export function PaginaLista() {
                   itemId: item.id,
                   listaId: item.listaId,
                   assistido: !item.assistido,
+                  filme: item.filme,
+                  nomeLista: lista?.nome ?? '',
                 })
               }
               className={`rounded-full px-2.5 py-1 text-lg ${

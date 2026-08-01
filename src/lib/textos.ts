@@ -62,7 +62,47 @@ export const textos = {
     titulo: 'Mural',
     juntos: (nomes: string[]) => nomes.join(' ♥ '),
     esperandoPar: 'Seu par ainda não entrou — o código de convite está nos Ajustes.',
-    emBreve: 'O Mural chega na Fase 3. Por enquanto, o espaço de vocês já existe!',
+    vazio: 'O Mural de vocês começa aqui. Publiquem algo! 💜',
+    carregarMais: 'Carregar mais',
+  },
+
+  novo: {
+    titulo: 'Nova publicação',
+    dicaTexto: 'Escreve algo para vocês…',
+    foto: '📷 Foto',
+    removerFoto: 'Remover foto',
+    avaliarFilme: '🎬 Avaliar um filme',
+    trocarFilme: 'Trocar filme',
+    removerFilme: 'Remover filme',
+    notaRotulo: 'Sua nota',
+    publicar: 'Publicar',
+    publicando: 'Publicando…',
+    faltaConteudo: 'Escreva algo, escolha uma foto ou avalie um filme.',
+    faltaNota: 'Toque nas estrelas para dar a nota.',
+  },
+
+  publicacao: {
+    titulo: 'Publicação',
+    comentarios: 'Comentários',
+    comentarDica: 'Comentar…',
+    enviar: 'Enviar',
+    excluir: 'Excluir publicação',
+    excluirConfirmar: 'Excluir esta publicação?',
+    excluirExplicacao: 'Ela some do Mural para vocês dois.',
+    editar: 'Editar avaliação',
+    naoEncontrada: 'Publicação não encontrada.',
+  },
+
+  atividade: {
+    adicionou: (nome: string, filme: string, lista: string) =>
+      `${nome} adicionou ${filme} à lista ${lista}`,
+    assistiu: (nome: string, filme: string) => `${nome} marcou ${filme} como assistido`,
+  },
+
+  reacoes: {
+    rapidas: ['❤️', '😂', '😍', '😮', '😢', '🔥'],
+    reagir: 'Reagir',
+    outroEmoji: 'Outro emoji…',
   },
 
   navegacao: {

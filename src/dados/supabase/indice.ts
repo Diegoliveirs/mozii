@@ -1,7 +1,9 @@
 import type { Repositorios } from '../repositorios'
+import { repositorioArquivosSupabase } from './RepositorioArquivosSupabase'
 import { repositorioAutenticacaoSupabase } from './RepositorioAutenticacaoSupabase'
 import { repositorioCasalSupabase } from './RepositorioCasalSupabase'
 import { repositorioListasSupabase } from './RepositorioListasSupabase'
+import { repositorioMuralSupabase } from './RepositorioMuralSupabase'
 
 /** Fábrica das implementações Supabase — o único ponto de troca de backend. */
 export function criarRepositoriosSupabase(): Repositorios {
@@ -9,5 +11,7 @@ export function criarRepositoriosSupabase(): Repositorios {
     autenticacao: repositorioAutenticacaoSupabase,
     casal: repositorioCasalSupabase,
     listas: repositorioListasSupabase,
+    mural: repositorioMuralSupabase,
+    arquivos: repositorioArquivosSupabase,
   }
 }

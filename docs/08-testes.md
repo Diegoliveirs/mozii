@@ -38,12 +38,14 @@ Unitários (`src/lib/__testes__/`):
 - `ambiente.teste.ts` — detecção de variáveis de ambiente ausentes.
 - `codigo.teste.ts` — normalização do código de convite.
 - `sorteio.teste.ts` — a lógica pura do caça-níquel: sequência circular que termina no vencedor e atrasos crescentes.
+- `datas.teste.ts` — tempo relativo do Mural ("agora", "há 5 min", "ontem", data por extenso).
 
 E2E (`testes/e2e/`):
 
 - `fumaca.spec.ts` — sem sessão, a raiz redireciona para `/entrar` sem erros de console.
 - `fluxo-casal.spec.ts` — a jornada completa: duas janelas, um cria o espaço, o outro erra o código (vê "código inválido"), entra com o certo e o Mural mostra os dois nomes; cadastro com e-mail existente mostra mensagem amigável.
 - `cinema.spec.ts` — Fase 2 inteira: busca real no TMDB ("Cidade de Deus"), página do filme com "Onde assistir", lista criada na folha, marcar/desmarcar assistido, sorteio revelando o filme e limpeza da lista no fim. **Pula com aviso** enquanto as migrations 002/003 não estiverem aplicadas.
+- `mural.spec.ts` — Fase 3: publicar texto, reagir com emoji da fileira rápida, comentar com update otimista, e o **tempo real de verdade**: o par comenta em outra janela e o comentário aparece na primeira sem recarregar. Segundo teste: avaliação com meia estrela (4.5) no Mural. **Pula com aviso** até a 004 ser aplicada.
 - `apoio.ts` — prepara os 2 usuários fixos de teste **usando só a chave anon** (nada de service role): entra-ou-cadastra, cancela exclusão pendente e sai do casal. Exige "Confirm email" desligado no projeto.
 
 > Observação: cada execução deixa um casal vazio para trás (não há RPC para apagar casais). A migration 002 incluirá um job de limpeza de casais sem membros.

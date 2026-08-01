@@ -56,3 +56,48 @@ export interface ItemLista {
   adicionadoPor: string
   criadoEm: string
 }
+
+export type TipoPublicacao = 'texto' | 'avaliacao' | 'atividade' | 'momento'
+
+/** Atividades geradas pelo app ("Diego adicionou Duna à lista Sexta à noite"). */
+export type MetaAtividade = {
+  acao: 'adicionou_na_lista' | 'marcou_assistido'
+  tmdbId: number
+  tituloFilme: string
+  listaId: string
+  nomeLista: string
+}
+
+export interface Publicacao {
+  id: string
+  autorId: string
+  tipo: TipoPublicacao
+  corpo: string | null
+  caminhoFoto: string | null
+  /** Presente quando tipo = 'avaliacao'. */
+  filme: RefFilme | null
+  nota: number | null
+  metaAtividade: MetaAtividade | null
+  criadoEm: string
+}
+
+/** Uma página do feed infinito. */
+export interface PaginaDeFeed {
+  itens: Publicacao[]
+  proximoCursor: string | null
+}
+
+export interface Comentario {
+  id: string
+  publicacaoId: string
+  autorId: string
+  corpo: string
+  criadoEm: string
+}
+
+export interface Reacao {
+  id: string
+  publicacaoId: string
+  autorId: string
+  emoji: string
+}

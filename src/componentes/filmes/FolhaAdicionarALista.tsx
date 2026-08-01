@@ -26,16 +26,16 @@ export function FolhaAdicionarALista({
   const criarLista = useCriarLista()
   const [nomeNova, setNomeNova] = useState('')
 
-  async function aoEscolher(listaId: string) {
+  async function aoEscolher(listaId: string, nomeLista: string) {
     if (contem.data?.includes(listaId)) return
-    await adicionar.mutateAsync({ listaId, filme })
+    await adicionar.mutateAsync({ listaId, filme, nomeLista })
   }
 
   async function aoCriarLista(evento: FormEvent) {
     evento.preventDefault()
     const lista = await criarLista.mutateAsync(nomeNova.trim())
     setNomeNova('')
-    await adicionar.mutateAsync({ listaId: lista.id, filme })
+    await adicionar.mutateAsync({ listaId: lista.id, filme, nomeLista: lista.nome })
   }
 
   return (
@@ -59,7 +59,7 @@ export function FolhaAdicionarALista({
               <li key={lista.id}>
                 <button
                   type="button"
-                  onClick={() => aoEscolher(lista.id)}
+                  onClick={() => aoEscolher(lista.id, lista.nome)}
                   disabled={jaEsta || adicionar.isPending}
                   className="flex w-full items-center justify-between rounded-xl bg-veu px-4 py-3 text-left text-neve disabled:opacity-60"
                 >

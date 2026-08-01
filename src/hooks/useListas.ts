@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRepositorios } from '../dados/ContextoRepositorios'
 import type { RefFilme } from '../dominio/tipos'
+import { chaveFeed } from './useMural'
 
 export const chaveListas = ['listas'] as const
 const chaveItens = (listaId: string) => ['listas', 'itens', listaId] as const
@@ -44,15 +45,28 @@ export function useExcluirLista() {
 }
 
 export function useAdicionarFilme() {
-  const { listas } = useRepositorios()
+  const { listas, mural } = useRepositorios()
   const clienteQuery = useQueryClient()
   return useMutation({
-    mutationFn: ({ listaId, filme }: { listaId: string; filme: RefFilme }) =>
+    mutationFn: ({ listaId, filme }: { listaId: string; filme: RefFilme; nomeLista: string }) =>
       listas.adicionarFilme(listaId, filme),
-    onSuccess: (_resultado, { listaId, filme }) => {
+    onSuccess: async (_resultado, { listaId, filme, nomeLista }) => {
       clienteQuery.invalidateQueries({ queryKey: chaveListas })
       clienteQuery.invalidateQueries({ queryKey: chaveItens(listaId) })
       clienteQuery.invalidateQueries({ queryKey: chaveContem(filme.tmdbId) })
+
+      // Atividade no Mural ("X adicionou Y à lista Z") — gerada no cliente.
+      // Se falhar, a ação principal já valeu: silêncio de propósito.
+      await mural
+        .registrarAtividade({
+          acao: 'adicionou_na_lista',
+          tmdbId: filme.tmdbId,
+          tituloFilme: filme.titulo,
+          listaId,
+          nomeLista,
+        })
+        .then(() => clienteQuery.invalidateQueries({ queryKey: chaveFeed }))
+        .catch(() => {})
     },
   })
 }
@@ -71,14 +85,36 @@ export function useRemoverItem() {
 }
 
 export function useMarcarAssistido() {
-  const { listas } = useRepositorios()
+  const { listas, mural } = useRepositorios()
   const clienteQuery = useQueryClient()
   return useMutation({
-    mutationFn: ({ itemId, assistido }: { itemId: string; assistido: boolean; listaId: string }) =>
-      listas.marcarAssistido(itemId, assistido),
-    onSuccess: (_resultado, { listaId }) => {
+    mutationFn: ({
+      itemId,
+      assistido,
+    }: {
+      itemId: string
+      assistido: boolean
+      listaId: string
+      filme: RefFilme
+      nomeLista: string
+    }) => listas.marcarAssistido(itemId, assistido),
+    onSuccess: async (_resultado, { listaId, assistido, filme, nomeLista }) => {
       clienteQuery.invalidateQueries({ queryKey: chaveListas })
       clienteQuery.invalidateQueries({ queryKey: chaveItens(listaId) })
+
+      // Só o "assistiu" vira atividade; desmarcar é correção, não notícia.
+      if (assistido) {
+        await mural
+          .registrarAtividade({
+            acao: 'marcou_assistido',
+            tmdbId: filme.tmdbId,
+            tituloFilme: filme.titulo,
+            listaId,
+            nomeLista,
+          })
+          .then(() => clienteQuery.invalidateQueries({ queryKey: chaveFeed }))
+          .catch(() => {})
+      }
     },
   })
 }

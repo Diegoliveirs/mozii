@@ -9,7 +9,9 @@ import { PaginaEntrar } from './paginas/PaginaEntrar'
 import { PaginaFilme } from './paginas/PaginaFilme'
 import { PaginaLista } from './paginas/PaginaLista'
 import { PaginaMural } from './paginas/PaginaMural'
+import { PaginaNovaPublicacao } from './paginas/PaginaNovaPublicacao'
 import { PaginaParear } from './paginas/PaginaParear'
+import { PaginaPublicacao } from './paginas/PaginaPublicacao'
 
 /**
  * Mapa de rotas. Aninhamento das guardas:
@@ -27,6 +29,8 @@ export function App() {
         <Route element={<ExigirCasal />}>
           <Route element={<CascaApp />}>
             <Route path="/" element={<PaginaMural />} />
+            <Route path="/novo" element={<PaginaNovaPublicacao />} />
+            <Route path="/publicacao/:publicacaoId" element={<PaginaPublicacao />} />
             <Route path="/cinema" element={<PaginaCinema />} />
             <Route path="/filme/:tmdbId" element={<PaginaFilme />} />
             <Route path="/listas/:listaId" element={<PaginaLista />} />
