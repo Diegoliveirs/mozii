@@ -3,19 +3,17 @@ import type { Favorito, RefFilme } from '../../dominio/tipos'
 import { supabase } from './cliente'
 import { paraFavorito, type LinhaFavorito } from './mapeadores'
 
-async function sessaoAtual(): Promise<{ usuarioId: string; casalId: string }> {
+async function idDoUsuario(): Promise<string> {
   const { data } = await supabase.auth.getSession()
-  const usuarioId = data.session?.user.id
-  if (!usuarioId) throw new Error('sem sessão ativa')
-
-  const perfil = await supabase.from('perfis').select('casal_id').eq('id', usuarioId).single()
-  if (perfil.error) throw perfil.error
-  if (!perfil.data.casal_id) throw new Error('sem casal')
-
-  return { usuarioId, casalId: perfil.data.casal_id }
+  const id = data.session?.user.id
+  if (!id) throw new Error('sem sessão ativa')
+  return id
 }
 
-/** Os até 5 filmes favoritos de cada pessoa (o casal vê os dois). */
+/**
+ * Os até 5 filmes favoritos de cada PESSOA (acompanham a pessoa entre
+ * pareamentos — ver migration 007); o casal vê os dois.
+ */
 export const repositorioFavoritosSupabase: RepositorioFavoritos = {
   async favoritosDe(perfilId: string): Promise<Favorito[]> {
     const { data, error } = await supabase
@@ -36,10 +34,8 @@ export const repositorioFavoritosSupabase: RepositorioFavoritos = {
     })
     if (erroCache) throw erroCache
 
-    const { usuarioId, casalId } = await sessaoAtual()
     const { error } = await supabase.from('favoritos').insert({
-      perfil_id: usuarioId,
-      casal_id: casalId,
+      perfil_id: await idDoUsuario(),
       tmdb_id: filme.tmdbId,
       posicao,
     })

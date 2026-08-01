@@ -13,9 +13,12 @@ import { Poster } from './Poster'
 export function ModalSorteio({
   naoAssistidos,
   aoFechar,
+  aoAgendar,
 }: {
   naoAssistidos: ItemLista[]
   aoFechar: () => void
+  /** "Agendar este!": fecha o ciclo do sorteio marcando a sessão. */
+  aoAgendar: (item: ItemLista) => void
 }) {
   const [fase, setFase] = useState<'rolando' | 'revelado'>('rolando')
   const [indiceExibido, setIndiceExibido] = useState(0)
@@ -97,6 +100,14 @@ export function ModalSorteio({
           >
             {textos.sorteio.verFilme}
           </Link>
+          <button
+            type="button"
+            onClick={() => aoAgendar(item)}
+            disabled={fase === 'rolando'}
+            className="rounded-xl border border-rosa py-3 font-medium text-rosa-suave disabled:opacity-40"
+          >
+            {textos.sessao.agendarDoSorteio}
+          </button>
           <button
             type="button"
             onClick={rolar}

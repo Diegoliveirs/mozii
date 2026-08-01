@@ -47,12 +47,16 @@ export function CartaoPublicacao({
   if (publicacao.tipo === 'atividade' && publicacao.metaAtividade) {
     const meta = publicacao.metaAtividade
     const frase =
-      meta.acao === 'adicionou_na_lista'
-        ? textos.atividade.adicionou(nomeAutor, meta.tituloFilme, meta.nomeLista)
-        : textos.atividade.assistiu(nomeAutor, meta.tituloFilme)
+      meta.acao === 'agendou_sessao'
+        ? textos.atividade.agendou(nomeAutor, meta.tituloFilme, meta.quando)
+        : meta.acao === 'adicionou_na_lista'
+          ? textos.atividade.adicionou(nomeAutor, meta.tituloFilme, meta.nomeLista)
+          : textos.atividade.assistiu(nomeAutor, meta.tituloFilme)
+    const icone =
+      meta.acao === 'agendou_sessao' ? '🍿' : meta.acao === 'adicionou_na_lista' ? '🎬' : '✓'
     return (
       <div className="flex items-center gap-2 px-1 text-sm text-cinza">
-        <span aria-hidden>{meta.acao === 'adicionou_na_lista' ? '🎬' : '✓'}</span>
+        <span aria-hidden>{icone}</span>
         <Link to={`/filme/${meta.tmdbId}`} className="min-w-0 truncate">
           {frase}
         </Link>

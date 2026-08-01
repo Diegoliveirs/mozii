@@ -1,4 +1,5 @@
 import { FeedPublicacoes } from '../componentes/mural/FeedPublicacoes'
+import { CartaoSessao } from '../componentes/sessoes/CartaoSessao'
 import { useCasalComMembros } from '../hooks/useCasal'
 import { textos } from '../lib/textos'
 
@@ -20,6 +21,8 @@ export function PaginaMural() {
           {textos.mural.esperandoPar}
         </p>
       )}
+
+      <CartaoSessao />
 
       <FeedPublicacoes mensagemVazio={textos.mural.vazio} />
     </main>

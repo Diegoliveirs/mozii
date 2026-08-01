@@ -46,6 +46,35 @@ export function rotuloDoDia(dataIso: string, hoje: Date = new Date()): string {
   return format(data, "d 'de' MMMM 'de' yyyy", { locale: ptBR })
 }
 
+/**
+ * Quando a sessão acontece, para humanos: "sábado, 15 de ago · 20h"
+ * (o minuto só aparece quando não é em ponto: "· 20h30").
+ */
+export function formatarQuando(iso: string): string {
+  const data = new Date(iso)
+  const dia = format(data, "EEEE, d 'de' MMM", { locale: ptBR })
+  const minutos = format(data, 'mm')
+  return `${dia} · ${format(data, 'HH')}h${minutos === '00' ? '' : minutos}`
+}
+
+/**
+ * Contagem regressiva do cartão de sessão: "em 3 dias", "em 5 h",
+ * "em 42 min", "é agora! 🍿" — e `null` quando o horário já passou
+ * (o cartão vira o estado "como foi?").
+ */
+export function contagemRegressiva(ateIso: string, agora: Date = new Date()): string | null {
+  const minutos = Math.floor((new Date(ateIso).getTime() - agora.getTime()) / 60_000)
+
+  if (minutos < -1) return null
+  if (minutos <= 1) return 'é agora! 🍿'
+  if (minutos < 60) return `em ${minutos} min`
+
+  const horas = Math.floor(minutos / 60)
+  if (horas < 24) return `em ${horas} h`
+
+  return `em ${Math.floor(horas / 24)} dias`
+}
+
 /** Data de hoje no formato do <input type="date"> (AAAA-MM-DD, fuso local). */
 export function hojeParaCampoData(agora: Date = new Date()): string {
   const mes = String(agora.getMonth() + 1).padStart(2, '0')

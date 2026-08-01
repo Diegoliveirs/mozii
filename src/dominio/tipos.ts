@@ -60,13 +60,21 @@ export interface ItemLista {
 export type TipoPublicacao = 'texto' | 'avaliacao' | 'atividade' | 'momento'
 
 /** Atividades geradas pelo app ("Diego adicionou Duna à lista Sexta à noite"). */
-export type MetaAtividade = {
-  acao: 'adicionou_na_lista' | 'marcou_assistido'
-  tmdbId: number
-  tituloFilme: string
-  listaId: string
-  nomeLista: string
-}
+export type MetaAtividade =
+  | {
+      acao: 'adicionou_na_lista' | 'marcou_assistido'
+      tmdbId: number
+      tituloFilme: string
+      listaId: string
+      nomeLista: string
+    }
+  | {
+      acao: 'agendou_sessao'
+      tmdbId: number
+      tituloFilme: string
+      /** Já formatado para exibição ("sábado, 21 de fev · 20h"). */
+      quando: string
+    }
 
 export interface Publicacao {
   id: string
@@ -119,4 +127,19 @@ export interface Favorito {
   perfilId: string
   filme: RefFilme
   posicao: number
+}
+
+export type StatusSessao = 'agendada' | 'assistida' | 'cancelada'
+
+/** Uma sessão de cinema marcada pelo casal. */
+export interface SessaoCinema {
+  id: string
+  criadoPor: string
+  filme: RefFilme
+  /** Item da lista de origem (concluir marca ele como assistido). */
+  itemListaId: string | null
+  agendadaPara: string
+  observacao: string | null
+  status: StatusSessao
+  criadoEm: string
 }

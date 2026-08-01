@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
 import { ModalSorteio } from '../componentes/filmes/ModalSorteio'
 import { Poster } from '../componentes/filmes/Poster'
+import { ModalAgendarSessao } from '../componentes/sessoes/ModalAgendarSessao'
+import type { ItemLista } from '../dominio/tipos'
 import { useCasalComMembros } from '../hooks/useCasal'
 import {
   useExcluirLista,
@@ -25,6 +27,7 @@ export function PaginaLista() {
   const excluir = useExcluirLista()
   const [sorteioAberto, setSorteioAberto] = useState(false)
   const [confirmandoExclusao, setConfirmandoExclusao] = useState(false)
+  const [agendandoItem, setAgendandoItem] = useState<ItemLista | null>(null)
 
   const lista = listas.data?.find((cada) => cada.id === listaId)
   const naoAssistidos = itens.data?.filter((item) => !item.assistido) ?? []
@@ -120,6 +123,17 @@ export function PaginaLista() {
               ✓
             </button>
 
+            {!item.assistido && (
+              <button
+                type="button"
+                aria-label={`${textos.sessao.modalTitulo}: ${item.filme.titulo}`}
+                onClick={() => setAgendandoItem(item)}
+                className="text-lg"
+              >
+                🍿
+              </button>
+            )}
+
             <button
               type="button"
               aria-label={textos.lista.removerItem}
@@ -141,7 +155,22 @@ export function PaginaLista() {
       </button>
 
       {sorteioAberto && naoAssistidos.length > 0 && (
-        <ModalSorteio naoAssistidos={naoAssistidos} aoFechar={() => setSorteioAberto(false)} />
+        <ModalSorteio
+          naoAssistidos={naoAssistidos}
+          aoFechar={() => setSorteioAberto(false)}
+          aoAgendar={(item) => {
+            setSorteioAberto(false)
+            setAgendandoItem(item)
+          }}
+        />
+      )}
+
+      {agendandoItem && (
+        <ModalAgendarSessao
+          filme={agendandoItem.filme}
+          itemListaId={agendandoItem.id}
+          aoFechar={() => setAgendandoItem(null)}
+        />
       )}
 
       <DialogoConfirmar

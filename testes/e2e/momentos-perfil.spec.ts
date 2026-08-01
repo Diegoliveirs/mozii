@@ -1,5 +1,12 @@
 import { expect, test, type Page } from '@playwright/test'
-import { formarCasal, prepararUsuario, tabelaExiste, USUARIO_DOIS, USUARIO_UM } from './apoio'
+import {
+  colunaExiste,
+  formarCasal,
+  prepararUsuario,
+  tabelaExiste,
+  USUARIO_DOIS,
+  USUARIO_UM,
+} from './apoio'
 
 /**
  * Fase 4 de ponta a ponta: memória com fotos (linha do tempo + espelho no
@@ -22,7 +29,10 @@ const foto = (nome: string) => ({ name: nome, mimeType: 'image/png', buffer: PNG
 test.beforeAll(async () => {
   const tokenUm = await prepararUsuario(USUARIO_UM)
   const tokenDois = await prepararUsuario(USUARIO_DOIS)
-  migracaoAplicada = await tabelaExiste(tokenUm, 'momentos')
+  // Exige a 005 (momentos) E a 007 (favoritos sem casal_id — pessoais).
+  migracaoAplicada =
+    (await tabelaExiste(tokenUm, 'momentos')) &&
+    !(await colunaExiste(tokenUm, 'favoritos', 'casal_id'))
   if (migracaoAplicada) await formarCasal(tokenUm, tokenDois)
 })
 

@@ -19,6 +19,7 @@ const invalidacoesPorTabela: Record<string, string[][]> = {
   itens_lista: [['listas']],
   momentos: [['momentos']],
   favoritos: [['favoritos']],
+  sessoes_cinema: [['sessoes'], ['listas']],
 }
 
 export function useTempoReal() {

@@ -24,6 +24,31 @@ describe('tempoAtras', () => {
   })
 })
 
+describe('contagemRegressiva', () => {
+  it('dias, horas, minutos e o "é agora"', async () => {
+    const { contagemRegressiva } = await import('../datas')
+    const em = (minutos: number) => new Date(agora.getTime() + minutos * 60_000).toISOString()
+    expect(contagemRegressiva(em(3 * 24 * 60), agora)).toBe('em 3 dias')
+    expect(contagemRegressiva(em(5 * 60), agora)).toBe('em 5 h')
+    expect(contagemRegressiva(em(42), agora)).toBe('em 42 min')
+    expect(contagemRegressiva(em(0), agora)).toBe('é agora! 🍿')
+  })
+
+  it('horário passado retorna null (vira o estado "como foi?")', async () => {
+    const { contagemRegressiva } = await import('../datas')
+    const passado = new Date(agora.getTime() - 3600_000).toISOString()
+    expect(contagemRegressiva(passado, agora)).toBeNull()
+  })
+})
+
+describe('formatarQuando', () => {
+  it('dia por extenso com hora compacta', async () => {
+    const { formatarQuando } = await import('../datas')
+    expect(formatarQuando('2026-08-15T20:00:00-03:00')).toBe('sábado, 15 de ago · 20h')
+    expect(formatarQuando('2026-08-15T20:30:00-03:00')).toBe('sábado, 15 de ago · 20h30')
+  })
+})
+
 describe('rotuloDoDia', () => {
   it('hoje, ontem, mesmo ano e ano diferente', async () => {
     const { rotuloDoDia } = await import('../datas')

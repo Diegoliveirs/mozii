@@ -97,6 +97,28 @@ export const textos = {
     adicionou: (nome: string, filme: string, lista: string) =>
       `${nome} adicionou ${filme} à lista ${lista}`,
     assistiu: (nome: string, filme: string) => `${nome} marcou ${filme} como assistido`,
+    agendou: (nome: string, filme: string, quando: string) =>
+      `${nome} agendou ${filme} para ${quando}`,
+  },
+
+  sessao: {
+    agendarBotao: '🍿 Agendar sessão',
+    modalTitulo: 'Agendar sessão',
+    quandoRotulo: 'Quando?',
+    observacaoDica: 'Combinados (ex.: leva pipoca doce) — opcional',
+    agendar: 'Agendar',
+    agendando: 'Agendando…',
+    agendarDoSorteio: 'Agendar este!',
+    cartaoTitulo: 'Sessão marcada',
+    comoFoi: 'E aí, como foi? 🍿',
+    avaliarFilme: 'Avaliar filme',
+    soMarcar: 'Só marcar como assistida',
+    reagendar: 'Reagendar',
+    cancelar: 'Cancelar sessão',
+    cancelarConfirmar: 'Cancelar esta sessão?',
+    cancelarExplicacao: 'O agendamento some para vocês dois; o filme continua nas listas.',
+    calendario: '📅 Adicionar ao calendário',
+    descricaoIcs: 'Sessão de cinema do casal, marcada no Mozii 💜',
   },
 
   compartilhar: {

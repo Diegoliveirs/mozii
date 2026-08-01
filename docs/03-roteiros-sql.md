@@ -248,4 +248,61 @@ where pubname = 'supabase_realtime' order by tablename;
 
 ---
 
-_O roteiro da migration 006 será adicionado na Fase 5._
+## Roteiro da 006_sessoes.sql + 007_favoritos_pessoais.sql (aplicar as duas em sequência)
+
+**Status:** ⏳ aguardando aplicação pelo Diego
+**Arquivos:** `supabase/migrations/006_sessoes.sql` e `007_favoritos_pessoais.sql`
+
+> **Por que a 007 existe:** os E2E expuseram um defeito da 005 — favoritos amarrados ao casal ficavam invisíveis após um novo pareamento, mas ainda bloqueavam filme e posição (os UNIQUE são por pessoa). A 007 remove o `casal_id` e torna os favoritos da pessoa, visíveis ao par pela relação de perfis.
+
+### O que esta migration cria
+
+- `sessoes_cinema` — o compromisso do casal: filme + `agendada_para` + observação; ciclo `agendada` → `assistida`/`cancelada`; **qualquer membro** reagenda/cancela/conclui (UPDATE limitado às colunas do ciclo de vida); `item_lista_id` lembra a lista de origem.
+- RPC `concluir_sessao(sessao, avaliacao?)` — numa transação só: marca `assistida`, vincula a avaliação (se houver) e seta `assistido = true` no item de origem.
+- Tempo real para a tabela.
+
+### Como aplicar
+
+1. SQL Editor → colar `006_sessoes.sql` inteiro → executar.
+2. SQL Editor → colar `007_favoritos_pessoais.sql` inteiro → executar.
+
+### Queries de conferência
+
+```sql
+-- 1. Tabela com RLS (esperado: sessoes_cinema, true)
+select tablename, rowsecurity from pg_tables
+where schemaname = 'public' and tablename = 'sessoes_cinema';
+```
+
+```sql
+-- 2. Policies (esperado: 3) e colunas de UPDATE limitadas (esperado: 5 colunas)
+select policyname from pg_policies
+where schemaname = 'public' and tablename = 'sessoes_cinema' order by policyname;
+select column_name from information_schema.column_privileges
+where table_name = 'sessoes_cinema' and grantee = 'authenticated'
+  and privilege_type = 'UPDATE' order by column_name;
+```
+
+```sql
+-- 3. A RPC existe (esperado: concluir_sessao)
+select proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public' and proname = 'concluir_sessao';
+```
+
+```sql
+-- 4. Tempo real (esperado: 8 tabelas na publication, incluindo sessoes_cinema)
+select tablename from pg_publication_tables
+where pubname = 'supabase_realtime' order by tablename;
+```
+
+```sql
+-- 5. (007) favoritos sem casal_id e com 3 policies novas
+select column_name from information_schema.columns
+where table_name = 'favoritos' order by column_name; -- casal_id NÃO deve aparecer
+select policyname from pg_policies
+where tablename = 'favoritos' order by policyname;   -- esperado: 3
+```
+
+### Depois de aplicar
+
+- [ ] Avisar no chat que a 006 e a 007 foram aplicadas e as conferências bateram.

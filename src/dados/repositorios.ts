@@ -12,6 +12,7 @@ import type {
   Publicacao,
   Reacao,
   RefFilme,
+  SessaoCinema,
   UsuarioAutenticado,
 } from '../dominio/tipos'
 
@@ -132,6 +133,24 @@ export interface RepositorioFavoritos {
   remover(favoritoId: string): Promise<void>
 }
 
+export interface RepositorioSessoes {
+  /** As sessões ainda agendadas, da mais próxima para a mais distante. */
+  agendadas(): Promise<SessaoCinema[]>
+  agendar(dados: {
+    filme: RefFilme
+    agendadaPara: string
+    observacao: string | null
+    itemListaId: string | null
+  }): Promise<SessaoCinema>
+  reagendar(sessaoId: string, agendadaPara: string): Promise<void>
+  cancelar(sessaoId: string): Promise<void>
+  /**
+   * Fecha o ciclo via RPC `concluir_sessao`: marca assistida, vincula a
+   * avaliação (se houver) e seta `assistido` no item de lista de origem.
+   */
+  concluir(sessaoId: string, publicacaoAvaliacaoId: string | null): Promise<void>
+}
+
 export interface Repositorios {
   autenticacao: RepositorioAutenticacao
   casal: RepositorioCasal
@@ -140,4 +159,5 @@ export interface Repositorios {
   arquivos: RepositorioArquivos
   momentos: RepositorioMomentos
   favoritos: RepositorioFavoritos
+  sessoes: RepositorioSessoes
 }

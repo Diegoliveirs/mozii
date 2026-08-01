@@ -4,7 +4,7 @@ import type { Publicacao } from '../dominio/tipos'
 import { useListas } from './useListas'
 
 /**
- * Estatísticas do perfil estilo Letterboxd, calculadas NO CLIENTE a partir
+ * Estatísticas do perfil, calculadas NO CLIENTE a partir
  * das avaliações da pessoa — volume de um casal cabe numa consulta.
  */
 export interface EstatisticasPerfil {

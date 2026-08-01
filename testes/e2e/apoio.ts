@@ -89,12 +89,39 @@ async function rpc(token: string, funcao: string, argumentos: unknown = {}): Pro
   return texto ? JSON.parse(texto) : null
 }
 
-/** Deixa o usuário no estado inicial: logável, sem casal, sem exclusão pendente. */
+function idDoToken(token: string): string {
+  const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString())
+  return payload.sub
+}
+
+/**
+ * Deixa o usuário no estado inicial: logável, sem casal, sem exclusão
+ * pendente e sem favoritos (que são pessoais e sobrevivem entre casais).
+ */
 export async function prepararUsuario(usuario: typeof USUARIO_UM): Promise<string> {
   const token = await entrarOuCadastrar(usuario)
   await rpc(token, 'cancelar_exclusao_conta')
   await rpc(token, 'sair_do_casal')
+
+  // Melhor esforço: a tabela pode ainda não existir nas fases iniciais.
+  await fetch(`${URL_SUPABASE}/rest/v1/favoritos?perfil_id=eq.${idDoToken(token)}`, {
+    method: 'DELETE',
+    headers: { apikey: CHAVE_ANON, Authorization: `Bearer ${token}` },
+  }).catch(() => {})
+
   return token
+}
+
+/** A coluna existe na tabela? (para pular specs até uma migration corretiva.) */
+export async function colunaExiste(
+  token: string,
+  tabela: string,
+  coluna: string,
+): Promise<boolean> {
+  const resposta = await fetch(`${URL_SUPABASE}/rest/v1/${tabela}?select=${coluna}&limit=1`, {
+    headers: { apikey: CHAVE_ANON, Authorization: `Bearer ${token}` },
+  })
+  return resposta.ok
 }
 
 /** Cria um casal para o usuário (fixture de testes que não são sobre parear). */

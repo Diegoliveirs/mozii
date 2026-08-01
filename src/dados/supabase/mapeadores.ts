@@ -8,6 +8,8 @@ import type {
   Publicacao,
   Reacao,
   RefFilme,
+  SessaoCinema,
+  StatusSessao,
   TipoPublicacao,
 } from '../../dominio/tipos'
 
@@ -142,6 +144,30 @@ export function paraFavorito(linha: LinhaFavorito): Favorito {
     perfilId: linha.perfil_id,
     posicao: linha.posicao,
     filme: paraFilme(linha.filmes),
+  }
+}
+
+export interface LinhaSessao {
+  id: string
+  criado_por: string
+  item_lista_id: string | null
+  agendada_para: string
+  observacao: string | null
+  status: StatusSessao
+  criado_em: string
+  filmes: LinhaFilme
+}
+
+export function paraSessao(linha: LinhaSessao): SessaoCinema {
+  return {
+    id: linha.id,
+    criadoPor: linha.criado_por,
+    filme: paraFilme(linha.filmes),
+    itemListaId: linha.item_lista_id,
+    agendadaPara: linha.agendada_para,
+    observacao: linha.observacao,
+    status: linha.status,
+    criadoEm: linha.criado_em,
   }
 }
 

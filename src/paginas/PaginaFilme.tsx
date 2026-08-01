@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { urlBackdrop, urlLogoProvedor } from '../api/tmdb'
 import { Poster } from '../componentes/filmes/Poster'
 import { FolhaAdicionarALista } from '../componentes/filmes/FolhaAdicionarALista'
+import { ModalAgendarSessao } from '../componentes/sessoes/ModalAgendarSessao'
 import { useFilmeTmdb, useOndeAssistir } from '../hooks/useTmdb'
 import { textos } from '../lib/textos'
 
@@ -13,6 +14,7 @@ export function PaginaFilme() {
   const filme = useFilmeTmdb(id)
   const ondeAssistir = useOndeAssistir(id)
   const [folhaAberta, setFolhaAberta] = useState(false)
+  const [agendando, setAgendando] = useState(false)
 
   if (filme.isLoading) {
     return <main className="px-5 pt-8 text-cinza">{textos.comuns.carregando}</main>
@@ -76,6 +78,14 @@ export function PaginaFilme() {
           {textos.filme.adicionarALista}
         </button>
 
+        <button
+          type="button"
+          onClick={() => setAgendando(true)}
+          className="mt-2 w-full rounded-xl border border-rosa py-3 font-medium text-rosa-suave"
+        >
+          {textos.sessao.agendarBotao}
+        </button>
+
         {/* Onde assistir (região BR) — atribuição JustWatch exigida pelo TMDB */}
         <section className="mt-6 pb-8">
           <h2 className="font-medium text-neve">{textos.filme.ondeAssistir}</h2>
@@ -114,6 +124,19 @@ export function PaginaFilme() {
           )}
         </section>
       </div>
+
+      {agendando && (
+        <ModalAgendarSessao
+          filme={{
+            tmdbId: dados.tmdbId,
+            titulo: dados.titulo,
+            caminhoPoster: dados.caminhoPoster,
+            anoLancamento: dados.anoLancamento,
+          }}
+          itemListaId={null}
+          aoFechar={() => setAgendando(false)}
+        />
+      )}
 
       {folhaAberta && (
         <FolhaAdicionarALista

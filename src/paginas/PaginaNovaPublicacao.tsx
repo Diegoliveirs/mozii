@@ -1,27 +1,37 @@
 import { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { FolhaBuscarFilme } from '../componentes/filmes/FolhaBuscarFilme'
 import { Poster } from '../componentes/filmes/Poster'
 import { EstrelasNota } from '../componentes/mural/EstrelasNota'
 import { useRepositorios } from '../dados/ContextoRepositorios'
 import type { RefFilme } from '../dominio/tipos'
 import { useCriarAvaliacao, useCriarTexto } from '../hooks/useMural'
+import { useConcluirSessao } from '../hooks/useSessoes'
 import { redimensionarFoto } from '../lib/imagem'
 import { textos } from '../lib/textos'
+
+/** O cartão de sessão navega para cá com o filme e a sessão a concluir. */
+interface EstadoDeSessao {
+  filme?: RefFilme
+  sessaoId?: string
+}
 
 /**
  * O composer do Mural: texto e/ou foto — ou uma avaliação, quando um
  * filme é escolhido (aí a nota vira obrigatória e a foto sai de cena).
+ * Vindo do "E aí, como foi?", publicar a avaliação também conclui a sessão.
  */
 export function PaginaNovaPublicacao() {
   const navegar = useNavigate()
+  const estado = (useLocation().state ?? {}) as EstadoDeSessao
   const { arquivos } = useRepositorios()
   const criarTexto = useCriarTexto()
   const criarAvaliacao = useCriarAvaliacao()
+  const concluirSessao = useConcluirSessao()
 
   const [corpo, setCorpo] = useState('')
   const [foto, setFoto] = useState<File | null>(null)
-  const [filme, setFilme] = useState<RefFilme | null>(null)
+  const [filme, setFilme] = useState<RefFilme | null>(estado.filme ?? null)
   const [nota, setNota] = useState(0)
   const [buscaAberta, setBuscaAberta] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
@@ -41,7 +51,15 @@ export function PaginaNovaPublicacao() {
       }
       setPublicando(true)
       try {
-        await criarAvaliacao.mutateAsync({ filme, nota, corpo: texto })
+        const avaliacao = await criarAvaliacao.mutateAsync({ filme, nota, corpo: texto })
+        // Veio do "E aí, como foi?": a avaliação conclui a sessão
+        // (assistida + assistido na lista de origem, numa transação só).
+        if (estado.sessaoId) {
+          await concluirSessao.mutateAsync({
+            sessaoId: estado.sessaoId,
+            publicacaoAvaliacaoId: avaliacao.id,
+          })
+        }
         navegar('/', { replace: true })
       } catch {
         setErro(textos.comuns.erroInesperado)

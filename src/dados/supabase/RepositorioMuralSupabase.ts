@@ -203,29 +203,36 @@ export const repositorioMuralSupabase: RepositorioMural = {
   },
 
   subscreverAoCasal(casalId, aoEvento) {
-    // Um canal por casal. `publicacoes` e `listas` têm casal_id e ganham
-    // filtro; as demais não têm a coluna — a RLS de SELECT escopa a entrega.
-    const canal = supabase.channel(`casal-${casalId}`)
+    // UM CANAL POR TABELA, de propósito: num canal compartilhado, uma única
+    // tabela com problema (ex.: migration ainda não aplicada) derruba TODAS
+    // as inscrições juntas — isso mordeu duas vezes durante o desenvolvimento.
+    // Tabelas com casal_id ganham filtro; nas demais a RLS escopa a entrega.
+    // `favoritos` não tem casal_id (é pessoal, migration 007): sem filtro.
+    const tabelasComFiltro = ['publicacoes', 'listas', 'momentos', 'sessoes_cinema']
+    const tabelasSemFiltro = ['comentarios', 'reacoes', 'itens_lista', 'favoritos']
 
-    const tabelasComFiltro = ['publicacoes', 'listas', 'momentos', 'favoritos']
-    const tabelasSemFiltro = ['comentarios', 'reacoes', 'itens_lista']
+    const canais = [
+      ...tabelasComFiltro.map((tabela) =>
+        supabase
+          .channel(`casal-${casalId}-${tabela}`)
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: tabela, filter: `casal_id=eq.${casalId}` },
+            () => aoEvento(tabela),
+          ),
+      ),
+      ...tabelasSemFiltro.map((tabela) =>
+        supabase
+          .channel(`casal-${casalId}-${tabela}`)
+          .on('postgres_changes', { event: '*', schema: 'public', table: tabela }, () =>
+            aoEvento(tabela),
+          ),
+      ),
+    ]
 
-    for (const tabela of tabelasComFiltro) {
-      canal.on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: tabela, filter: `casal_id=eq.${casalId}` },
-        () => aoEvento(tabela),
-      )
-    }
-    for (const tabela of tabelasSemFiltro) {
-      canal.on('postgres_changes', { event: '*', schema: 'public', table: tabela }, () =>
-        aoEvento(tabela),
-      )
-    }
-
-    canal.subscribe()
+    for (const canal of canais) canal.subscribe()
     return () => {
-      void supabase.removeChannel(canal)
+      for (const canal of canais) void supabase.removeChannel(canal)
     }
   },
 }
