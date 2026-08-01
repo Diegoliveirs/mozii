@@ -89,7 +89,7 @@ where tgrelid = 'public.perfis'::regclass and not tgisinternal;
 
 ## Roteiro da 002_filmes.sql + 003_listas.sql (aplicar as duas em sequência)
 
-**Status:** ⏳ aguardando aplicação pelo Diego
+**Status:** ✅ aplicadas pelo Diego em 2026-08-01 — conferências ok
 **Arquivos:** `supabase/migrations/002_filmes.sql` e `003_listas.sql`
 
 ### O que criam

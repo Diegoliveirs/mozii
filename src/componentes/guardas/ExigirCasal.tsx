@@ -3,9 +3,12 @@ import { useMeuPerfil } from '../../hooks/useCasal'
 
 /** O app só existe dentro de um casal: sem `casalId`, vai parear primeiro. */
 export function ExigirCasal() {
-  const { data: perfil, isLoading } = useMeuPerfil()
+  const { data: perfil, isPending } = useMeuPerfil()
 
-  if (isLoading) return null
+  // isPending (e não isLoading): enquanto a sessão não resolve, a query do
+  // perfil fica DESABILITADA — e query desabilitada tem isLoading = false.
+  // Com isLoading, a guarda expulsava para /parear antes de o perfil chegar.
+  if (isPending) return null
   if (!perfil?.casalId) return <Navigate to="/parear" replace />
   return <Outlet />
 }

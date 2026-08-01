@@ -49,7 +49,8 @@ test('buscar filme, montar lista, marcar assistido e sortear', async ({ page }) 
   await page.getByRole('link', { name: 'Cinema' }).click()
   await page.getByRole('tab', { name: 'Listas' }).click()
   await page.getByRole('link', { name: /Para ver juntos/ }).click()
-  await expect(page.getByRole('link', { name: 'Cidade de Deus' })).toBeVisible()
+  // Pôster e título são dois links para o mesmo filme — basta o primeiro.
+  await expect(page.getByRole('link', { name: 'Cidade de Deus' }).first()).toBeVisible()
   await expect(page.getByText('0 de 1 assistidos')).toBeVisible()
 
   // Marcar assistido: sorteio desabilita e aparece a celebração
