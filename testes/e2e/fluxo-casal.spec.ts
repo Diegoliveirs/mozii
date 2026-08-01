@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { prepararUsuario, USUARIO_DOIS, USUARIO_UM } from './apoio'
+import { prepararUsuario, USUARIO_DOIS, USUARIO_TRES, USUARIO_UM } from './apoio'
 
 /**
  * O teste mais importante da Fase 1: a jornada completa do casal.
@@ -9,6 +9,7 @@ import { prepararUsuario, USUARIO_DOIS, USUARIO_UM } from './apoio'
 test.beforeAll(async () => {
   await prepararUsuario(USUARIO_UM)
   await prepararUsuario(USUARIO_DOIS)
+  await prepararUsuario(USUARIO_TRES)
 })
 
 async function entrarPelaTela(pagina: Page, usuario: typeof USUARIO_UM) {
@@ -36,7 +37,9 @@ test('o casal se forma: um cria o espaço, o outro entra com o código', async (
   // Sozinho no espaço: a dica do código aparece.
   await expect(paginaUm.getByText('Seu par ainda não entrou', { exact: false })).toBeVisible()
 
-  // ── Pessoa Dois: código errado primeiro, depois o certo ─────────────
+  // ── Pessoa Dois entra com o código certo ────────────────────────────
+  // (o código ERRADO é testado à parte, com um usuário dedicado — o
+  // rate-limit é por usuário e não pode bloquear a Pessoa Dois aqui)
   const contextoDois = await browser.newContext()
   const paginaDois = await contextoDois.newPage()
 
@@ -44,10 +47,6 @@ test('o casal se forma: um cria o espaço, o outro entra com o código', async (
   await expect(paginaDois.getByRole('heading', { name: 'Falta uma pessoa 💜' })).toBeVisible()
 
   const campoCodigo = paginaDois.getByLabel('Código de convite')
-  await campoCodigo.fill('ZZZZZ9')
-  await paginaDois.getByRole('button', { name: 'Entrar no espaço' }).click()
-  await expect(paginaDois.getByText('Código inválido', { exact: false })).toBeVisible()
-
   await campoCodigo.fill(codigo)
   await paginaDois.getByRole('button', { name: 'Entrar no espaço' }).click()
 
@@ -63,6 +62,22 @@ test('o casal se forma: um cria o espaço, o outro entra com o código', async (
 
   await contextoUm.close()
   await contextoDois.close()
+})
+
+test('código de convite inválido é recusado', async ({ browser }) => {
+  const contexto = await browser.newContext()
+  const pagina = await contexto.newPage()
+
+  await entrarPelaTela(pagina, USUARIO_TRES)
+  await expect(pagina.getByRole('heading', { name: 'Falta uma pessoa 💜' })).toBeVisible()
+
+  await pagina.getByLabel('Código de convite').fill('ZZZZZ9')
+  await pagina.getByRole('button', { name: 'Entrar no espaço' }).click()
+  // "Código inválido" ou, após muitas rodadas seguidas, o próprio
+  // rate-limit — as duas mensagens provam a proteção funcionando.
+  await expect(pagina.getByText(/Código inválido|muitas tentativas/)).toBeVisible()
+
+  await contexto.close()
 })
 
 test('cadastro pela tela leva ao pareamento', async ({ browser }) => {

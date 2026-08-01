@@ -29,6 +29,7 @@ describe('contagemRegressiva', () => {
     const { contagemRegressiva } = await import('../datas')
     const em = (minutos: number) => new Date(agora.getTime() + minutos * 60_000).toISOString()
     expect(contagemRegressiva(em(3 * 24 * 60), agora)).toBe('em 3 dias')
+    expect(contagemRegressiva(em(27 * 60), agora)).toBe('em 1 dia')
     expect(contagemRegressiva(em(5 * 60), agora)).toBe('em 5 h')
     expect(contagemRegressiva(em(42), agora)).toBe('em 42 min')
     expect(contagemRegressiva(em(0), agora)).toBe('é agora! 🍿')

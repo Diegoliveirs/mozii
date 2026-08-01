@@ -17,8 +17,8 @@
 | 003 | `003_listas.sql`             | listas e itens                                                                         | ✅ aplicada (2026-08-01) |
 | 004 | `004_mural.sql`              | publicações, comentários, reações, **bucket fotos** e **realtime** (antecipados)       | ✅ aplicada (2026-08-01) |
 | 005 | `005_momentos.sql`           | momentos, favoritos                                                                    | ✅ aplicada (2026-08-01) |
-| 006 | `006_sessoes.sql`            | sessões de cinema + RPC `concluir_sessao`                                              | ✍️ escrita               |
-| 007 | `007_favoritos_pessoais.sql` | favoritos passam a ser da pessoa (defeito da 005 achado pelos E2E)                     | ✍️ escrita               |
+| 006 | `006_sessoes.sql`            | sessões de cinema + RPC `concluir_sessao`                                              | ✅ aplicada (2026-08-01) |
+| 007 | `007_favoritos_pessoais.sql` | favoritos passam a ser da pessoa (defeito da 005 achado pelos E2E)                     | ✅ aplicada (2026-08-01) |
 
 ## Schema atual (após a 001)
 

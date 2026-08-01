@@ -250,7 +250,7 @@ where pubname = 'supabase_realtime' order by tablename;
 
 ## Roteiro da 006_sessoes.sql + 007_favoritos_pessoais.sql (aplicar as duas em sequência)
 
-**Status:** ⏳ aguardando aplicação pelo Diego
+**Status:** ✅ aplicadas pelo Diego em 2026-08-01 — conferências ok
 **Arquivos:** `supabase/migrations/006_sessoes.sql` e `007_favoritos_pessoais.sql`
 
 > **Por que a 007 existe:** os E2E expuseram um defeito da 005 — favoritos amarrados ao casal ficavam invisíveis após um novo pareamento, mas ainda bloqueavam filme e posição (os UNIQUE são por pessoa). A 007 remove o `casal_id` e torna os favoritos da pessoa, visíveis ao par pela relação de perfis.

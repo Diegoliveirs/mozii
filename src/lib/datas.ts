@@ -72,7 +72,8 @@ export function contagemRegressiva(ateIso: string, agora: Date = new Date()): st
   const horas = Math.floor(minutos / 60)
   if (horas < 24) return `em ${horas} h`
 
-  return `em ${Math.floor(horas / 24)} dias`
+  const dias = Math.floor(horas / 24)
+  return dias === 1 ? 'em 1 dia' : `em ${dias} dias`
 }
 
 /** Data de hoje no formato do <input type="date"> (AAAA-MM-DD, fuso local). */

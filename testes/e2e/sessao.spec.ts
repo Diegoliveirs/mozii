@@ -58,8 +58,8 @@ test('agendar: cartão com contagem regressiva, atividade, .ics e cancelar', asy
   // Cartão no topo do Mural
   await page.getByRole('link', { name: 'Mural' }).click()
   await expect(page.getByText('Sessão marcada')).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Cidade de Deus' })).toBeVisible()
-  await expect(page.getByText(/em \d+ h/)).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Cidade de Deus', exact: true })).toBeVisible()
+  await expect(page.getByText(/em \d+ (min|h|dias?)/)).toBeVisible()
   await expect(page.getByText('leva pipoca doce')).toBeVisible()
 
   // Atividade no feed

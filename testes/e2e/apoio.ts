@@ -35,6 +35,16 @@ export const USUARIO_DOIS = {
   senha: 'senha-e2e-mozii-2',
   nome: 'Pessoa Dois',
 }
+/**
+ * Usuário SÓ para errar código de convite: o rate-limit é por usuário, e
+ * cada tentativa inválida gasta o orçamento (5/15min). Isolando as falhas
+ * aqui, os usuários Um e Dois nunca são bloqueados nos outros specs.
+ */
+export const USUARIO_TRES = {
+  email: 'e2e.tres@mozii.test',
+  senha: 'senha-e2e-mozii-3',
+  nome: 'Pessoa Três',
+}
 
 async function chamarAuth(caminho: string, corpo: unknown): Promise<Response> {
   return fetch(`${URL_SUPABASE}/auth/v1/${caminho}`, {

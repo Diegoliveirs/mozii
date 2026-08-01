@@ -16,7 +16,7 @@ Estado de cada função do app. Uma feature só muda para ✅ com esta página a
 | 10  | Cartão de compartilhar (Stories 1080×1920, 3 temas)      | 4    | ✅     |
 | 11  | Tempo real (mudanças do par sem recarregar)              | 3    | ✅     |
 | 12  | Ajustes (nome, avatar, sair, excluir conta com carência) | 1/4  | ✅     |
-| 13  | **Sessão de cinema agendada** (nova)                     | 5    | 🔜     |
+| 13  | **Sessão de cinema agendada** (nova)                     | 5    | ✅     |
 
 ## Detalhes por feature
 
@@ -46,8 +46,6 @@ Pedir exclusão grava `exclusao_solicitada_em`; um job do pg_cron apaga a conta 
 
 **Momentos**: diário do casal com linha do tempo agrupada por dia e ordenada por `aconteceu_em` (data retroativa permitida); memórias com várias fotos (lightbox com teclado e contador), marcos de aniversário calculados a partir da data guardada no casal, e espelho no Mural com desfazer atômico. **Perfil**: seletor entre os dois, 4 estatísticas calculadas no cliente, 5 favoritos por pessoa (limite estrutural no banco), avaliações recentes, histograma de notas e as "Pegadas". **Cartão**: 1080×1920 desenhado em canvas puro com 3 temas, estrelas fracionárias, validação de blob em branco e Web Share com fallback de download. Avatar (400px WebP) editável nos Ajustes.
 
-### 13. Sessão de cinema agendada (desenho aprovado)
+### 13. Sessão de cinema agendada (entregue na Fase 5)
 
-O casal agenda um filme para uma data/hora: pela página do filme, pelo item da lista ou direto do resultado do sorteio ("Agendar este!"). Um cartão fixo no topo do Mural mostra o pôster e a contagem regressiva. Passado o horário, vira "E aí, como foi? 🍿" com atalho para avaliar (a avaliação conclui a sessão e marca o filme como assistido na lista de origem). Lembrete via "Adicionar ao calendário" (`.ics`). Detalhes no plano aprovado e na futura migration 006.
-
-_As demais features serão detalhadas aqui quando forem entregues, nas suas fases._
+O casal agenda um filme para uma data/hora por três caminhos: página do filme, botão 🍿 no item da lista ou "Agendar este!" no resultado do sorteio. Um cartão fixo no topo do Mural mostra o pôster, os combinados e a **contagem regressiva ao vivo** ("em 3 dias" → "em 5 h" → "é agora! 🍿"); dali saem o "Adicionar ao calendário" (`.ics` com alarme de 30 min — o calendário do celular lembra, zero infra), reagendar e cancelar. Passado o horário, o cartão vira **"E aí, como foi? 🍿"**: avaliar abre o composer pré-preenchido e publicar chama a RPC `concluir_sessao` (assistida + vínculo com a avaliação + `assistido` no item de origem, numa transação); ou "só marcar como assistida". Agendar publica a atividade no Mural, e o tempo real leva tudo ao par. Reagendar/cancelar/concluir é ação de **qualquer membro**, não só de quem criou.
