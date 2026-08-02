@@ -2,6 +2,10 @@ import { useRef, useState, type FormEvent } from 'react'
 import { useCriarMomento } from '../../hooks/useMomentos'
 import { hojeParaCampoData } from '../../lib/datas'
 import { textos } from '../../lib/textos'
+import { Botao } from '../ui/Botao'
+import { AreaTexto } from '../ui/Campo'
+import { FolhaBase } from '../ui/FolhaBase'
+import { IconeFoto } from '../ui/icones'
 
 /** Folha para registrar uma memória: fotos + legenda + quando aconteceu. */
 export function FolhaNovaMemoria({ aoFechar }: { aoFechar: () => void }) {
@@ -31,27 +35,15 @@ export function FolhaNovaMemoria({ aoFechar }: { aoFechar: () => void }) {
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-abismo/80"
-      role="dialog"
-      aria-modal="true"
-      aria-label={textos.momentos.nova}
-      onClick={aoFechar}
-    >
-      <form
-        onSubmit={aoSalvar}
-        className="entrada-folha w-full max-w-md rounded-t-2xl bg-cartao p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
-        onClick={(evento) => evento.stopPropagation()}
-      >
-        <h2 className="font-voz text-xl text-neve">{textos.momentos.nova}</h2>
-
-        <textarea
+    <FolhaBase rotulo={textos.momentos.nova} titulo={textos.momentos.nova} aoFechar={aoFechar}>
+      <form onSubmit={aoSalvar}>
+        <AreaTexto
           rows={3}
           maxLength={2000}
           placeholder={textos.momentos.legendaDica}
           value={legenda}
           onChange={(evento) => setLegenda(evento.target.value)}
-          className="mt-4 w-full resize-none rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none placeholder:text-cinza focus:border-rosa"
+          className="mt-4 resize-none"
         />
 
         <label className="mt-3 flex items-center gap-3 text-sm text-nevoa">
@@ -62,18 +54,15 @@ export function FolhaNovaMemoria({ aoFechar }: { aoFechar: () => void }) {
             max={hojeParaCampoData()}
             value={data}
             onChange={(evento) => setData(evento.target.value)}
-            className="rounded-xl border border-linha bg-veu px-3 py-2 text-neve outline-none focus:border-rosa"
+            className="rounded-xl border border-linha bg-veu px-3 py-2 text-neve outline-none transition-colors focus:border-rosa"
           />
         </label>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => campoFotos.current?.click()}
-            className="rounded-xl border border-linha-forte px-4 py-2.5 text-sm text-nevoa"
-          >
+          <Botao variante="fantasma" onClick={() => campoFotos.current?.click()} className="py-2.5">
+            <IconeFoto size={17} aria-hidden />
             {textos.momentos.fotosRotulo}
-          </button>
+          </Botao>
           <input
             ref={campoFotos}
             type="file"
@@ -92,16 +81,12 @@ export function FolhaNovaMemoria({ aoFechar }: { aoFechar: () => void }) {
           ))}
         </div>
 
-        {erro && <p className="mt-3 text-sm text-rosa-suave">{erro}</p>}
+        {erro && <p className="mt-3 text-sm text-erro">{erro}</p>}
 
-        <button
-          type="submit"
-          disabled={criar.isPending}
-          className="mt-4 w-full rounded-xl bg-rosa py-3 font-medium text-neve disabled:opacity-60"
-        >
-          {criar.isPending ? textos.momentos.salvando : textos.momentos.salvar}
-        </button>
+        <Botao type="submit" carregando={criar.isPending} className="mt-4 w-full">
+          {textos.momentos.salvar}
+        </Botao>
       </form>
-    </div>
+    </FolhaBase>
   )
 }

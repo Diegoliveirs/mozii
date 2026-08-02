@@ -8,6 +8,7 @@ import { HistogramaNotas } from '../componentes/perfil/HistogramaNotas'
 import { useAutenticacao } from '../hooks/useAutenticacao'
 import { useCasalComMembros } from '../hooks/useCasal'
 import { useAvaliacoesDe, useEstatisticasPerfil } from '../hooks/usePerfilCinefilo'
+import { IconeAjustes, IconePegadas } from '../componentes/ui/icones'
 import { textos } from '../lib/textos'
 
 /**
@@ -35,9 +36,15 @@ export function PaginaPerfil() {
   return (
     <main className="area-segura-topo px-5 pt-8 pb-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-voz text-3xl text-neve">{textos.perfil.titulo}</h1>
-        <Link to="/ajustes" aria-label={textos.ajustes.titulo} className="text-xl">
-          ⚙️
+        <h1 className="font-voz text-3xl font-semibold tracking-tight text-neve">
+          {textos.perfil.titulo}
+        </h1>
+        <Link
+          to="/ajustes"
+          aria-label={textos.ajustes.titulo}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-veu text-nevoa transition-transform active:scale-90"
+        >
+          <IconeAjustes size={19} aria-hidden />
         </Link>
       </div>
 
@@ -71,8 +78,8 @@ export function PaginaPerfil() {
               [estatisticas.listasCriadas, textos.perfil.stats.listas],
             ] as const
           ).map(([valor, rotulo]) => (
-            <div key={rotulo} className="rounded-xl bg-cartao p-3">
-              <p className="text-xl font-medium text-neve">{valor}</p>
+            <div key={rotulo} className="rounded-xl border border-linha bg-cartao p-3">
+              <p className="font-voz text-xl font-semibold text-neve">{valor}</p>
               <p className="mt-0.5 text-[11px] leading-tight text-cinza">{rotulo}</p>
             </div>
           ))}
@@ -82,8 +89,10 @@ export function PaginaPerfil() {
       <FavoritosFileira perfilId={perfilExibido.id} editavel={souEu} />
 
       {/* Avaliações recentes */}
-      <section className="mt-6">
-        <h2 className="font-medium text-neve">{textos.perfil.avaliacoesRecentes}</h2>
+      <section className="mt-7">
+        <h2 className="text-xs font-medium tracking-wide text-rosa-suave uppercase">
+          {textos.perfil.avaliacoesRecentes}
+        </h2>
         {avaliacoes.data?.length === 0 && (
           <p className="mt-2 text-sm text-cinza">{textos.perfil.semAvaliacoes}</p>
         )}
@@ -113,8 +122,9 @@ export function PaginaPerfil() {
       )}
 
       {/* Feed pessoal */}
-      <section className="mt-6">
-        <h2 className="font-medium text-neve">
+      <section className="mt-7">
+        <h2 className="flex items-center gap-1.5 text-xs font-medium tracking-wide text-rosa-suave uppercase">
+          <IconePegadas size={14} aria-hidden />
           {souEu ? textos.perfil.pegadas : textos.perfil.pegadasDe(perfilExibido.nomeExibicao)}
         </h2>
         <FeedPublicacoes autorId={perfilExibido.id} mensagemVazio={textos.perfil.semAvaliacoes} />

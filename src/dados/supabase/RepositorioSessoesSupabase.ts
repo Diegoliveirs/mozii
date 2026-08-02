@@ -30,6 +30,17 @@ export const repositorioSessoesSupabase: RepositorioSessoes = {
     return (data as unknown as LinhaSessao[]).map(paraSessao)
   },
 
+  async concluidas(limite: number): Promise<SessaoCinema[]> {
+    const { data, error } = await supabase
+      .from('sessoes_cinema')
+      .select(COLUNAS)
+      .eq('status', 'concluida')
+      .order('agendada_para', { ascending: false })
+      .limit(limite)
+    if (error) throw error
+    return (data as unknown as LinhaSessao[]).map(paraSessao)
+  },
+
   async agendar({ filme, agendadaPara, observacao, itemListaId }): Promise<SessaoCinema> {
     const { error: erroCache } = await supabase.rpc('gravar_filme', {
       p_tmdb_id: filme.tmdbId,

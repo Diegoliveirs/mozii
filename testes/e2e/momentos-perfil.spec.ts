@@ -41,7 +41,7 @@ async function entrar(pagina: Page, usuario: typeof USUARIO_UM) {
   await pagina.getByLabel('E-mail').fill(usuario.email)
   await pagina.getByLabel('Senha', { exact: true }).fill(usuario.senha)
   await pagina.getByRole('button', { name: 'Entrar', exact: true }).click()
-  await expect(pagina.getByRole('heading', { name: 'Mural' })).toBeVisible()
+  await expect(pagina.getByRole('link', { name: 'Momentos' })).toBeVisible()
 }
 
 test('memória com fotos: linha do tempo, espelho no Mural, lightbox e exclusão', async ({
@@ -90,7 +90,7 @@ test('perfil: estatísticas, favorito, cartão de compartilhar e avatar', async 
 
   // Uma avaliação para alimentar as estatísticas
   await page.getByRole('link', { name: 'Nova publicação' }).click()
-  await page.getByRole('button', { name: '🎬 Avaliar um filme' }).click()
+  await page.getByRole('button', { name: 'Avaliar um filme' }).click()
   await page.getByPlaceholder('Busque um filme…').fill('Interestelar')
   await page
     .getByRole('button', { name: /Interestelar \(2014\)/ })
@@ -99,7 +99,7 @@ test('perfil: estatísticas, favorito, cartão de compartilhar e avatar', async 
   await page.getByRole('button', { name: '5 estrelas', exact: true }).click()
   await page.getByPlaceholder('Escreve algo para vocês…').fill('Épico do começo ao fim.')
   await page.getByRole('button', { name: 'Publicar' }).click()
-  await expect(page.getByRole('heading', { name: 'Mural' })).toBeVisible()
+  await expect(page.getByText('vocês, em um só lugar')).toBeVisible()
 
   // Perfil: estatísticas e histograma (só aparece com avaliações)
   await page.getByRole('link', { name: 'Perfil' }).click()
@@ -117,7 +117,7 @@ test('perfil: estatísticas, favorito, cartão de compartilhar e avatar', async 
 
   // Cartão de compartilhar: o preview gerado prova o pipeline do canvas
   await page.getByRole('link', { name: 'Interestelar' }).first().click()
-  await page.getByRole('button', { name: '📤 Compartilhar' }).click()
+  await page.getByRole('button', { name: 'Compartilhar', exact: true }).click()
   const modal = page.getByRole('dialog', { name: 'Compartilhar nos Stories' })
   await expect(modal.locator('img')).toBeVisible({ timeout: 20_000 })
   // Trocar o tema regenera o cartão

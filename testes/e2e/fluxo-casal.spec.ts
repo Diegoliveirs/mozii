@@ -26,14 +26,14 @@ test('o casal se forma: um cria o espaço, o outro entra com o código', async (
 
   await entrarPelaTela(paginaUm, USUARIO_UM)
   // Sem casal, a guarda leva para o pareamento.
-  await expect(paginaUm.getByRole('heading', { name: 'Falta uma pessoa 💜' })).toBeVisible()
+  await expect(paginaUm.getByRole('heading', { name: 'Falta uma pessoa' })).toBeVisible()
 
   await paginaUm.getByRole('button', { name: 'Criar espaço do casal' }).click()
   const codigo = (await paginaUm.getByTestId('codigo-convite').textContent())?.trim() ?? ''
   expect(codigo).toHaveLength(6)
 
   await paginaUm.getByRole('button', { name: 'Ir para o Mozii' }).click()
-  await expect(paginaUm.getByRole('heading', { name: 'Mural' })).toBeVisible()
+  await expect(paginaUm.getByRole('link', { name: 'Momentos' })).toBeVisible()
   // Sozinho no espaço: a dica do código aparece.
   await expect(paginaUm.getByText('Seu par ainda não entrou', { exact: false })).toBeVisible()
 
@@ -44,14 +44,14 @@ test('o casal se forma: um cria o espaço, o outro entra com o código', async (
   const paginaDois = await contextoDois.newPage()
 
   await entrarPelaTela(paginaDois, USUARIO_DOIS)
-  await expect(paginaDois.getByRole('heading', { name: 'Falta uma pessoa 💜' })).toBeVisible()
+  await expect(paginaDois.getByRole('heading', { name: 'Falta uma pessoa' })).toBeVisible()
 
   const campoCodigo = paginaDois.getByLabel('Código de convite')
   await campoCodigo.fill(codigo)
   await paginaDois.getByRole('button', { name: 'Entrar no espaço' }).click()
 
   // Entrou: Mural com os dois nomes unidos pelo coração.
-  await expect(paginaDois.getByRole('heading', { name: 'Mural' })).toBeVisible()
+  await expect(paginaDois.getByRole('link', { name: 'Momentos' })).toBeVisible()
   await expect(paginaDois.getByText('Pessoa Um ♥ Pessoa Dois')).toBeVisible()
 
   // ── Ajustes (via engrenagem do Perfil): sem código com o casal completo ──
@@ -69,7 +69,7 @@ test('código de convite inválido é recusado', async ({ browser }) => {
   const pagina = await contexto.newPage()
 
   await entrarPelaTela(pagina, USUARIO_TRES)
-  await expect(pagina.getByRole('heading', { name: 'Falta uma pessoa 💜' })).toBeVisible()
+  await expect(pagina.getByRole('heading', { name: 'Falta uma pessoa' })).toBeVisible()
 
   await pagina.getByLabel('Código de convite').fill('ZZZZZ9')
   await pagina.getByRole('button', { name: 'Entrar no espaço' }).click()

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { IconeVoltar } from '../ui/icones'
 
 /**
  * Cabeçalho das telas INTERNAS: botão voltar + título, fixo no topo e
@@ -34,9 +35,9 @@ export function CabecalhoPagina({
           type="button"
           aria-label="Voltar"
           onClick={aoVoltar}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-veu text-lg text-neve"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-veu text-neve transition-transform active:scale-90"
         >
-          ←
+          <IconeVoltar size={18} aria-hidden />
         </button>
         <h1 className="min-w-0 flex-1 truncate font-voz text-xl text-neve">{titulo}</h1>
         {acao}

@@ -4,6 +4,7 @@ import { FolhaBuscarFilme } from '../filmes/FolhaBuscarFilme'
 import { Poster } from '../filmes/Poster'
 import { useDefinirFavorito, useFavoritosDe, useRemoverFavorito } from '../../hooks/useFavoritos'
 import { textos } from '../../lib/textos'
+import { IconeFechar, IconeMais } from '../ui/icones'
 
 const POSICOES = [1, 2, 3, 4, 5]
 
@@ -16,7 +17,9 @@ export function FavoritosFileira({ perfilId, editavel }: { perfilId: string; edi
 
   return (
     <section className="mt-6">
-      <h2 className="font-medium text-neve">{textos.perfil.favoritos}</h2>
+      <h2 className="text-xs font-medium tracking-wide text-rosa-suave uppercase">
+        {textos.perfil.favoritos}
+      </h2>
       <div className="mt-3 grid grid-cols-5 gap-2">
         {POSICOES.map((posicao) => {
           const favorito = favoritos.data?.find((cada) => cada.posicao === posicao)
@@ -36,9 +39,9 @@ export function FavoritosFileira({ perfilId, editavel }: { perfilId: string; edi
                     type="button"
                     aria-label={textos.perfil.removerFavorito}
                     onClick={() => remover.mutate(favorito.id)}
-                    className="absolute -top-1.5 -right-1.5 rounded-full bg-abismo px-1.5 text-xs text-nevoa"
+                    className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-abismo text-nevoa"
                   >
-                    ✕
+                    <IconeFechar size={11} aria-hidden />
                   </button>
                 )}
               </div>
@@ -54,7 +57,7 @@ export function FavoritosFileira({ perfilId, editavel }: { perfilId: string; edi
               onClick={() => setEscolhendoPosicao(posicao)}
               className="flex aspect-[2/3] items-center justify-center rounded-lg border border-dashed border-linha-forte text-cinza disabled:opacity-40"
             >
-              +
+              <IconeMais size={16} aria-hidden />
             </button>
           )
         })}

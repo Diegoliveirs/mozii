@@ -1,4 +1,5 @@
 import { urlPoster } from '../../api/tmdb'
+import { IconeFilme } from '../ui/icones'
 
 /** Pôster com fallback: filmes sem imagem ganham um cartão neutro. */
 export function Poster({
@@ -18,9 +19,9 @@ export function Poster({
     return (
       <div
         aria-label={titulo}
-        className={`flex aspect-[2/3] items-center justify-center rounded-lg bg-veu text-2xl ${className}`}
+        className={`flex aspect-[2/3] items-center justify-center rounded-lg bg-veu text-cinza ${className}`}
       >
-        🎬
+        <IconeFilme size={22} aria-hidden />
       </div>
     )
   }

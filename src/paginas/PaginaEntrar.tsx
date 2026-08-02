@@ -1,5 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Botao } from '../componentes/ui/Botao'
+import { Campo } from '../componentes/ui/Campo'
+import { IconeCoracao } from '../componentes/ui/icones'
 import { useEntrar } from '../hooks/useAutenticacao'
 import { textos } from '../lib/textos'
 
@@ -23,43 +26,44 @@ export function PaginaEntrar() {
 
   return (
     <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
-      <h1 className="font-voz text-3xl text-neve">{textos.entrar.titulo}</h1>
-      <p className="mt-1 text-rosa-suave">{textos.app.slogan}</p>
+      <div className="text-center">
+        <IconeCoracao size={34} weight="fill" className="mx-auto text-rosa" aria-hidden />
+        <p className="mt-1 font-voz text-2xl font-semibold text-neve">{textos.app.nome}</p>
+        <p className="text-sm text-cinza">{textos.app.slogan}</p>
+      </div>
 
-      <form onSubmit={aoEnviar} className="mt-8 flex flex-col gap-4">
+      <h1 className="mt-9 font-voz text-2xl font-semibold tracking-tight text-neve">
+        {textos.entrar.titulo}
+      </h1>
+
+      <form onSubmit={aoEnviar} className="mt-5 flex flex-col gap-4">
         <label className="flex flex-col gap-1.5 text-sm text-nevoa">
           {textos.entrar.email}
-          <input
+          <Campo
             type="email"
             required
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none focus:border-rosa"
           />
         </label>
 
         <label className="flex flex-col gap-1.5 text-sm text-nevoa">
           {textos.entrar.senha}
-          <input
+          <Campo
             type="password"
             required
             autoComplete="current-password"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
-            className="rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none focus:border-rosa"
           />
         </label>
 
-        {erro && <p className="text-sm text-rosa-suave">{erro}</p>}
+        {erro && <p className="text-sm text-erro">{erro}</p>}
 
-        <button
-          type="submit"
-          disabled={entrar.isPending}
-          className="mt-2 rounded-xl bg-rosa py-3 font-medium text-neve disabled:opacity-60"
-        >
-          {entrar.isPending ? textos.entrar.entrando : textos.entrar.botao}
-        </button>
+        <Botao type="submit" carregando={entrar.isPending} className="mt-2">
+          {textos.entrar.botao}
+        </Botao>
       </form>
 
       <p className="mt-6 text-center text-sm text-cinza">

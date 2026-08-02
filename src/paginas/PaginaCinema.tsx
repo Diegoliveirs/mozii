@@ -1,11 +1,15 @@
 import { useSearchParams } from 'react-router-dom'
 import { BuscaCinema } from '../componentes/cinema/BuscaCinema'
 import { ListasCinema } from '../componentes/cinema/ListasCinema'
+import { CartaoSessao } from '../componentes/sessoes/CartaoSessao'
+import { SessoesPassadas } from '../componentes/sessoes/SessoesPassadas'
+import { ControleSegmentado } from '../componentes/ui/ControleSegmentado'
 import { textos } from '../lib/textos'
 
 /**
- * Hub do Cinema com as abas Buscar e Listas. A aba vive na URL
- * (`?aba=listas`) para o botão voltar e os links profundos funcionarem.
+ * Hub do Cinema. A próxima sessão vive aqui em destaque (o ingresso),
+ * acima das abas; as sessões passadas ficam discretas no fim da aba
+ * Listas. A aba vive na URL (`?aba=listas`) para o voltar funcionar.
  */
 export function PaginaCinema() {
   const [parametros, setParametros] = useSearchParams()
@@ -16,32 +20,27 @@ export function PaginaCinema() {
   }
 
   return (
-    <main className="area-segura-topo px-5 pt-8">
-      <h1 className="font-voz text-3xl text-neve">{textos.cinema.titulo}</h1>
+    <main className="area-segura-topo px-5 pt-8 pb-4">
+      <h1 className="font-voz text-3xl font-semibold tracking-tight text-neve">
+        {textos.cinema.titulo}
+      </h1>
 
-      <div className="mt-4 flex rounded-xl bg-veu p-1" role="tablist">
-        {(
-          [
-            ['buscar', textos.cinema.abaBuscar],
-            ['listas', textos.cinema.abaListas],
-          ] as const
-        ).map(([valor, rotulo]) => (
-          <button
-            key={valor}
-            type="button"
-            role="tab"
-            aria-selected={aba === valor}
-            onClick={() => trocarAba(valor)}
-            className={`flex-1 rounded-lg py-2 text-sm font-medium ${
-              aba === valor ? 'bg-cartao text-neve' : 'text-cinza'
-            }`}
-          >
-            {rotulo}
-          </button>
-        ))}
+      <CartaoSessao />
+
+      <div className="mt-4">
+        <ControleSegmentado
+          opcoes={[
+            { valor: 'buscar', rotulo: textos.cinema.abaBuscar },
+            { valor: 'listas', rotulo: textos.cinema.abaListas },
+          ]}
+          valor={aba}
+          aoMudar={trocarAba}
+        />
       </div>
 
       <div className="mt-4">{aba === 'buscar' ? <BuscaCinema /> : <ListasCinema />}</div>
+
+      {aba === 'listas' && <SessoesPassadas />}
     </main>
   )
 }

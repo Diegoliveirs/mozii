@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom'
 import { useCriarLista, useListas } from '../../hooks/useListas'
 import { urlPoster } from '../../api/tmdb'
 import { textos } from '../../lib/textos'
+import { Botao } from '../ui/Botao'
+import { Campo } from '../ui/Campo'
+import { EstadoVazio } from '../ui/EstadoVazio'
+import { IconeSessao } from '../ui/icones'
 
 /** Aba de listas do Cinema: grade com capa em mosaico + criação rápida. */
 export function ListasCinema() {
@@ -19,31 +23,40 @@ export function ListasCinema() {
   return (
     <div>
       <form onSubmit={aoCriar} className="flex gap-2">
-        <input
+        <Campo
           type="text"
           maxLength={60}
           placeholder={textos.cinema.novaListaDica}
           value={nome}
           onChange={(evento) => setNome(evento.target.value)}
-          className="min-w-0 flex-1 rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none placeholder:text-cinza focus:border-rosa"
+          className="min-w-0 flex-1"
         />
-        <button
+        <Botao
           type="submit"
-          disabled={nome.trim().length === 0 || criar.isPending}
-          className="rounded-xl bg-rosa px-4 py-3 text-sm font-medium text-neve disabled:opacity-50"
+          carregando={criar.isPending}
+          disabled={nome.trim().length === 0}
+          className="shrink-0"
         >
           {textos.cinema.novaListaBotao}
-        </button>
+        </Botao>
       </form>
 
       {listas.data?.length === 0 && (
-        <p className="mt-6 text-center text-sm text-nevoa">{textos.cinema.semListas}</p>
+        <div className="mt-5">
+          <EstadoVazio
+            icone={<IconeSessao size={26} aria-hidden />}
+            titulo={textos.cinema.semListas}
+          />
+        </div>
       )}
 
       <ul className="mt-4 grid grid-cols-2 gap-3">
         {listas.data?.map((lista) => (
           <li key={lista.id}>
-            <Link to={`/listas/${lista.id}`} className="block rounded-xl bg-cartao p-3">
+            <Link
+              to={`/listas/${lista.id}`}
+              className="block rounded-2xl border border-linha bg-cartao p-3 shadow-cartao transition-transform active:scale-[0.98]"
+            >
               <div className="flex h-24 items-center justify-center gap-1 overflow-hidden rounded-lg bg-veu">
                 {lista.postersCapa.length > 0 ? (
                   lista.postersCapa.map((caminho) => (
@@ -55,7 +68,7 @@ export function ListasCinema() {
                     />
                   ))
                 ) : (
-                  <span className="text-2xl">🍿</span>
+                  <IconeSessao size={26} className="text-cinza" aria-hidden />
                 )}
               </div>
               <p className="mt-2 truncate font-medium text-neve">{lista.nome}</p>

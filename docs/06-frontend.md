@@ -17,17 +17,22 @@ Regra do projeto: **tudo em pt-BR**, inclusive identificadores. Exemplos do padr
 
 Mesma identidade do Mozii original: fundo escuro quente, rosa como cor de afeto, dourado nas estrelas. Os tokens viram classes automaticamente (`--color-noite` → `bg-noite`).
 
-| Token                         | Valor                             | Uso                             |
-| ----------------------------- | --------------------------------- | ------------------------------- |
-| `noite`                       | `#16131c`                         | fundo padrão                    |
-| `abismo`                      | `#0e0b12`                         | fundo atrás de modais/navegação |
-| `cartao`                      | `#221d2b`                         | superfícies elevadas            |
-| `veu`                         | `#2e2839`                         | chips e campos sobre o cartão   |
-| `linha` / `linha-forte`       | `#2a2533` / `#3a3346`             | divisores                       |
-| `rosa` / `rosa-suave`         | `#d4537e` / `#ed93b1`             | ações principais / detalhes     |
-| `estrela` / `estrela-apagada` | `#efb927` / `#4a4356`             | notas                           |
-| `neve` / `nevoa` / `cinza`    | `#f2edf5` / `#c3bccd` / `#8d8499` | textos (forte → discreto)       |
-| `--font-voz`                  | Georgia serif                     | títulos afetivos (`font-voz`)   |
+| Token                         | Valor                             | Uso                                |
+| ----------------------------- | --------------------------------- | ---------------------------------- |
+| `noite`                       | `#16131c`                         | fundo padrão                       |
+| `abismo`                      | `#0e0b12`                         | fundo atrás de modais/navegação    |
+| `cartao`                      | `#221d2b`                         | superfícies elevadas               |
+| `veu`                         | `#2e2839`                         | chips e campos sobre o cartão      |
+| `linha` / `linha-forte`       | `#2a2533` / `#3a3346`             | divisores                          |
+| `rosa` / `rosa-suave`         | `#d4537e` / `#ed93b1`             | ações principais / detalhes        |
+| `estrela` / `estrela-apagada` | `#efb927` / `#4a4356`             | notas                              |
+| `erro` / `sucesso`            | `#e56b6b` / `#6bbf8e`             | estados (rosa é afeto, não erro)   |
+| `cartao-alto`                 | `#2a2435`                         | superfícies sobre o cartão         |
+| `neve` / `nevoa` / `cinza`    | `#f2edf5` / `#c3bccd` / `#8d8499` | textos (forte → discreto)          |
+| `--font-voz`                  | Fraunces variável (self-hosted)   | títulos afetivos (`font-voz`)      |
+| `--shadow-cartao`             | sombra dupla suave                | cartões elevados (`shadow-cartao`) |
+
+Desde o redesign (02/08/2026): ícones são **Phosphor** via `componentes/ui/icones.tsx` (nomes PT; fill = ativo, regular = inativo) — emoji só como afeto em textos; a Fraunces mora em `public/fontes/` (`@font-face` no `index.css`, CSP `font-src 'self'`); o grão de filme é um `body::before` com SVG em data-URI; primitivas de UI em `componentes/ui/` (`Botao`, `Campo`/`AreaTexto`, `FolhaBase`, `DialogoConfirmar`, `ProvedorAvisos`/`useAviso`, `Esqueleto`, `EstadoVazio`, `ControleSegmentado`) — **nenhum componente escreve classes de botão/campo/folha à mão**.
 
 ## iOS (regras do Diego — não relaxar)
 
@@ -41,7 +46,7 @@ Mesma identidade do Mozii original: fundo escuro quente, rosa como cor de afeto,
 - **Textos só em `src/lib/textos.ts`** — nenhum texto de interface direto no JSX.
 - Zoom travado (viewport + campos com 16px) para comportamento de app nativo.
 - Animações são funções do produto, não enfeite: `entrada-pagina` na troca de rota; o efeito caça-níquel do sorteio virá com sua própria justificativa.
-- Estado de tela é `useState` local; estado de servidor é TanStack Query; **não há** contexto global de UI.
+- Estado de tela é `useState` local; estado de servidor é TanStack Query; o único contexto global de UI é o `ProvedorAvisos` (toasts).
 
 ## Estrutura de src/
 

@@ -136,6 +136,8 @@ export interface RepositorioFavoritos {
 export interface RepositorioSessoes {
   /** As sessões ainda agendadas, da mais próxima para a mais distante. */
   agendadas(): Promise<SessaoCinema[]>
+  /** As últimas sessões concluídas, da mais recente para trás. */
+  concluidas(limite: number): Promise<SessaoCinema[]>
   agendar(dados: {
     filme: RefFilme
     agendadaPara: string

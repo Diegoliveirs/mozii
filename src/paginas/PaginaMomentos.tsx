@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { CartaoMomento } from '../componentes/momentos/CartaoMomento'
 import { FolhaNovaMemoria } from '../componentes/momentos/FolhaNovaMemoria'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
+import { Esqueleto } from '../componentes/ui/Esqueleto'
+import { EstadoVazio } from '../componentes/ui/EstadoVazio'
+import { IconeComemoracao, IconeMais, IconeMomentos } from '../componentes/ui/icones'
 import type { Momento } from '../dominio/tipos'
 import { useAutenticacao } from '../hooks/useAutenticacao'
 import { useCasalComMembros } from '../hooks/useCasal'
@@ -51,21 +54,46 @@ export function PaginaMomentos() {
 
   return (
     <main className="area-segura-topo px-5 pt-8 pb-8">
-      <div className="flex items-center justify-between">
-        <h1 className="font-voz text-3xl text-neve">{textos.momentos.titulo}</h1>
+      <div className="flex items-end justify-between">
+        <div>
+          <h1 className="font-voz text-3xl font-semibold tracking-tight text-neve">
+            {textos.momentos.titulo}
+          </h1>
+          <p className="mt-1 text-sm text-rosa-suave">{textos.momentos.subtitulo}</p>
+        </div>
         <button
           type="button"
           onClick={() => setFolhaAberta(true)}
-          className="rounded-xl bg-rosa px-4 py-2 text-sm font-medium text-neve"
+          className="flex items-center gap-1.5 rounded-full border border-rosa/50 px-4 py-2 text-sm font-medium text-rosa-suave transition-transform active:scale-95"
         >
+          <IconeMais size={15} aria-hidden />
           {textos.momentos.nova}
         </button>
       </div>
 
-      {linhaDoTempo.isLoading && <p className="mt-6 text-cinza">{textos.comuns.carregando}</p>}
+      {linhaDoTempo.isLoading && (
+        <div className="mt-6 space-y-4">
+          <Esqueleto className="h-48 rounded-2xl" />
+          <Esqueleto className="h-24 rounded-2xl" />
+        </div>
+      )}
 
       {linhaDoTempo.isSuccess && dias.length === 0 && (
-        <p className="mt-8 text-center text-nevoa">{textos.momentos.vazio}</p>
+        <div className="mt-6">
+          <EstadoVazio
+            icone={<IconeMomentos size={28} aria-hidden />}
+            titulo={textos.momentos.vazio}
+            acao={
+              <button
+                type="button"
+                onClick={() => setFolhaAberta(true)}
+                className="rounded-full bg-rosa px-5 py-2 text-sm font-medium text-neve"
+              >
+                {textos.momentos.nova}
+              </button>
+            }
+          />
+        </div>
       )}
 
       <div className="mt-5 space-y-6">
@@ -77,8 +105,9 @@ export function PaginaMomentos() {
                 item.tipo === 'marco' ? (
                   <p
                     key={`marco-${item.marco.data}`}
-                    className="rounded-2xl border border-rosa/40 p-4 text-center font-voz text-lg text-rosa-suave"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-rosa/40 bg-rosa/10 p-4 text-center font-voz text-lg font-semibold text-rosa-suave"
                   >
+                    <IconeComemoracao size={20} aria-hidden />
                     {item.marco.rotulo}
                   </p>
                 ) : (
@@ -103,6 +132,8 @@ export function PaginaMomentos() {
         titulo={textos.momentos.excluirConfirmar}
         descricao={textos.momentos.excluirExplicacao}
         rotuloConfirmar={textos.comuns.confirmar}
+        perigosa
+        confirmando={excluir.isPending}
         aoConfirmar={async () => {
           if (excluindo) await excluir.mutateAsync(excluindo)
           setExcluindo(null)

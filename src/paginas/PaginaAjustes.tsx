@@ -11,11 +11,16 @@ import {
 } from '../hooks/useCasal'
 import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
 import { AvatarPerfil } from '../componentes/mural/AvatarPerfil'
+import { useAviso } from '../componentes/ui/Avisos'
+import { Botao } from '../componentes/ui/Botao'
+import { Campo } from '../componentes/ui/Campo'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
+import { IconeFoto, IconeSair } from '../componentes/ui/icones'
 import { textos } from '../lib/textos'
 
 export function PaginaAjustes() {
   const navegar = useNavigate()
+  const avisar = useAviso()
   const perfil = useMeuPerfil()
   const casal = useCasalComMembros()
   const atualizarNome = useAtualizarNomeExibicao()
@@ -26,7 +31,6 @@ export function PaginaAjustes() {
   const solicitarExclusao = useSolicitarExclusaoConta()
 
   const [nome, setNome] = useState<string | null>(null)
-  const [nomeSalvo, setNomeSalvo] = useState(false)
   const [confirmando, setConfirmando] = useState<'sair-casal' | 'excluir-conta' | null>(null)
 
   const nomeAtual = nome ?? perfil.data?.nomeExibicao ?? ''
@@ -34,8 +38,7 @@ export function PaginaAjustes() {
   async function aoSalvarNome(evento: FormEvent) {
     evento.preventDefault()
     await atualizarNome.mutateAsync(nomeAtual.trim())
-    setNomeSalvo(true)
-    setTimeout(() => setNomeSalvo(false), 2500)
+    avisar(textos.ajustes.nomeSalvo)
   }
 
   async function aoSairDaConta() {
@@ -61,7 +64,10 @@ export function PaginaAjustes() {
       <CabecalhoPagina titulo={textos.ajustes.titulo} fallback="/perfil" />
       <div className="px-5">
         {/* Foto e nome de exibição */}
-        <form onSubmit={aoSalvarNome} className="mt-6 rounded-2xl bg-cartao p-5">
+        <form
+          onSubmit={aoSalvarNome}
+          className="mt-6 rounded-2xl border border-linha bg-cartao p-5 shadow-cartao"
+        >
           <div className="mb-4 flex items-center gap-4">
             <AvatarPerfil
               nome={perfil.data?.nomeExibicao ?? ''}
@@ -69,14 +75,15 @@ export function PaginaAjustes() {
               caminhoAvatar={perfil.data?.urlAvatar ?? null}
               tamanho="grande"
             />
-            <button
-              type="button"
+            <Botao
+              variante="fantasma"
+              carregando={atualizarAvatar.isPending}
               onClick={() => campoAvatar.current?.click()}
-              disabled={atualizarAvatar.isPending}
-              className="rounded-xl border border-linha-forte px-4 py-2 text-sm text-nevoa disabled:opacity-60"
+              className="py-2"
             >
+              <IconeFoto size={16} aria-hidden />
               {textos.ajustes.avatarRotulo}
-            </button>
+            </Botao>
             <input
               ref={campoAvatar}
               type="file"
@@ -84,39 +91,36 @@ export function PaginaAjustes() {
               hidden
               onChange={(evento) => {
                 const arquivo = evento.target.files?.[0]
-                if (arquivo) atualizarAvatar.mutate(arquivo)
+                if (arquivo)
+                  atualizarAvatar.mutate(arquivo, {
+                    onSuccess: () => avisar(textos.ajustes.avatarSalvo),
+                  })
               }}
             />
-            {atualizarAvatar.isSuccess && (
-              <span className="text-sm text-rosa-suave">{textos.ajustes.avatarSalvo}</span>
-            )}
           </div>
           <label className="flex flex-col gap-1.5 text-sm text-nevoa">
             {textos.ajustes.nomeRotulo}
-            <input
+            <Campo
               type="text"
               required
               maxLength={40}
               value={nomeAtual}
               onChange={(e) => setNome(e.target.value)}
-              className="rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none focus:border-rosa"
             />
           </label>
-          <button
+          <Botao
             type="submit"
-            disabled={atualizarNome.isPending || nomeAtual.trim().length === 0}
-            className="mt-3 rounded-xl bg-rosa px-5 py-2.5 text-sm font-medium text-neve disabled:opacity-60"
+            carregando={atualizarNome.isPending}
+            disabled={nomeAtual.trim().length === 0}
+            className="mt-3 px-5 py-2.5"
           >
             {textos.comuns.salvar}
-          </button>
-          {nomeSalvo && (
-            <span className="ml-3 text-sm text-rosa-suave">{textos.ajustes.nomeSalvo}</span>
-          )}
+          </Botao>
         </form>
 
         {/* Nosso espaço */}
         {casal.data && (
-          <section className="mt-4 rounded-2xl bg-cartao p-5">
+          <section className="mt-4 rounded-2xl border border-linha bg-cartao p-5 shadow-cartao">
             <h2 className="font-medium text-neve">{textos.ajustes.casalTitulo}</h2>
 
             <p className="mt-3 text-sm text-nevoa">{textos.ajustes.membros}</p>
@@ -132,7 +136,7 @@ export function PaginaAjustes() {
             {casal.data.membros.length < 2 && (
               <div className="mt-4">
                 <p className="text-sm text-nevoa">{textos.ajustes.codigoConvite}</p>
-                <p className="mt-1 w-fit rounded-xl bg-veu px-4 py-2 font-mono text-2xl tracking-[0.3em] text-rosa-suave">
+                <p className="mt-1 w-fit rounded-xl border border-dashed border-linha-forte bg-veu px-4 py-2 font-mono text-2xl tracking-[0.3em] text-rosa-suave">
                   {casal.data.casal.codigoConvite}
                 </p>
                 <p className="mt-1 text-xs text-cinza">{textos.ajustes.codigoDica}</p>
@@ -142,17 +146,14 @@ export function PaginaAjustes() {
         )}
 
         {/* Sair da conta */}
-        <button
-          type="button"
-          onClick={aoSairDaConta}
-          className="mt-4 w-full rounded-2xl border border-linha-forte py-3 text-nevoa"
-        >
+        <Botao variante="fantasma" onClick={aoSairDaConta} className="mt-4 w-full">
+          <IconeSair size={17} aria-hidden />
           {textos.ajustes.sairConta}
-        </button>
+        </Botao>
 
         {/* Zona de perigo */}
-        <section className="mt-8 rounded-2xl border border-rosa/40 p-5">
-          <h2 className="text-sm font-medium tracking-wide text-rosa-suave uppercase">
+        <section className="mt-8 rounded-2xl border border-erro/40 p-5">
+          <h2 className="text-sm font-medium tracking-wide text-erro uppercase">
             {textos.ajustes.zonaPerigo}
           </h2>
 
@@ -160,7 +161,7 @@ export function PaginaAjustes() {
             <button
               type="button"
               onClick={() => setConfirmando('sair-casal')}
-              className="text-rosa-suave underline"
+              className="text-erro underline"
             >
               {textos.ajustes.sairCasal}
             </button>
@@ -171,7 +172,7 @@ export function PaginaAjustes() {
             <button
               type="button"
               onClick={() => setConfirmando('excluir-conta')}
-              className="text-rosa-suave underline"
+              className="text-erro underline"
             >
               {textos.ajustes.excluirConta}
             </button>
@@ -192,6 +193,7 @@ export function PaginaAjustes() {
               : textos.ajustes.excluirContaExplicacao
           }
           rotuloConfirmar={textos.comuns.confirmar}
+          perigosa
           aoConfirmar={aoConfirmar}
           aoCancelar={() => setConfirmando(null)}
         />

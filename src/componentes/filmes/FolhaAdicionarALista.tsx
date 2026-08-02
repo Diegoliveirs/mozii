@@ -7,6 +7,10 @@ import {
   useListasQueContem,
 } from '../../hooks/useListas'
 import { textos } from '../../lib/textos'
+import { Botao } from '../ui/Botao'
+import { Campo } from '../ui/Campo'
+import { FolhaBase } from '../ui/FolhaBase'
+import { IconeConfirmado } from '../ui/icones'
 
 /**
  * Folha que sobe do rodapé para escolher em qual lista o filme entra.
@@ -39,58 +43,53 @@ export function FolhaAdicionarALista({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-abismo/80"
-      role="dialog"
-      aria-modal="true"
-      aria-label={textos.folhaLista.titulo}
-      onClick={aoFechar}
+    <FolhaBase
+      rotulo={textos.folhaLista.titulo}
+      titulo={textos.folhaLista.titulo}
+      aoFechar={aoFechar}
     >
-      <div
-        className="entrada-folha w-full max-w-md rounded-t-2xl bg-cartao p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
-        onClick={(evento) => evento.stopPropagation()}
-      >
-        <h2 className="font-voz text-xl text-neve">{textos.folhaLista.titulo}</h2>
+      <ul className="mt-4 max-h-64 space-y-2 overflow-y-auto">
+        {listas.data?.map((lista) => {
+          const jaEsta = contem.data?.includes(lista.id)
+          return (
+            <li key={lista.id}>
+              <button
+                type="button"
+                onClick={() => aoEscolher(lista.id, lista.nome)}
+                disabled={jaEsta || adicionar.isPending}
+                className="flex w-full items-center justify-between rounded-xl bg-veu px-4 py-3 text-left text-neve transition-transform active:scale-[0.98] disabled:opacity-60"
+              >
+                {lista.nome}
+                {jaEsta && (
+                  <span className="flex items-center gap-1 text-sm text-rosa-suave">
+                    <IconeConfirmado size={15} weight="fill" aria-hidden />
+                    {textos.folhaLista.jaEsta}
+                  </span>
+                )}
+              </button>
+            </li>
+          )
+        })}
+      </ul>
 
-        <ul className="mt-4 max-h-64 space-y-2 overflow-y-auto">
-          {listas.data?.map((lista) => {
-            const jaEsta = contem.data?.includes(lista.id)
-            return (
-              <li key={lista.id}>
-                <button
-                  type="button"
-                  onClick={() => aoEscolher(lista.id, lista.nome)}
-                  disabled={jaEsta || adicionar.isPending}
-                  className="flex w-full items-center justify-between rounded-xl bg-veu px-4 py-3 text-left text-neve disabled:opacity-60"
-                >
-                  {lista.nome}
-                  {jaEsta && (
-                    <span className="text-sm text-rosa-suave">✓ {textos.folhaLista.jaEsta}</span>
-                  )}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-
-        <form onSubmit={aoCriarLista} className="mt-4 flex gap-2">
-          <input
-            type="text"
-            maxLength={60}
-            placeholder={textos.cinema.novaListaDica}
-            value={nomeNova}
-            onChange={(evento) => setNomeNova(evento.target.value)}
-            className="min-w-0 flex-1 rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none placeholder:text-cinza focus:border-rosa"
-          />
-          <button
-            type="submit"
-            disabled={nomeNova.trim().length === 0 || criarLista.isPending || adicionar.isPending}
-            className="rounded-xl bg-rosa px-4 py-3 text-sm font-medium text-neve disabled:opacity-50"
-          >
-            {textos.cinema.novaListaBotao}
-          </button>
-        </form>
-      </div>
-    </div>
+      <form onSubmit={aoCriarLista} className="mt-4 flex gap-2">
+        <Campo
+          type="text"
+          maxLength={60}
+          placeholder={textos.cinema.novaListaDica}
+          value={nomeNova}
+          onChange={(evento) => setNomeNova(evento.target.value)}
+          className="min-w-0 flex-1"
+        />
+        <Botao
+          type="submit"
+          carregando={criarLista.isPending || adicionar.isPending}
+          disabled={nomeNova.trim().length === 0}
+          className="shrink-0"
+        >
+          {textos.cinema.novaListaBotao}
+        </Botao>
+      </form>
+    </FolhaBase>
   )
 }

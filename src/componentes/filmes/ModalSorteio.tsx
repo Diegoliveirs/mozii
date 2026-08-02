@@ -60,10 +60,10 @@ export function ModalSorteio({
       onClick={aoFechar}
     >
       <div
-        className="w-full max-w-xs rounded-2xl bg-cartao p-6 text-center"
+        className="w-full max-w-xs rounded-2xl border border-linha bg-cartao p-6 text-center shadow-cartao"
         onClick={(evento) => evento.stopPropagation()}
       >
-        <h2 className="font-voz text-2xl text-neve">{textos.sorteio.titulo}</h2>
+        <h2 className="font-voz text-2xl font-semibold text-neve">{textos.sorteio.titulo}</h2>
 
         <div className="mx-auto mt-5 w-40">
           {fase === 'rolando' ? (
@@ -104,7 +104,7 @@ export function ModalSorteio({
             type="button"
             onClick={() => aoAgendar(item)}
             disabled={fase === 'rolando'}
-            className="rounded-xl border border-rosa py-3 font-medium text-rosa-suave disabled:opacity-40"
+            className="rounded-xl border border-rosa py-3 font-medium text-rosa-suave transition-transform active:scale-[0.97] disabled:opacity-40"
           >
             {textos.sessao.agendarDoSorteio}
           </button>
@@ -112,7 +112,7 @@ export function ModalSorteio({
             type="button"
             onClick={rolar}
             disabled={fase === 'rolando'}
-            className="rounded-xl border border-linha-forte py-3 text-nevoa disabled:opacity-40"
+            className="rounded-xl border border-linha-forte py-3 text-nevoa transition-transform active:scale-[0.97] disabled:opacity-40"
           >
             {textos.sorteio.sortearDeNovo}
           </button>
