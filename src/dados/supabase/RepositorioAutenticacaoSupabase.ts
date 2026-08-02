@@ -9,11 +9,24 @@ import { supabase } from './cliente'
  */
 export const repositorioAutenticacaoSupabase: RepositorioAutenticacao = {
   async cadastrar({ email, senha, nomeExibicao }) {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password: senha,
       options: { data: { nome_exibicao: nomeExibicao } },
     })
+    if (error) throw error
+    // Com confirmação ativa, e-mail repetido volta como "sucesso" sem
+    // identities (anti-enumeração do Supabase) — traduzimos para o erro
+    // que a tela de cadastro já sabe explicar.
+    if (data.user && (data.user.identities?.length ?? 0) === 0) {
+      throw new Error('User already registered')
+    }
+    // Sem sessão = a confirmação de e-mail está ativa no projeto.
+    return { precisaConfirmarEmail: !data.session }
+  },
+
+  async reenviarConfirmacao(email) {
+    const { error } = await supabase.auth.resend({ type: 'signup', email })
     if (error) throw error
   },
 

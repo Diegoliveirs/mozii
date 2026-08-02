@@ -51,6 +51,13 @@ export function useCadastrar() {
   })
 }
 
+export function useReenviarConfirmacao() {
+  const { autenticacao } = useRepositorios()
+  return useMutation({
+    mutationFn: (email: string) => autenticacao.reenviarConfirmacao(email),
+  })
+}
+
 export function useSair() {
   const { autenticacao } = useRepositorios()
   const clienteQuery = useQueryClient()
