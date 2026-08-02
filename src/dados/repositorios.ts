@@ -23,7 +23,14 @@ import type {
  */
 
 export interface RepositorioAutenticacao {
-  cadastrar(dados: { email: string; senha: string; nomeExibicao: string }): Promise<void>
+  /** Com confirmação de e-mail ativa, o cadastro não abre sessão. */
+  cadastrar(dados: {
+    email: string
+    senha: string
+    nomeExibicao: string
+  }): Promise<{ precisaConfirmarEmail: boolean }>
+  /** Reenvia o e-mail de confirmação do cadastro. */
+  reenviarConfirmacao(email: string): Promise<void>
   entrar(dados: { email: string; senha: string }): Promise<void>
   sair(): Promise<void>
   usuarioAtual(): Promise<UsuarioAutenticado | null>
