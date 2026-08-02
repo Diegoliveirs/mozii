@@ -1,10 +1,15 @@
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ModalCompartilhar } from '../componentes/compartilhar/ModalCompartilhar'
 import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
-import { CartaoPublicacao } from '../componentes/mural/CartaoPublicacao'
+import { CartaoPublicacao, EMOJI_CURTIDA } from '../componentes/mural/CartaoPublicacao'
+import { Comentarios } from '../componentes/mural/Comentarios'
 import { EstrelasNota } from '../componentes/mural/EstrelasNota'
+import { AreaTexto } from '../componentes/ui/Campo'
+import { Botao } from '../componentes/ui/Botao'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
+import { Esqueleto } from '../componentes/ui/Esqueleto'
+import { IconeCompartilhar, IconeLixeira } from '../componentes/ui/icones'
 import { useAutenticacao } from '../hooks/useAutenticacao'
 import { useCasalComMembros } from '../hooks/useCasal'
 import {
@@ -17,10 +22,14 @@ import {
 } from '../hooks/useMural'
 import { textos } from '../lib/textos'
 
-/** Detalhe da publicação: conversa aberta + editar/excluir (só do autor). */
+/**
+ * Detalhe da publicação: foto em destaque, conversa aberta e, para o
+ * autor, a lixeira no topo — apagar é uma ação visível, não escondida.
+ */
 export function PaginaPublicacao() {
   const { publicacaoId } = useParams()
   const navegar = useNavigate()
+  const { state } = useLocation() as { state?: { focarComentario?: boolean } }
   const { usuario } = useAutenticacao()
   const casal = useCasalComMembros()
   const publicacao = usePublicacao(publicacaoId!)
@@ -42,7 +51,9 @@ export function PaginaPublicacao() {
     return (
       <main>
         <CabecalhoPagina titulo={textos.publicacao.titulo} fallback="/" />
-        <p className="px-5 pt-4 text-cinza">{textos.comuns.carregando}</p>
+        <div className="mt-4 px-5">
+          <Esqueleto className="h-56 rounded-2xl" />
+        </div>
       </main>
     )
   }
@@ -80,36 +91,59 @@ export function PaginaPublicacao() {
 
   return (
     <main className="pb-8">
-      <CabecalhoPagina titulo={textos.publicacao.titulo} fallback="/" />
+      <CabecalhoPagina
+        titulo={textos.publicacao.titulo}
+        fallback="/"
+        acao={
+          <div className="flex items-center gap-1">
+            {dados.tipo === 'avaliacao' && !editando && (
+              <button
+                type="button"
+                aria-label={textos.compartilhar.botaoAbrir}
+                onClick={() => setCompartilhando(true)}
+                className="flex h-9 w-9 items-center justify-center rounded-full text-nevoa transition-transform active:scale-90"
+              >
+                <IconeCompartilhar size={19} aria-hidden />
+              </button>
+            )}
+            {souAutor && (
+              <button
+                type="button"
+                aria-label={textos.publicacao.excluir}
+                onClick={() => setConfirmandoExclusao(true)}
+                className="flex h-9 w-9 items-center justify-center rounded-full text-erro transition-transform active:scale-90"
+              >
+                <IconeLixeira size={19} aria-hidden />
+              </button>
+            )}
+          </div>
+        }
+      />
 
       <div className="mt-2 px-5">
         {editando ? (
-          <div className="rounded-2xl bg-cartao p-4">
+          <div className="rounded-2xl border border-linha bg-cartao p-4">
             <p className="text-sm text-nevoa">{textos.novo.notaRotulo}</p>
             <EstrelasNota valor={notaEditada} aoMudar={setNotaEditada} />
-            <textarea
+            <AreaTexto
               rows={3}
               maxLength={2000}
               value={corpoEditado}
               onChange={(evento) => setCorpoEditado(evento.target.value)}
-              className="mt-3 w-full resize-none rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none focus:border-rosa"
+              className="mt-3 resize-none"
             />
             <div className="mt-3 flex gap-2">
-              <button
-                type="button"
-                onClick={() => setEditando(false)}
-                className="flex-1 rounded-xl border border-linha-forte py-2.5 text-nevoa"
-              >
+              <Botao variante="fantasma" onClick={() => setEditando(false)} className="flex-1">
                 {textos.comuns.cancelar}
-              </button>
-              <button
-                type="button"
+              </Botao>
+              <Botao
                 onClick={aoSalvarEdicao}
-                disabled={editar.isPending || notaEditada === 0}
-                className="flex-1 rounded-xl bg-rosa py-2.5 font-medium text-neve disabled:opacity-60"
+                carregando={editar.isPending}
+                disabled={notaEditada === 0}
+                className="flex-1"
               >
                 {textos.comuns.salvar}
-              </button>
+              </Botao>
             </div>
           </div>
         ) : (
@@ -119,38 +153,35 @@ export function PaginaPublicacao() {
             meuId={usuario?.id}
             reacoes={reacoes.data ?? []}
             qtdComentarios={contagens.data?.[dados.id] ?? 0}
-            aoReagir={(emoji) => reagir.mutate({ publicacaoId: dados.id, emoji })}
-            comentariosAbertos
+            aoCurtir={() => reagir.mutate({ publicacaoId: dados.id, emoji: EMOJI_CURTIDA })}
           />
         )}
-      </div>
 
-      {dados.tipo === 'avaliacao' && !editando && (
-        <button
-          type="button"
-          onClick={() => setCompartilhando(true)}
-          className="mx-5 mt-4 w-[calc(100%-2.5rem)] rounded-xl border border-rosa py-3 font-medium text-rosa-suave"
-        >
-          {textos.compartilhar.botaoAbrir}
-        </button>
-      )}
-
-      {souAutor && !editando && (
-        <div className="mt-6 flex flex-col items-start gap-3 px-5">
-          {dados.tipo === 'avaliacao' && (
-            <button type="button" onClick={comecarEdicao} className="text-sm text-nevoa underline">
-              {textos.publicacao.editar}
-            </button>
-          )}
+        {souAutor && dados.tipo === 'avaliacao' && !editando && (
           <button
             type="button"
-            onClick={() => setConfirmandoExclusao(true)}
-            className="text-sm text-rosa-suave underline"
+            onClick={comecarEdicao}
+            className="mt-3 text-sm text-nevoa underline"
           >
-            {textos.publicacao.excluir}
+            {textos.publicacao.editar}
           </button>
-        </div>
-      )}
+        )}
+
+        {!editando && (
+          <section className="mt-6">
+            <h2 className="text-xs font-medium tracking-wide text-cinza uppercase">
+              {textos.publicacao.comentarios}
+            </h2>
+            <div className="mt-3">
+              <Comentarios
+                publicacaoId={dados.id}
+                membros={casal.data?.membros ?? []}
+                focarCampo={state?.focarComentario ?? false}
+              />
+            </div>
+          </section>
+        )}
+      </div>
 
       {compartilhando && (
         <ModalCompartilhar
@@ -165,6 +196,8 @@ export function PaginaPublicacao() {
         titulo={textos.publicacao.excluirConfirmar}
         descricao={textos.publicacao.excluirExplicacao}
         rotuloConfirmar={textos.comuns.confirmar}
+        perigosa
+        confirmando={excluir.isPending}
         aoConfirmar={aoExcluir}
         aoCancelar={() => setConfirmandoExclusao(false)}
       />

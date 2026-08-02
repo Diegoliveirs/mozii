@@ -1,8 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Ícone provisório do Mozii: coração rosa sobre fundo noite -->
-  <rect width="64" height="64" rx="14" fill="#16131c"/>
+  <!--
+    Ícone do Mozii: um ingresso de cinema com o coração do casal.
+    Os recortes laterais (perfuração do bilhete) são a assinatura visual
+    do redesign; o picotado embaixo separa o "canhoto" do ingresso.
+  -->
+  <defs>
+    <mask id="bilhete">
+      <rect width="64" height="64" rx="14" fill="#fff"/>
+      <circle cx="0" cy="32" r="5" fill="#000"/>
+      <circle cx="64" cy="32" r="5" fill="#000"/>
+    </mask>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#16131c" mask="url(#bilhete)"/>
   <path
-    d="M32 47c-.6 0-1.2-.2-1.7-.6C22.5 40.2 16 34.6 16 27.6 16 22.3 20.1 18 25.2 18c2.7 0 5.2 1.2 6.8 3.2C33.6 19.2 36.1 18 38.8 18 43.9 18 48 22.3 48 27.6c0 7-6.5 12.6-14.3 18.8-.5.4-1.1.6-1.7.6z"
+    d="M32 44c-.6 0-1.2-.2-1.7-.6C22.5 37.2 16 31.6 16 24.6 16 19.3 20.1 15 25.2 15c2.7 0 5.2 1.2 6.8 3.2C33.6 16.2 36.1 15 38.8 15 43.9 15 48 19.3 48 24.6c0 7-6.5 12.6-14.3 18.8-.5.4-1.1.6-1.7.6z"
     fill="#d4537e"
   />
+  <line x1="17" y1="52" x2="47" y2="52" stroke="#3a3346" stroke-width="2" stroke-dasharray="3 3" stroke-linecap="round"/>
 </svg>

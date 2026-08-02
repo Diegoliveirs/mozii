@@ -25,7 +25,7 @@ test('buscar filme, montar lista, marcar assistido e sortear', async ({ page }) 
   await page.getByLabel('E-mail').fill(USUARIO_UM.email)
   await page.getByLabel('Senha', { exact: true }).fill(USUARIO_UM.senha)
   await page.getByRole('button', { name: 'Entrar', exact: true }).click()
-  await expect(page.getByRole('heading', { name: 'Mural' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Momentos' })).toBeVisible()
 
   // Buscar no TMDB
   await page.getByRole('link', { name: 'Cinema' }).click()
@@ -42,7 +42,7 @@ test('buscar filme, montar lista, marcar assistido e sortear', async ({ page }) 
   await page.getByRole('button', { name: 'Adicionar à lista' }).click()
   await page.getByPlaceholder('Nome da nova lista').fill('Para ver juntos')
   await page.getByRole('button', { name: 'Criar lista' }).click()
-  await expect(page.getByText('✓ já está')).toBeVisible()
+  await expect(page.getByText('já está')).toBeVisible()
   await page.locator('[role=dialog]').click({ position: { x: 10, y: 10 } })
 
   // A lista mostra o item
@@ -56,11 +56,11 @@ test('buscar filme, montar lista, marcar assistido e sortear', async ({ page }) 
   // Marcar assistido: sorteio desabilita e aparece a celebração
   await page.getByRole('button', { name: 'Marcar como assistido' }).click()
   await expect(page.getByText('Vocês já viram tudo desta lista! 🎉')).toBeVisible()
-  await expect(page.getByRole('button', { name: '🎲 O que ver hoje' })).toBeDisabled()
+  await expect(page.getByRole('button', { name: 'O que ver hoje' })).toBeDisabled()
 
   // Desmarcar e sortear: o caça-níquel revela o único não-assistido
   await page.getByRole('button', { name: 'Desmarcar assistido' }).click()
-  await page.getByRole('button', { name: '🎲 O que ver hoje' }).click()
+  await page.getByRole('button', { name: 'O que ver hoje' }).click()
   const modal = page.getByRole('dialog', { name: 'O que ver hoje' })
   await expect(modal).toBeVisible()
   await expect(modal.getByText('Cidade de Deus', { exact: false })).toBeVisible({ timeout: 5_000 })

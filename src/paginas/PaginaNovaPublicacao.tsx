@@ -4,6 +4,9 @@ import { FolhaBuscarFilme } from '../componentes/filmes/FolhaBuscarFilme'
 import { Poster } from '../componentes/filmes/Poster'
 import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
 import { EstrelasNota } from '../componentes/mural/EstrelasNota'
+import { Botao } from '../componentes/ui/Botao'
+import { AreaTexto } from '../componentes/ui/Campo'
+import { IconeFechar, IconeFilme, IconeFoto } from '../componentes/ui/icones'
 import { useRepositorios } from '../dados/ContextoRepositorios'
 import type { RefFilme } from '../dominio/tipos'
 import { useCriarAvaliacao, useCriarTexto } from '../hooks/useMural'
@@ -95,18 +98,18 @@ export function PaginaNovaPublicacao() {
       {/* O voltar aqui É o "cancelar" da publicação */}
       <CabecalhoPagina titulo={textos.novo.titulo} fallback="/" />
       <div className="px-5">
-        <textarea
+        <AreaTexto
           rows={4}
           maxLength={2000}
           placeholder={textos.novo.dicaTexto}
           value={corpo}
           onChange={(evento) => setCorpo(evento.target.value)}
-          className="mt-2 w-full resize-none rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none placeholder:text-cinza focus:border-rosa"
+          className="mt-2 resize-none"
         />
 
         {/* Filme escolhido → avaliação */}
         {filme && (
-          <div className="mt-3 rounded-2xl bg-cartao p-4">
+          <div className="mt-3 rounded-2xl border border-linha bg-cartao p-4">
             <div className="flex items-center gap-3">
               <Poster
                 caminho={filme.caminhoPoster}
@@ -126,9 +129,9 @@ export function PaginaNovaPublicacao() {
                   setFilme(null)
                   setNota(0)
                 }}
-                className="text-cinza"
+                className="p-1 text-cinza transition-transform active:scale-90"
               >
-                ✕
+                <IconeFechar size={17} aria-hidden />
               </button>
             </div>
           </div>
@@ -142,9 +145,9 @@ export function PaginaNovaPublicacao() {
               type="button"
               aria-label={textos.novo.removerFoto}
               onClick={() => setFoto(null)}
-              className="absolute top-2 right-2 rounded-full bg-abismo/80 px-2.5 py-1 text-neve"
+              className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-abismo/80 text-neve"
             >
-              ✕
+              <IconeFechar size={16} aria-hidden />
             </button>
           </div>
         )}
@@ -152,13 +155,14 @@ export function PaginaNovaPublicacao() {
         <div className="mt-4 flex gap-2">
           {!filme && (
             <>
-              <button
-                type="button"
+              <Botao
+                variante="fantasma"
                 onClick={() => campoFoto.current?.click()}
-                className="rounded-xl border border-linha-forte px-4 py-2.5 text-sm text-nevoa"
+                className="py-2.5"
               >
+                <IconeFoto size={17} aria-hidden />
                 {textos.novo.foto}
-              </button>
+              </Botao>
               <input
                 ref={campoFoto}
                 type="file"
@@ -169,26 +173,18 @@ export function PaginaNovaPublicacao() {
             </>
           )}
           {!foto && (
-            <button
-              type="button"
-              onClick={() => setBuscaAberta(true)}
-              className="rounded-xl border border-linha-forte px-4 py-2.5 text-sm text-nevoa"
-            >
+            <Botao variante="fantasma" onClick={() => setBuscaAberta(true)} className="py-2.5">
+              <IconeFilme size={17} aria-hidden />
               {filme ? textos.novo.trocarFilme : textos.novo.avaliarFilme}
-            </button>
+            </Botao>
           )}
         </div>
 
-        {erro && <p className="mt-3 text-sm text-rosa-suave">{erro}</p>}
+        {erro && <p className="mt-3 text-sm text-erro">{erro}</p>}
 
-        <button
-          type="button"
-          onClick={aoPublicar}
-          disabled={publicando}
-          className="mt-5 w-full rounded-xl bg-rosa py-3 font-medium text-neve disabled:opacity-60"
-        >
-          {publicando ? textos.novo.publicando : textos.novo.publicar}
-        </button>
+        <Botao onClick={aoPublicar} carregando={publicando} className="mt-5 w-full">
+          {textos.novo.publicar}
+        </Botao>
 
         {buscaAberta && (
           <FolhaBuscarFilme

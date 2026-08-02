@@ -1,4 +1,6 @@
-import { CartaoPublicacao } from './CartaoPublicacao'
+import { useNavigate } from 'react-router-dom'
+import type { ReactNode } from 'react'
+import { CartaoPublicacao, EMOJI_CURTIDA } from './CartaoPublicacao'
 import { useAutenticacao } from '../../hooks/useAutenticacao'
 import { useCasalComMembros } from '../../hooks/useCasal'
 import {
@@ -8,18 +10,26 @@ import {
   useReacoesLote,
 } from '../../hooks/useMural'
 import { textos } from '../../lib/textos'
+import { Esqueleto } from '../ui/Esqueleto'
+import { EstadoVazio } from '../ui/EstadoVazio'
+import { IconeMural } from '../ui/icones'
 
 /**
- * O feed de publicações com reações/contagens em lote e paginação.
+ * O feed de publicações com curtidas/contagens em lote e paginação.
  * Sem `autorId` é o Mural; com, é o feed pessoal ("Pegadas" do perfil).
  */
 export function FeedPublicacoes({
   autorId,
   mensagemVazio,
+  descricaoVazio,
+  acaoVazio,
 }: {
   autorId?: string
   mensagemVazio: string
+  descricaoVazio?: string
+  acaoVazio?: ReactNode
 }) {
+  const navegar = useNavigate()
   const { usuario } = useAutenticacao()
   const casal = useCasalComMembros()
   const feed = useFeedInfinito(autorId)
@@ -32,10 +42,22 @@ export function FeedPublicacoes({
 
   return (
     <>
-      {feed.isLoading && <p className="mt-6 text-cinza">{textos.comuns.carregando}</p>}
+      {feed.isLoading && (
+        <div className="mt-5 space-y-4">
+          <Esqueleto className="h-40 rounded-2xl" />
+          <Esqueleto className="h-24 rounded-2xl" />
+        </div>
+      )}
 
       {feed.isSuccess && publicacoes.length === 0 && (
-        <p className="mt-8 text-center text-nevoa">{mensagemVazio}</p>
+        <div className="mt-6">
+          <EstadoVazio
+            icone={<IconeMural size={28} aria-hidden />}
+            titulo={mensagemVazio}
+            descricao={descricaoVazio}
+            acao={acaoVazio}
+          />
+        </div>
       )}
 
       <div className="mt-5 space-y-4">
@@ -47,7 +69,8 @@ export function FeedPublicacoes({
             meuId={usuario?.id}
             reacoes={reacoes.data?.filter((reacao) => reacao.publicacaoId === publicacao.id) ?? []}
             qtdComentarios={contagens.data?.[publicacao.id] ?? 0}
-            aoReagir={(emoji) => reagir.mutate({ publicacaoId: publicacao.id, emoji })}
+            aoCurtir={() => reagir.mutate({ publicacaoId: publicacao.id, emoji: EMOJI_CURTIDA })}
+            aoAbrir={() => navegar(`/publicacao/${publicacao.id}`)}
           />
         ))}
       </div>

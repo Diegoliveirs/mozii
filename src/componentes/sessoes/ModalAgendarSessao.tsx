@@ -1,7 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import type { RefFilme } from '../../dominio/tipos'
 import { useAgendarSessao } from '../../hooks/useSessoes'
+import { useAviso } from '../ui/Avisos'
 import { textos } from '../../lib/textos'
+import { Botao } from '../ui/Botao'
+import { Campo } from '../ui/Campo'
+import { FolhaBase } from '../ui/FolhaBase'
 import { Poster } from '../filmes/Poster'
 
 /**
@@ -18,6 +22,7 @@ export function ModalAgendarSessao({
   aoFechar: () => void
 }) {
   const agendar = useAgendarSessao()
+  const avisar = useAviso()
   const [quando, setQuando] = useState('')
   const [observacao, setObservacao] = useState('')
   const [erro, setErro] = useState<string | null>(null)
@@ -32,6 +37,7 @@ export function ModalAgendarSessao({
         observacao: observacao.trim() || null,
         itemListaId,
       })
+      avisar(textos.sessao.agendadaAviso)
       aoFechar()
     } catch {
       setErro(textos.comuns.erroInesperado)
@@ -39,20 +45,12 @@ export function ModalAgendarSessao({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-abismo/80"
-      role="dialog"
-      aria-modal="true"
-      aria-label={textos.sessao.modalTitulo}
-      onClick={aoFechar}
+    <FolhaBase
+      rotulo={textos.sessao.modalTitulo}
+      titulo={textos.sessao.modalTitulo}
+      aoFechar={aoFechar}
     >
-      <form
-        onSubmit={aoAgendar}
-        className="entrada-folha w-full max-w-md rounded-t-2xl bg-cartao p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
-        onClick={(evento) => evento.stopPropagation()}
-      >
-        <h2 className="font-voz text-xl text-neve">{textos.sessao.modalTitulo}</h2>
-
+      <form onSubmit={aoAgendar}>
         <div className="mt-4 flex items-center gap-3">
           <Poster
             caminho={filme.caminhoPoster}
@@ -68,34 +66,34 @@ export function ModalAgendarSessao({
 
         <label className="mt-4 flex flex-col gap-1.5 text-sm text-nevoa">
           {textos.sessao.quandoRotulo}
-          <input
+          <Campo
             type="datetime-local"
             required
             value={quando}
             onChange={(evento) => setQuando(evento.target.value)}
-            className="rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none focus:border-rosa"
           />
         </label>
 
-        <input
+        <Campo
           type="text"
           maxLength={280}
           placeholder={textos.sessao.observacaoDica}
           value={observacao}
           onChange={(evento) => setObservacao(evento.target.value)}
-          className="mt-3 w-full rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none placeholder:text-cinza focus:border-rosa"
+          className="mt-3"
         />
 
-        {erro && <p className="mt-3 text-sm text-rosa-suave">{erro}</p>}
+        {erro && <p className="mt-3 text-sm text-erro">{erro}</p>}
 
-        <button
+        <Botao
           type="submit"
-          disabled={!quando || agendar.isPending}
-          className="mt-4 w-full rounded-xl bg-rosa py-3 font-medium text-neve disabled:opacity-60"
+          carregando={agendar.isPending}
+          disabled={!quando}
+          className="mt-4 w-full"
         >
-          {agendar.isPending ? textos.sessao.agendando : textos.sessao.agendar}
-        </button>
+          {textos.sessao.agendar}
+        </Botao>
       </form>
-    </div>
+    </FolhaBase>
   )
 }

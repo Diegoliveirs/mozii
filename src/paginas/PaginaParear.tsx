@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Botao } from '../componentes/ui/Botao'
+import { IconeCoracao } from '../componentes/ui/icones'
 import { useCriarCasal, useEntrarNoCasal } from '../hooks/useCasal'
 import { codigoCompleto, normalizarCodigo } from '../lib/codigo'
 import { textos } from '../lib/textos'
@@ -42,49 +44,67 @@ export function PaginaParear() {
     }
   }
 
-  // Depois de criar: só o código, grande, e o botão de seguir.
+  // Depois de criar: o código vira um bilhete de cinema para o par.
   if (codigoCriado) {
     return (
       <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 px-6 text-center">
-        <h1 className="font-voz text-3xl text-neve">{textos.parear.codigoCriadoTitulo}</h1>
+        <h1 className="font-voz text-3xl font-semibold tracking-tight text-neve">
+          {textos.parear.codigoCriadoTitulo}
+        </h1>
         <p className="text-nevoa">{textos.parear.codigoCriadoDica}</p>
-        <p
-          data-testid="codigo-convite"
-          className="rounded-2xl bg-cartao px-8 py-4 font-mono text-4xl tracking-[0.3em] text-rosa-suave"
-        >
-          {codigoCriado}
-        </p>
-        <button
-          type="button"
-          onClick={() => navegar('/', { replace: true })}
-          className="mt-4 w-full rounded-xl bg-rosa py-3 font-medium text-neve"
-        >
+
+        <div className="relative w-full overflow-hidden rounded-2xl border border-linha bg-cartao shadow-cartao">
+          <p className="px-8 pt-6 text-xs font-medium tracking-wide text-rosa-suave uppercase">
+            {textos.ajustes.codigoConvite}
+          </p>
+          <p
+            data-testid="codigo-convite"
+            className="px-8 pt-2 pb-5 font-mono text-4xl tracking-[0.3em] text-rosa-suave"
+          >
+            {codigoCriado}
+          </p>
+          <div className="relative border-t-2 border-dashed border-linha-forte">
+            <span
+              aria-hidden
+              className="absolute top-0 -left-2 h-4 w-4 -translate-y-1/2 rounded-full border border-linha bg-noite"
+            />
+            <span
+              aria-hidden
+              className="absolute top-0 -right-2 h-4 w-4 -translate-y-1/2 rounded-full border border-linha bg-noite"
+            />
+            <p className="px-8 py-3 text-xs text-cinza">{textos.parear.codigoCriadoDica}</p>
+          </div>
+        </div>
+
+        <Botao onClick={() => navegar('/', { replace: true })} className="mt-2 w-full">
           {textos.parear.irParaApp}
-        </button>
+        </Botao>
       </main>
     )
   }
 
   return (
     <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
-      <h1 className="font-voz text-3xl text-neve">{textos.parear.titulo}</h1>
+      <h1 className="flex items-center gap-2 font-voz text-3xl font-semibold tracking-tight text-neve">
+        {textos.parear.titulo}
+        <IconeCoracao size={22} weight="fill" className="text-rosa" aria-hidden />
+      </h1>
       <p className="mt-2 text-nevoa">{textos.parear.subtitulo}</p>
 
-      <section className="mt-8 rounded-2xl bg-cartao p-5">
+      <section className="mt-8 rounded-2xl border border-linha bg-cartao p-5 shadow-cartao">
         <h2 className="font-medium text-neve">{textos.parear.criarTitulo}</h2>
-        <button
-          type="button"
-          onClick={aoCriar}
-          disabled={criar.isPending}
-          className="mt-3 w-full rounded-xl bg-rosa py-3 font-medium text-neve disabled:opacity-60"
-        >
-          {criar.isPending ? textos.parear.criando : textos.parear.criarBotao}
-        </button>
+        <Botao onClick={aoCriar} carregando={criar.isPending} className="mt-3 w-full">
+          {textos.parear.criarBotao}
+        </Botao>
       </section>
 
-      <p className="my-4 text-center text-sm text-cinza">{textos.parear.ou}</p>
+      <div className="my-4 flex items-center gap-3 text-sm text-cinza">
+        <span aria-hidden className="h-px flex-1 bg-linha" />
+        {textos.parear.ou}
+        <span aria-hidden className="h-px flex-1 bg-linha" />
+      </div>
 
-      <section className="rounded-2xl bg-cartao p-5">
+      <section className="rounded-2xl border border-linha bg-cartao p-5 shadow-cartao">
         <h2 className="font-medium text-neve">{textos.parear.entrarTitulo}</h2>
         <form onSubmit={aoEntrar} className="mt-3 flex flex-col gap-3">
           <label className="flex flex-col gap-1.5 text-sm text-nevoa">
@@ -95,20 +115,21 @@ export function PaginaParear() {
               autoCapitalize="characters"
               value={codigo}
               onChange={(e) => setCodigo(normalizarCodigo(e.target.value))}
-              className="rounded-xl border border-linha bg-veu px-4 py-3 text-center font-mono text-2xl tracking-[0.3em] text-neve outline-none focus:border-rosa"
+              className="rounded-xl border border-linha bg-veu px-4 py-3 text-center font-mono text-2xl tracking-[0.3em] text-neve outline-none transition-colors focus:border-rosa focus:ring-2 focus:ring-rosa/25"
             />
           </label>
-          <button
+          <Botao
             type="submit"
-            disabled={!codigoCompleto(codigo) || entrar.isPending}
-            className="rounded-xl border border-rosa py-3 font-medium text-rosa-suave disabled:opacity-50"
+            variante="secundario"
+            carregando={entrar.isPending}
+            disabled={!codigoCompleto(codigo)}
           >
-            {entrar.isPending ? textos.parear.entrando : textos.parear.entrarBotao}
-          </button>
+            {textos.parear.entrarBotao}
+          </Botao>
         </form>
       </section>
 
-      {erro && <p className="mt-4 text-center text-sm text-rosa-suave">{erro}</p>}
+      {erro && <p className="mt-4 text-center text-sm text-erro">{erro}</p>}
     </main>
   )
 }

@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useAviso } from '../componentes/ui/Avisos'
 import { useRepositorios } from '../dados/ContextoRepositorios'
 import type { RefFilme } from '../dominio/tipos'
+import { textos } from '../lib/textos'
 import { chaveFeed } from './useMural'
 
 export const chaveListas = ['listas'] as const
@@ -74,6 +76,7 @@ export function useAdicionarFilme() {
 export function useRemoverItem() {
   const { listas } = useRepositorios()
   const clienteQuery = useQueryClient()
+  const avisar = useAviso()
   return useMutation({
     mutationFn: ({ itemId }: { itemId: string; listaId: string }) => listas.removerItem(itemId),
     onSuccess: (_resultado, { listaId }) => {
@@ -81,12 +84,14 @@ export function useRemoverItem() {
       clienteQuery.invalidateQueries({ queryKey: chaveItens(listaId) })
       clienteQuery.invalidateQueries({ queryKey: ['listas', 'contem'] })
     },
+    onError: () => avisar(textos.comuns.erroInesperado, 'erro'),
   })
 }
 
 export function useMarcarAssistido() {
   const { listas, mural } = useRepositorios()
   const clienteQuery = useQueryClient()
+  const avisar = useAviso()
   return useMutation({
     mutationFn: ({
       itemId,
@@ -116,5 +121,6 @@ export function useMarcarAssistido() {
           .catch(() => {})
       }
     },
+    onError: () => avisar(textos.comuns.erroInesperado, 'erro'),
   })
 }

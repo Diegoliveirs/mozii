@@ -42,7 +42,7 @@ export const textos = {
   },
 
   parear: {
-    titulo: 'Falta uma pessoa 💜',
+    titulo: 'Falta uma pessoa',
     subtitulo: 'O Mozii é feito para vocês dois. Crie o espaço ou entre no do seu par.',
     criarTitulo: 'Começar o nosso espaço',
     criarBotao: 'Criar espaço do casal',
@@ -62,16 +62,18 @@ export const textos = {
     titulo: 'Mural',
     juntos: (nomes: string[]) => nomes.join(' ♥ '),
     esperandoPar: 'Seu par ainda não entrou — o código de convite está nos Ajustes.',
-    vazio: 'O Mural de vocês começa aqui. Publiquem algo! 💜',
+    vazio: 'O Mural de vocês começa aqui 💜',
+    vazioDica: 'Publiquem a primeira memória de cinema.',
+    vazioAcao: 'Publicar algo',
     carregarMais: 'Carregar mais',
   },
 
   novo: {
     titulo: 'Nova publicação',
     dicaTexto: 'Escreve algo para vocês…',
-    foto: '📷 Foto',
+    foto: 'Foto',
     removerFoto: 'Remover foto',
-    avaliarFilme: '🎬 Avaliar um filme',
+    avaliarFilme: 'Avaliar um filme',
     trocarFilme: 'Trocar filme',
     removerFilme: 'Remover filme',
     notaRotulo: 'Sua nota',
@@ -102,28 +104,32 @@ export const textos = {
   },
 
   sessao: {
-    agendarBotao: '🍿 Agendar sessão',
+    agendarBotao: 'Agendar sessão',
     modalTitulo: 'Agendar sessão',
     quandoRotulo: 'Quando?',
     observacaoDica: 'Combinados (ex.: leva pipoca doce) — opcional',
     agendar: 'Agendar',
     agendando: 'Agendando…',
+    agendadaAviso: 'Sessão agendada 🍿',
     agendarDoSorteio: 'Agendar este!',
-    cartaoTitulo: 'Sessão marcada',
+    cartaoTitulo: 'Próxima sessão',
+    passadasTitulo: 'Sessões passadas',
     comoFoi: 'E aí, como foi? 🍿',
+    comoFoiCurto: 'Como foi?',
+    concluida: 'assistida',
     avaliarFilme: 'Avaliar filme',
     soMarcar: 'Só marcar como assistida',
     reagendar: 'Reagendar',
     cancelar: 'Cancelar sessão',
     cancelarConfirmar: 'Cancelar esta sessão?',
     cancelarExplicacao: 'O agendamento some para vocês dois; o filme continua nas listas.',
-    calendario: '📅 Adicionar ao calendário',
+    calendario: 'Calendário',
     descricaoIcs: 'Sessão de cinema do casal, marcada no Mozii 💜',
   },
 
   compartilhar: {
     titulo: 'Compartilhar nos Stories',
-    botaoAbrir: '📤 Compartilhar',
+    botaoAbrir: 'Compartilhar',
     tema: 'Tema',
     compartilhar: 'Compartilhar',
     baixar: 'Baixar imagem',
@@ -132,9 +138,9 @@ export const textos = {
   },
 
   reacoes: {
-    rapidas: ['❤️', '😂', '😍', '😮', '😢', '🔥'],
-    reagir: 'Reagir',
-    outroEmoji: 'Outro emoji…',
+    curtir: 'Curtir',
+    descurtir: 'Descurtir',
+    comentar: 'Comentar',
   },
 
   navegacao: {
@@ -147,11 +153,12 @@ export const textos = {
 
   momentos: {
     titulo: 'Momentos',
-    vazio: 'O diário de vocês começa aqui. Registrem a primeira memória! 📔',
+    subtitulo: 'o diário de vocês',
+    vazio: 'O diário de vocês começa aqui. Registrem a primeira memória!',
     nova: 'Nova memória',
     legendaDica: 'O que aconteceu?',
     dataRotulo: 'Quando foi?',
-    fotosRotulo: '📷 Fotos',
+    fotosRotulo: 'Fotos',
     salvar: 'Guardar memória',
     salvando: 'Guardando…',
     faltaConteudo: 'Uma memória precisa de legenda ou de pelo menos uma foto.',
@@ -222,7 +229,7 @@ export const textos = {
   },
 
   sorteio: {
-    botao: '🎲 O que ver hoje',
+    botao: 'O que ver hoje',
     titulo: 'O que ver hoje',
     rolando: 'Sorteando…',
     verFilme: 'Ver o filme',

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { App } from './App'
 import { ProvedorRepositorios } from './dados/ContextoRepositorios'
 import { AvisoAtualizacao } from './componentes/ui/AvisoAtualizacao'
+import { ProvedorAvisos } from './componentes/ui/Avisos'
 import { FaltaConfiguracao } from './componentes/ui/FaltaConfiguracao'
 import { variaveisFaltando } from './lib/ambiente'
 import { travarZoom } from './lib/travarZoom'
@@ -42,8 +43,10 @@ async function iniciar() {
       <QueryClientProvider client={clienteQuery}>
         <ProvedorRepositorios repositorios={criarRepositoriosSupabase()}>
           <BrowserRouter>
-            <App />
-            <AvisoAtualizacao />
+            <ProvedorAvisos>
+              <App />
+              <AvisoAtualizacao />
+            </ProvedorAvisos>
           </BrowserRouter>
         </ProvedorRepositorios>
       </QueryClientProvider>

@@ -1,6 +1,8 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useAviso } from '../componentes/ui/Avisos'
 import { useRepositorios } from '../dados/ContextoRepositorios'
 import type { Comentario, Reacao, RefFilme } from '../dominio/tipos'
+import { textos } from '../lib/textos'
 import { useAutenticacao } from './useAutenticacao'
 
 export const chaveFeed = ['mural', 'feed'] as const
@@ -83,6 +85,7 @@ export function useComentar() {
   const { mural } = useRepositorios()
   const { usuario } = useAutenticacao()
   const clienteQuery = useQueryClient()
+  const avisar = useAviso()
 
   return useMutation({
     mutationFn: ({ publicacaoId, corpo }: { publicacaoId: string; corpo: string }) =>
@@ -106,6 +109,7 @@ export function useComentar() {
     },
     onError: (_erro, _dados, contexto) => {
       if (contexto) clienteQuery.setQueryData(contexto.chave, contexto.anteriores)
+      avisar(textos.comuns.erroInesperado, 'erro')
     },
     onSettled: (_r, _e, { publicacaoId }) => {
       clienteQuery.invalidateQueries({ queryKey: chaveComentarios(publicacaoId) })
@@ -138,6 +142,7 @@ export function useAlternarReacao(publicacaoIds: string[]) {
   const { mural } = useRepositorios()
   const { usuario } = useAutenticacao()
   const clienteQuery = useQueryClient()
+  const avisar = useAviso()
 
   return useMutation({
     mutationFn: ({ publicacaoId, emoji }: { publicacaoId: string; emoji: string }) =>
@@ -169,6 +174,7 @@ export function useAlternarReacao(publicacaoIds: string[]) {
     },
     onError: (_erro, _dados, contexto) => {
       if (contexto) clienteQuery.setQueryData(contexto.chave, contexto.anteriores)
+      avisar(textos.comuns.erroInesperado, 'erro')
     },
     onSettled: () => clienteQuery.invalidateQueries({ queryKey: ['mural', 'reacoes'] }),
   })

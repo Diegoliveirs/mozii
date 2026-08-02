@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAutenticacao } from '../../hooks/useAutenticacao'
 import { useRepositorios } from '../../dados/ContextoRepositorios'
+import { TelaAbertura } from '../ui/TelaAbertura'
 
 /**
  * Bloqueia as rotas privadas sem sessão.
@@ -20,7 +21,7 @@ export function ExigirAutenticacao() {
     }
   }, [usuario, casal])
 
-  if (carregando) return null
+  if (carregando) return <TelaAbertura />
   if (!usuario) return <Navigate to="/entrar" replace />
   return <Outlet />
 }

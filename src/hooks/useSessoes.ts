@@ -12,6 +12,17 @@ export function useSessoesAgendadas() {
   return useQuery({ queryKey: chaveSessoes, queryFn: () => sessoes.agendadas() })
 }
 
+export const chaveSessoesConcluidas = ['sessoes', 'concluidas'] as const
+
+/** As últimas sessões já concluídas — a memória recente do Cinema. */
+export function useSessoesConcluidas(limite = 5) {
+  const { sessoes } = useRepositorios()
+  return useQuery({
+    queryKey: [...chaveSessoesConcluidas, limite],
+    queryFn: () => sessoes.concluidas(limite),
+  })
+}
+
 /** Agenda a sessão e publica a atividade "X agendou Y para sábado às 20h". */
 export function useAgendarSessao() {
   const { sessoes, mural } = useRepositorios()

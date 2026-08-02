@@ -4,21 +4,26 @@ import { useUrlFoto } from '../../hooks/useMural'
 import { tempoAtras } from '../../lib/datas'
 import { textos } from '../../lib/textos'
 import { Poster } from '../filmes/Poster'
+import { Esqueleto } from '../ui/Esqueleto'
+import { IconeConfirmado, IconeFilme, IconeSessao } from '../ui/icones'
+import { AcoesPublicacao } from './AcoesPublicacao'
 import { AvatarPerfil } from './AvatarPerfil'
-import { BarraReacoes } from './BarraReacoes'
-import { ComentariosInline } from './ComentariosInline'
 import { EstrelasNota } from './EstrelasNota'
+
+/** O emoji que representa o like — único valor gravado nas reações. */
+export const EMOJI_CURTIDA = '❤️'
 
 function FotoDaPublicacao({ caminho }: { caminho: string }) {
   const url = useUrlFoto(caminho)
-  if (!url.data) return <div className="mt-2 h-48 animate-pulse rounded-xl bg-veu" />
-  return <img src={url.data} alt="" className="mt-2 max-h-96 w-full rounded-xl object-cover" />
+  if (!url.data) return <Esqueleto className="mt-3 h-64 w-full rounded-none" />
+  // A foto é o foco: sangra de borda a borda do cartão.
+  return <img src={url.data} alt="" className="mt-3 max-h-[420px] w-full object-cover" />
 }
 
 /**
  * Um cartão do Mural. Os 4 tipos moram aqui:
  * texto (corpo/foto), avaliação (pôster + estrelas), atividade (linha
- * compacta) e momento (Fase 4). Reações/comentários valem para todos.
+ * compacta) e momento. Tocar no cartão abre a visão detalhada.
  */
 export function CartaoPublicacao({
   publicacao,
@@ -26,22 +31,26 @@ export function CartaoPublicacao({
   reacoes,
   qtdComentarios,
   meuId,
-  aoReagir,
-  comentariosAbertos = false,
+  aoCurtir,
+  aoAbrir,
 }: {
   publicacao: Publicacao
   membros: Perfil[]
   reacoes: Reacao[]
   qtdComentarios: number
   meuId: string | undefined
-  aoReagir: (emoji: string) => void
-  comentariosAbertos?: boolean
+  aoCurtir: () => void
+  /** Abre o detalhe; ausente quando o cartão JÁ é o detalhe. */
+  aoAbrir?: () => void
 }) {
   const indiceAutor = Math.max(
     0,
     membros.findIndex((m) => m.id === publicacao.autorId),
   )
   const nomeAutor = membros.find((m) => m.id === publicacao.autorId)?.nomeExibicao ?? '…'
+
+  const curtidasDeCoracao = reacoes.filter((reacao) => reacao.emoji === EMOJI_CURTIDA)
+  const curti = curtidasDeCoracao.some((reacao) => reacao.autorId === meuId)
 
   // Atividade é uma linha discreta, sem cartão cheio.
   if (publicacao.tipo === 'atividade' && publicacao.metaAtividade) {
@@ -52,11 +61,15 @@ export function CartaoPublicacao({
         : meta.acao === 'adicionou_na_lista'
           ? textos.atividade.adicionou(nomeAutor, meta.tituloFilme, meta.nomeLista)
           : textos.atividade.assistiu(nomeAutor, meta.tituloFilme)
-    const icone =
-      meta.acao === 'agendou_sessao' ? '🍿' : meta.acao === 'adicionou_na_lista' ? '🎬' : '✓'
+    const Icone =
+      meta.acao === 'agendou_sessao'
+        ? IconeSessao
+        : meta.acao === 'adicionou_na_lista'
+          ? IconeFilme
+          : IconeConfirmado
     return (
       <div className="flex items-center gap-2 px-1 text-sm text-cinza">
-        <span aria-hidden>{icone}</span>
+        <Icone size={16} aria-hidden className="shrink-0" />
         <Link to={`/filme/${meta.tmdbId}`} className="min-w-0 truncate">
           {frase}
         </Link>
@@ -66,22 +79,27 @@ export function CartaoPublicacao({
   }
 
   return (
-    <article className="rounded-2xl bg-cartao p-4">
-      <header className="flex items-center gap-2">
+    <article
+      onClick={aoAbrir}
+      className={`overflow-hidden rounded-2xl border border-linha bg-cartao shadow-cartao ${
+        aoAbrir ? 'cursor-pointer' : ''
+      }`}
+    >
+      <header className="flex items-center gap-2 px-4 pt-3.5">
         <AvatarPerfil nome={nomeAutor} indice={indiceAutor} />
         <span className="font-medium text-neve">{nomeAutor}</span>
-        <Link
-          to={`/publicacao/${publicacao.id}`}
-          className="ml-auto text-xs text-cinza"
-          aria-label={textos.publicacao.titulo}
-        >
-          {tempoAtras(publicacao.criadoEm)}
-        </Link>
+        <span className="ml-auto text-xs text-cinza">{tempoAtras(publicacao.criadoEm)}</span>
       </header>
 
+      {publicacao.caminhoFoto && <FotoDaPublicacao caminho={publicacao.caminhoFoto} />}
+
       {publicacao.tipo === 'avaliacao' && publicacao.filme && (
-        <div className="mt-3 flex gap-3">
-          <Link to={`/filme/${publicacao.filme.tmdbId}`} className="shrink-0">
+        <div className="mt-3 flex gap-3 px-4">
+          <Link
+            to={`/filme/${publicacao.filme.tmdbId}`}
+            onClick={(evento) => evento.stopPropagation()}
+            className="shrink-0"
+          >
             <Poster
               caminho={publicacao.filme.caminhoPoster}
               titulo={publicacao.filme.titulo}
@@ -90,10 +108,17 @@ export function CartaoPublicacao({
             />
           </Link>
           <div className="min-w-0">
-            <Link to={`/filme/${publicacao.filme.tmdbId}`} className="font-medium text-neve">
+            <Link
+              to={`/filme/${publicacao.filme.tmdbId}`}
+              onClick={(evento) => evento.stopPropagation()}
+              className="font-voz text-lg font-semibold text-neve"
+            >
               {publicacao.filme.titulo}
               {publicacao.filme.anoLancamento && (
-                <span className="text-cinza"> ({publicacao.filme.anoLancamento})</span>
+                <span className="font-sans text-sm font-normal text-cinza">
+                  {' '}
+                  ({publicacao.filme.anoLancamento})
+                </span>
               )}
             </Link>
             {publicacao.nota !== null && (
@@ -106,18 +131,18 @@ export function CartaoPublicacao({
       )}
 
       {publicacao.corpo && (
-        <p className="mt-2 whitespace-pre-wrap text-nevoa">{publicacao.corpo}</p>
+        <p className="mt-2.5 px-4 whitespace-pre-wrap text-nevoa">{publicacao.corpo}</p>
       )}
 
-      {publicacao.caminhoFoto && <FotoDaPublicacao caminho={publicacao.caminhoFoto} />}
-
-      <BarraReacoes reacoes={reacoes} meuId={meuId} aoReagir={aoReagir} />
-      <ComentariosInline
-        publicacaoId={publicacao.id}
-        quantidade={qtdComentarios}
-        membros={membros}
-        abertoInicial={comentariosAbertos}
-      />
+      <div className="px-4 pt-3 pb-3.5">
+        <AcoesPublicacao
+          curtidas={curtidasDeCoracao.length}
+          curti={curti}
+          qtdComentarios={qtdComentarios}
+          aoCurtir={aoCurtir}
+          aoComentar={aoAbrir}
+        />
+      </div>
     </article>
   )
 }

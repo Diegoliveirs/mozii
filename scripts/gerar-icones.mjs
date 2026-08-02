@@ -16,7 +16,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { chromium } from '@playwright/test'
 
 const CORACAO =
-  'M32 47c-.6 0-1.2-.2-1.7-.6C22.5 40.2 16 34.6 16 27.6 16 22.3 20.1 18 25.2 18c2.7 0 5.2 1.2 6.8 3.2C33.6 19.2 36.1 18 38.8 18 43.9 18 48 22.3 48 27.6c0 7-6.5 12.6-14.3 18.8-.5.4-1.1.6-1.7.6z'
+  'M32 44c-.6 0-1.2-.2-1.7-.6C22.5 37.2 16 31.6 16 24.6 16 19.3 20.1 15 25.2 15c2.7 0 5.2 1.2 6.8 3.2C33.6 16.2 36.1 15 38.8 15 43.9 15 48 19.3 48 24.6c0 7-6.5 12.6-14.3 18.8-.5.4-1.1.6-1.7.6z'
 
 const svgPadrao = readFileSync(new URL('../public/icone.svg', import.meta.url), 'utf8')
 
@@ -35,6 +35,26 @@ const saidas = [
   { arquivo: 'apple-touch-icon.png', tamanho: 180, svg: svgQuadrado },
 ]
 
+// Splash screens do iOS (apple-touch-startup-image): fundo noite + coração.
+// Tamanhos dos iPhones que interessam (retrato, pixels reais).
+function svgSplash(largura, altura) {
+  const escala = largura / 6.4 // coração ocupa ~10% da largura
+  const x = (largura - escala) / 2
+  const y = (altura - escala) / 2
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${largura} ${altura}">
+  <rect width="${largura}" height="${altura}" fill="#16131c"/>
+  <g transform="translate(${x} ${y}) scale(${escala / 64})">
+    <path d="${CORACAO}" fill="#d4537e"/>
+  </g>
+</svg>`
+}
+
+const splashes = [
+  { arquivo: 'splash-1170x2532.png', largura: 1170, altura: 2532 }, // 12/13/14
+  { arquivo: 'splash-1179x2556.png', largura: 1179, altura: 2556 }, // 14–16 Pro
+  { arquivo: 'splash-1290x2796.png', largura: 1290, altura: 2796 }, // Pro Max
+]
+
 // Mesmo canal dos E2E: o Edge do sistema (dispensa `playwright install`).
 const navegador = await chromium.launch({ channel: 'msedge' })
 const pagina = await navegador.newPage()
@@ -49,6 +69,18 @@ for (const { arquivo, tamanho, svg } of saidas) {
   const png = await pagina.screenshot({ omitBackground: true })
   writeFileSync(new URL(`../public/${arquivo}`, import.meta.url), png)
   console.log(`✓ public/${arquivo} (${tamanho}px)`)
+}
+
+for (const { arquivo, largura, altura } of splashes) {
+  await pagina.setViewportSize({ width: largura, height: altura })
+  const svgBase64 = Buffer.from(svgSplash(largura, altura)).toString('base64')
+  await pagina.setContent(
+    `<style>*{margin:0;padding:0}</style>` +
+      `<img src="data:image/svg+xml;base64,${svgBase64}" width="${largura}" height="${altura}">`,
+  )
+  const png = await pagina.screenshot()
+  writeFileSync(new URL(`../public/${arquivo}`, import.meta.url), png)
+  console.log(`✓ public/${arquivo} (${largura}×${altura})`)
 }
 
 await navegador.close()

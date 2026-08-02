@@ -34,6 +34,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // woff2 no precache: a Fraunces precisa funcionar offline também.
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         // Pôsteres do TMDB em CacheFirst: mudam nunca, pesam sempre.
         // Dados do Supabase ficam FORA do SW — cache é papel do TanStack Query.
         runtimeCaching: [

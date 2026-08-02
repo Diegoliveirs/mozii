@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { IconeAvancar, IconeFechar, IconeVoltar } from './icones'
 
 /**
  * Visualizador de fotos em tela cheia: navegação por toque nas bordas,
@@ -55,9 +56,9 @@ export function Lightbox({
               evento.stopPropagation()
               anterior()
             }}
-            className="absolute left-2 rounded-full bg-cartao/80 px-3 py-2 text-neve"
+            className="absolute left-2 flex h-10 w-10 items-center justify-center rounded-full bg-cartao/80 text-neve"
           >
-            ←
+            <IconeVoltar size={18} aria-hidden />
           </button>
           <button
             type="button"
@@ -66,9 +67,9 @@ export function Lightbox({
               evento.stopPropagation()
               proxima()
             }}
-            className="absolute right-2 rounded-full bg-cartao/80 px-3 py-2 text-neve"
+            className="absolute right-2 flex h-10 w-10 items-center justify-center rounded-full bg-cartao/80 text-neve"
           >
-            →
+            <IconeAvancar size={18} aria-hidden />
           </button>
           <span className="absolute bottom-6 rounded-full bg-cartao/80 px-3 py-1 text-sm text-nevoa">
             {indice + 1} / {urls.length}
@@ -81,9 +82,9 @@ export function Lightbox({
         type="button"
         aria-label="Fechar"
         onClick={aoFechar}
-        className="absolute top-[max(1rem,env(safe-area-inset-top))] right-4 rounded-full bg-cartao/80 px-3 py-2 text-neve"
+        className="absolute top-[max(1rem,env(safe-area-inset-top))] right-4 flex h-10 w-10 items-center justify-center rounded-full bg-cartao/80 text-neve"
       >
-        ✕
+        <IconeFechar size={18} aria-hidden />
       </button>
     </div>
   )

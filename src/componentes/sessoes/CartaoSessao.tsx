@@ -1,26 +1,24 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { urlPoster } from '../../api/tmdb'
+import { Link } from 'react-router-dom'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import type { SessaoCinema } from '../../dominio/tipos'
-import {
-  useCancelarSessao,
-  useConcluirSessao,
-  useReagendarSessao,
-  useSessoesAgendadas,
-} from '../../hooks/useSessoes'
-import { contagemRegressiva, formatarQuando } from '../../lib/datas'
+import { useCancelarSessao, useReagendarSessao, useSessoesAgendadas } from '../../hooks/useSessoes'
+import { contagemRegressiva } from '../../lib/datas'
 import { baixarIcs, gerarIcs } from '../../lib/ics'
 import { textos } from '../../lib/textos'
+import { Botao } from '../ui/Botao'
 import { DialogoConfirmar } from '../ui/DialogoConfirmar'
+import { IconeCalendario, IconeReagendar, IconeSessao } from '../ui/icones'
 
 /**
- * O cartão fixo no topo do Mural quando há sessão marcada.
- * Futuro: contagem regressiva ao vivo (re-render por minuto).
- * Horário passado: vira "E aí, como foi? 🍿" até alguém resolver.
+ * O ingresso de cinema: a próxima sessão FUTURA, em destaque no topo do
+ * Cinema. Canhoto perfurado com a data e contagem regressiva ao vivo
+ * (re-render por minuto). Sessões com horário vencido moram na seção
+ * "Sessões passadas".
  */
 export function CartaoSessao() {
   const sessoes = useSessoesAgendadas()
-  const proxima = sessoes.data?.[0]
 
   // Tique de 1 minuto só para a contagem regressiva respirar.
   const [, setTique] = useState(0)
@@ -29,21 +27,20 @@ export function CartaoSessao() {
     return () => clearInterval(intervalo)
   }, [])
 
+  const proxima = sessoes.data?.find((sessao) => contagemRegressiva(sessao.agendadaPara) !== null)
   if (!proxima) return null
-  return <ConteudoCartao sessao={proxima} />
+  return <Ingresso sessao={proxima} />
 }
 
-function ConteudoCartao({ sessao }: { sessao: SessaoCinema }) {
-  const navegar = useNavigate()
-  const concluir = useConcluirSessao()
+function Ingresso({ sessao }: { sessao: SessaoCinema }) {
   const cancelar = useCancelarSessao()
   const reagendar = useReagendarSessao()
   const [confirmandoCancelamento, setConfirmandoCancelamento] = useState(false)
   const [reagendando, setReagendando] = useState(false)
   const [novoQuando, setNovoQuando] = useState('')
 
+  const quando = new Date(sessao.agendadaPara)
   const restante = contagemRegressiva(sessao.agendadaPara)
-  const fundo = urlPoster(sessao.filme.caminhoPoster, 500)
 
   function aoBaixarIcs() {
     baixarIcs(
@@ -52,123 +49,112 @@ function ConteudoCartao({ sessao }: { sessao: SessaoCinema }) {
         id: sessao.id,
         titulo: `Cinema: ${sessao.filme.titulo}`,
         descricao: [textos.sessao.descricaoIcs, sessao.observacao].filter(Boolean).join(' — '),
-        inicio: new Date(sessao.agendadaPara),
+        inicio: quando,
         duracaoMinutos: 180,
       }),
     )
   }
 
   return (
-    <section className="relative mt-4 overflow-hidden rounded-2xl bg-cartao">
-      {fundo && (
-        <img
-          src={fundo}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover opacity-20"
-        />
-      )}
+    <section className="mt-4">
+      <p className="flex items-center gap-1.5 text-xs font-medium tracking-wide text-rosa-suave uppercase">
+        <IconeSessao size={14} aria-hidden />
+        {textos.sessao.cartaoTitulo}
+      </p>
 
-      <div className="relative p-4">
-        <p className="text-xs font-medium tracking-wide text-rosa-suave uppercase">
-          {restante ? textos.sessao.cartaoTitulo : textos.sessao.comoFoi}
-        </p>
-
-        <Link
-          to={`/filme/${sessao.filme.tmdbId}`}
-          className="mt-1 block font-voz text-2xl text-neve"
-        >
-          {sessao.filme.titulo}
-        </Link>
-        <p className="mt-0.5 text-sm text-nevoa">
-          {formatarQuando(sessao.agendadaPara)}
+      <div className="relative mt-2 flex overflow-hidden rounded-2xl border border-rosa/40 bg-cartao shadow-cartao">
+        {/* Canhoto do ingresso */}
+        <div className="w-[88px] shrink-0 border-r-2 border-dashed border-linha-forte px-2 py-3 text-center">
+          <p className="text-[11px] tracking-widest text-cinza uppercase">
+            {format(quando, 'EEEEEE', { locale: ptBR })}
+          </p>
+          <p className="font-voz text-3xl leading-tight font-semibold text-neve">
+            {format(quando, 'dd')}
+          </p>
+          <p className="text-[11px] text-cinza">
+            {format(quando, 'MMM', { locale: ptBR })} · {format(quando, 'HH:mm')}
+          </p>
           {restante && (
-            <span className="ml-2 rounded-full bg-rosa/25 px-2 py-0.5 text-rosa-suave">
+            <p className="mt-2 inline-block rounded-full bg-rosa/25 px-2 py-0.5 text-[11px] text-rosa-suave">
               {restante}
-            </span>
+            </p>
           )}
-        </p>
-        {sessao.observacao && <p className="mt-1 text-sm text-cinza">💬 {sessao.observacao}</p>}
+        </div>
 
-        {restante ? (
-          // ── Sessão futura: calendário, reagendar, cancelar ────────────
+        {/* Perfurações do bilhete */}
+        <span
+          aria-hidden
+          className="absolute -top-2 left-[80px] h-4 w-4 rounded-full border border-linha bg-noite"
+        />
+        <span
+          aria-hidden
+          className="absolute -bottom-2 left-[80px] h-4 w-4 rounded-full border border-linha bg-noite"
+        />
+
+        {/* Corpo: o filme e as ações */}
+        <div className="min-w-0 flex-1 px-4 py-3">
+          <Link
+            to={`/filme/${sessao.filme.tmdbId}`}
+            className="block truncate font-voz text-lg font-semibold text-neve"
+          >
+            {sessao.filme.titulo}
+          </Link>
+          {sessao.observacao && (
+            <p className="mt-0.5 truncate text-xs text-cinza">{sessao.observacao}</p>
+          )}
+
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={aoBaixarIcs}
-              className="rounded-xl border border-linha-forte px-3 py-2 text-sm text-nevoa"
+              className="flex items-center gap-1 rounded-full bg-veu px-3 py-1.5 text-xs text-nevoa"
             >
+              <IconeCalendario size={14} aria-hidden />
               {textos.sessao.calendario}
             </button>
             <button
               type="button"
               onClick={() => setReagendando((estava) => !estava)}
-              className="rounded-xl border border-linha-forte px-3 py-2 text-sm text-nevoa"
+              className="flex items-center gap-1 rounded-full bg-veu px-3 py-1.5 text-xs text-nevoa"
             >
+              <IconeReagendar size={14} aria-hidden />
               {textos.sessao.reagendar}
             </button>
             <button
               type="button"
               onClick={() => setConfirmandoCancelamento(true)}
-              className="px-2 text-sm text-cinza underline"
+              className="px-1 text-xs text-cinza underline"
             >
               {textos.sessao.cancelar}
             </button>
           </div>
-        ) : (
-          // ── Horário passou: avaliar ou só marcar como assistida ───────
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() =>
-                navegar('/novo', { state: { filme: sessao.filme, sessaoId: sessao.id } })
-              }
-              className="rounded-xl bg-rosa px-4 py-2 text-sm font-medium text-neve"
-            >
-              {textos.sessao.avaliarFilme}
-            </button>
-            <button
-              type="button"
-              onClick={() => concluir.mutate({ sessaoId: sessao.id, publicacaoAvaliacaoId: null })}
-              disabled={concluir.isPending}
-              className="rounded-xl border border-linha-forte px-3 py-2 text-sm text-nevoa disabled:opacity-60"
-            >
-              {textos.sessao.soMarcar}
-            </button>
-            <button
-              type="button"
-              onClick={() => setConfirmandoCancelamento(true)}
-              className="px-2 text-sm text-cinza underline"
-            >
-              {textos.sessao.cancelar}
-            </button>
-          </div>
-        )}
 
-        {reagendando && (
-          <div className="entrada-folha mt-3 flex gap-2">
-            <input
-              type="datetime-local"
-              value={novoQuando}
-              onChange={(evento) => setNovoQuando(evento.target.value)}
-              className="min-w-0 flex-1 rounded-xl border border-linha bg-veu px-3 py-2 text-sm text-neve outline-none focus:border-rosa"
-            />
-            <button
-              type="button"
-              disabled={!novoQuando || reagendar.isPending}
-              onClick={async () => {
-                await reagendar.mutateAsync({
-                  sessaoId: sessao.id,
-                  agendadaPara: new Date(novoQuando).toISOString(),
-                })
-                setReagendando(false)
-                setNovoQuando('')
-              }}
-              className="rounded-xl bg-rosa px-4 py-2 text-sm font-medium text-neve disabled:opacity-50"
-            >
-              {textos.comuns.salvar}
-            </button>
-          </div>
-        )}
+          {reagendando && (
+            <div className="entrada-folha mt-3 flex gap-2">
+              <input
+                type="datetime-local"
+                value={novoQuando}
+                onChange={(evento) => setNovoQuando(evento.target.value)}
+                className="min-w-0 flex-1 rounded-xl border border-linha bg-veu px-3 py-2 text-sm text-neve outline-none focus:border-rosa"
+              />
+              <Botao
+                carregando={reagendar.isPending}
+                disabled={!novoQuando}
+                onClick={async () => {
+                  await reagendar.mutateAsync({
+                    sessaoId: sessao.id,
+                    agendadaPara: new Date(novoQuando).toISOString(),
+                  })
+                  setReagendando(false)
+                  setNovoQuando('')
+                }}
+                className="px-4 py-2"
+              >
+                {textos.comuns.salvar}
+              </Botao>
+            </div>
+          )}
+        </div>
       </div>
 
       <DialogoConfirmar
@@ -176,6 +162,8 @@ function ConteudoCartao({ sessao }: { sessao: SessaoCinema }) {
         titulo={textos.sessao.cancelarConfirmar}
         descricao={textos.sessao.cancelarExplicacao}
         rotuloConfirmar={textos.comuns.confirmar}
+        perigosa
+        confirmando={cancelar.isPending}
         aoConfirmar={async () => {
           await cancelar.mutateAsync(sessao.id)
           setConfirmandoCancelamento(false)
