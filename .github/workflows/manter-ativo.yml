@@ -16,6 +16,7 @@ on:
 jobs:
   ping:
     runs-on: ubuntu-latest
+    if: ${{ secrets.SUPABASE_URL != '' && secrets.SUPABASE_ANON_KEY != '' }}
     steps:
       - name: Consulta mínima via REST
         run: |
