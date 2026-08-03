@@ -160,6 +160,25 @@ export interface RepositorioSessoes {
   concluir(sessaoId: string, publicacaoAvaliacaoId: string | null): Promise<void>
 }
 
+/** Preferências de push por pessoa — todo tipo nasce ligado. */
+export interface PreferenciasNotificacao {
+  comentarios: boolean
+  publicacoes: boolean
+  curtidas: boolean
+  memorias: boolean
+  listas: boolean
+  casal: boolean
+}
+
+export interface RepositorioNotificacoes {
+  /** Grava (ou renova) a inscrição de push deste aparelho. */
+  salvarInscricao(dados: { endpoint: string; p256dh: string; auth: string }): Promise<void>
+  removerInscricao(endpoint: string): Promise<void>
+  /** As preferências da pessoa; ausência no banco = tudo ligado. */
+  preferencias(): Promise<PreferenciasNotificacao>
+  salvarPreferencias(parcial: Partial<PreferenciasNotificacao>): Promise<void>
+}
+
 export interface Repositorios {
   autenticacao: RepositorioAutenticacao
   casal: RepositorioCasal
@@ -169,4 +188,5 @@ export interface Repositorios {
   momentos: RepositorioMomentos
   favoritos: RepositorioFavoritos
   sessoes: RepositorioSessoes
+  notificacoes: RepositorioNotificacoes
 }

@@ -51,7 +51,11 @@ export {
   Confetti as IconeComemoracao,
   Footprints as IconePegadas,
 
-  /* Feedback */
+  /* Feedback e notificações */
   CheckCircle as IconeConfirmado,
   WarningCircle as IconeAlerta,
+  Bell as IconeSino,
+  BellRinging as IconeSinoTocando,
+  MinusCircle as IconeNeutro,
+  Info as IconeInfo,
 } from '@phosphor-icons/react'

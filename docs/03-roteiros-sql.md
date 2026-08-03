@@ -306,3 +306,80 @@ where tablename = 'favoritos' order by policyname;   -- esperado: 3
 ### Depois de aplicar
 
 - [ ] Avisar no chat que a 006 e a 007 foram aplicadas e as conferências bateram.
+
+---
+
+## Roteiro da 008_notificacoes.sql (+ Edge Function enviar-push)
+
+Ordem completa do Web Push — os passos 2 a 5 são fora do SQL Editor, mas fazem parte do mesmo pacote. **Nada disso é executado pelo Claude** (regra do projeto).
+
+### O que esta migration cria
+
+- Extensão `pg_net` (HTTP assíncrono a partir do banco).
+- `inscricoes_push` (um aparelho = uma linha, RLS por dono) e `preferencias_notificacao` (sem linha = tudo ligado).
+- `notificar_par()` + 4 triggers: publicações/avaliações, memórias (espelho), "adicionou à lista", comentários, curtidas (❤️) e pareamento.
+
+### Como aplicar
+
+1. **Gerar as chaves VAPID** (uma vez, no seu terminal):
+
+   ```bash
+   npx web-push generate-vapid-keys
+   ```
+
+   Guarde as duas. A **pública** vai para o app; a **privada** só para os secrets da função.
+
+2. **Deploy da Edge Function** (na raiz do repo, com o CLI logado no projeto):
+
+   ```bash
+   supabase functions deploy enviar-push --no-verify-jwt
+   ```
+
+   (`--no-verify-jwt`: quem chama é o banco via `pg_net`, autenticado pelo segredo `X-Segredo` — não há JWT de usuário.)
+
+3. **Secrets da função**:
+
+   ```bash
+   supabase secrets set VAPID_CHAVE_PUBLICA="<publica>" VAPID_CHAVE_PRIVADA="<privada>" SEGREDO_GATILHO="<string aleatória longa>"
+   ```
+
+4. **Aplicar a migration** `008_notificacoes.sql` no SQL Editor (como sempre).
+
+5. **Gravar os dois segredos no Vault** (SQL Editor — a URL da função é `https://<ref-do-projeto>.supabase.co/functions/v1/enviar-push`):
+
+   ```sql
+   select vault.create_secret('https://SEU-REF.supabase.co/functions/v1/enviar-push', 'push_url_funcao');
+   select vault.create_secret('MESMA string aleatória do SEGREDO_GATILHO', 'push_segredo_gatilho');
+   ```
+
+6. **Vercel**: adicionar a env `VITE_CHAVE_PUBLICA_VAPID` com a chave pública e redeployar.
+
+### Queries de conferência
+
+```sql
+-- 1. Tabelas com RLS (esperado: as duas, true)
+select tablename, rowsecurity from pg_tables
+where schemaname = 'public' and tablename in ('inscricoes_push', 'preferencias_notificacao');
+```
+
+```sql
+-- 2. Função e triggers (esperado: notificar_par + 4 funções ao_*; 4 triggers notificar_*)
+select proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public' and proname like '%notificar%' order by proname;
+select tgname from pg_trigger where tgname like 'notificar_%' order by tgname;
+```
+
+```sql
+-- 3. Segredos no Vault (esperado: 2 nomes)
+select name from vault.secrets where name like 'push_%' order by name;
+```
+
+```sql
+-- 4. Teste de ponta a ponta: com o push ATIVADO no aparelho do par,
+--    publique algo no app e confira as entregas da função:
+select status_code, error_msg from net._http_response order by created desc limit 5;
+```
+
+### Depois de aplicar
+
+- [ ] Avisar no chat que a 008 foi aplicada, a função foi deployada e as conferências bateram.

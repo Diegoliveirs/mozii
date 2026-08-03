@@ -13,6 +13,10 @@ export default defineConfig({
       // em vez de trocar sozinha — evita o clássico bug do service worker
       // servindo bundle velho sem ninguém perceber.
       registerType: 'prompt',
+      // SW próprio (src/sw.ts): o generateSW não aceita handler de push.
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       manifest: {
         name: 'Mozii',
         short_name: 'Mozii',
@@ -33,21 +37,10 @@ export default defineConfig({
           },
         ],
       },
-      workbox: {
+      injectManifest: {
         // woff2 no precache: a Fraunces precisa funcionar offline também.
+        // (o CacheFirst dos pôsteres TMDB agora vive em src/sw.ts)
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        // Pôsteres do TMDB em CacheFirst: mudam nunca, pesam sempre.
-        // Dados do Supabase ficam FORA do SW — cache é papel do TanStack Query.
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/image\.tmdb\.org\/.*/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'posteres-tmdb',
-              expiration: { maxEntries: 200, maxAgeSeconds: 30 * 24 * 3600 },
-            },
-          },
-        ],
       },
     }),
   ],

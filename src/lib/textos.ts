@@ -271,6 +271,37 @@ export const textos = {
     excluirContaConfirmar: 'Excluir sua conta de verdade?',
   },
 
+  notificacoes: {
+    titulo: 'Notificações',
+    descricao: 'Avisos quando seu par mexer no espaço de vocês.',
+    ativadas: 'Notificações ativadas 💜',
+    desativadas: 'Notificações desativadas.',
+    tipos: {
+      comentarios: 'Comentários',
+      publicacoes: 'Publicações',
+      curtidas: 'Curtidas',
+      memorias: 'Memórias',
+      listas: 'Filmes na lista',
+      casal: 'Casal',
+    },
+    precisaInstalarIos: 'Instale o Mozii na tela inicial para ativar as notificações.',
+    indisponivel: 'Este navegador não suporta notificações.',
+    semChave: 'O push ainda não foi configurado neste ambiente.',
+    permissoesTitulo: 'Permissões do aparelho',
+    permissaoNotificacoes: 'Notificações',
+    permissaoCameraFotos: 'Câmera e fotos',
+    estadoConcedida: 'concedida neste aparelho',
+    estadoNegada: 'negada neste aparelho',
+    estadoNaoPedida: 'ainda não pedida',
+    cameraGerenciadaPeloSistema: 'o sistema pede na hora de usar',
+    dicaReativar:
+      'Negou sem querer? Reative em Ajustes › Notificações › Mozii (iPhone) ou nas permissões do site (Android).',
+    conviteTitulo: 'Quer saber quando seu par publicar?',
+    conviteDescricao: 'Ative as notificações — dá para escolher o quê.',
+    conviteAtivar: 'Ativar notificações',
+    conviteDepois: 'Agora não',
+  },
+
   atualizacao: {
     disponivel: 'Nova versão do Mozii disponível!',
     atualizar: 'Atualizar',
