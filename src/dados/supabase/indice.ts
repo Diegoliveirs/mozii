@@ -6,6 +6,7 @@ import { repositorioFavoritosSupabase } from './RepositorioFavoritosSupabase'
 import { repositorioListasSupabase } from './RepositorioListasSupabase'
 import { repositorioMomentosSupabase } from './RepositorioMomentosSupabase'
 import { repositorioMuralSupabase } from './RepositorioMuralSupabase'
+import { repositorioNotificacoesSupabase } from './RepositorioNotificacoesSupabase'
 import { repositorioSessoesSupabase } from './RepositorioSessoesSupabase'
 
 /** Fábrica das implementações Supabase — o único ponto de troca de backend. */
@@ -19,5 +20,6 @@ export function criarRepositoriosSupabase(): Repositorios {
     momentos: repositorioMomentosSupabase,
     favoritos: repositorioFavoritosSupabase,
     sessoes: repositorioSessoesSupabase,
+    notificacoes: repositorioNotificacoesSupabase,
   }
 }

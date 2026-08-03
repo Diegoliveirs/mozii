@@ -16,4 +16,6 @@ export const ambiente = {
   supabaseUrl: import.meta.env.VITE_SUPABASE_URL as string,
   supabaseChaveAnon: import.meta.env.VITE_SUPABASE_ANON_KEY as string,
   tmdbChave: import.meta.env.VITE_TMDB_API_KEY as string,
+  // Opcional: sem ela o push fica indisponível, mas o app vive normalmente.
+  chavePublicaVapid: (import.meta.env.VITE_CHAVE_PUBLICA_VAPID as string | undefined) ?? null,
 }
