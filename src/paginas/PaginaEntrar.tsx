@@ -19,8 +19,15 @@ export function PaginaEntrar() {
     try {
       await entrar.mutateAsync({ email, senha })
       navegar('/', { replace: true })
-    } catch {
-      setErro(textos.entrar.credenciaisInvalidas)
+    } catch (excecao) {
+      const codigo =
+        excecao && typeof excecao === 'object' && 'code' in excecao ? String(excecao.code) : ''
+      const mensagem = excecao instanceof Error ? excecao.message : ''
+      setErro(
+        codigo === 'email_not_confirmed' || mensagem.includes('not confirmed')
+          ? textos.entrar.emailNaoConfirmado
+          : textos.entrar.credenciaisInvalidas,
+      )
     }
   }
 

@@ -29,6 +29,7 @@ export {
   PencilSimple as IconeEditar,
   PaperPlaneRight as IconeEnviar,
   SignOut as IconeSair,
+  EnvelopeSimple as IconeEmail,
   Eye as IconeOlho,
   EyeSlash as IconeOlhoFechado,
 

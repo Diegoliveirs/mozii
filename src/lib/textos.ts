@@ -26,6 +26,7 @@ export const textos = {
     semConta: 'Ainda não tem conta?',
     linkCadastro: 'Criar conta',
     credenciaisInvalidas: 'E-mail ou senha incorretos.',
+    emailNaoConfirmado: 'Seu e-mail ainda não foi confirmado. Olha na caixa de entrada?',
   },
 
   cadastro: {
@@ -39,6 +40,15 @@ export const textos = {
     jaTemConta: 'Já tem conta?',
     linkEntrar: 'Entrar',
     emailJaExiste: 'Este e-mail já tem conta. Tenta entrar?',
+  },
+
+  confirmarEmail: {
+    titulo: 'Confirma seu e-mail 💌',
+    explicacaoAntes: 'Enviamos um link para',
+    explicacaoDepois: 'Toca nele para ativar sua conta — depois é só entrar.',
+    reenviar: 'Reenviar e-mail',
+    reenviado: 'E-mail reenviado!',
+    jaConfirmei: 'Já confirmei, entrar',
   },
 
   parear: {
