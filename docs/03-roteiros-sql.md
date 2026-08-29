@@ -345,14 +345,20 @@ Ordem completa do Web Push — os passos 2 a 5 são fora do SQL Editor, mas faze
 
 4. **Aplicar a migration** `008_notificacoes.sql` no SQL Editor (como sempre).
 
-5. **Gravar os dois segredos no Vault** (SQL Editor — a URL da função é `https://<ref-do-projeto>.supabase.co/functions/v1/enviar-push`):
+5. **Gravar os três valores no Vault** (SQL Editor — a URL da função é `https://<ref-do-projeto>.supabase.co/functions/v1/enviar-push`). A chave publicável vem de _Settings → API Keys_ e autentica a chamada do `pg_net` no gateway; ela não substitui o `X-Segredo`:
 
    ```sql
    select vault.create_secret('https://SEU-REF.supabase.co/functions/v1/enviar-push', 'push_url_funcao');
    select vault.create_secret('MESMA string aleatória do SEGREDO_GATILHO', 'push_segredo_gatilho');
+   select vault.create_secret('SUA_PUBLISHABLE_KEY', 'push_chave_publicavel');
    ```
 
 6. **Vercel**: adicionar a env `VITE_CHAVE_PUBLICA_VAPID` com a chave pública e redeployar.
+
+### Correção para projeto que já aplicou a 008
+
+1. Crie no Vault apenas `push_chave_publicavel`, com a _Publishable key_ de _Settings → API Keys_.
+2. Aplique `009_autenticar_push_pg_net.sql` no SQL Editor. Ela atualiza somente `notificar_par()` para enviar essa chave no header `apikey`; não reaplique a 008.
 
 ### Queries de conferência
 
@@ -370,7 +376,7 @@ select tgname from pg_trigger where tgname like 'notificar_%' order by tgname;
 ```
 
 ```sql
--- 3. Segredos no Vault (esperado: 2 nomes)
+-- 3. Segredos no Vault (esperado: 3 nomes)
 select name from vault.secrets where name like 'push_%' order by name;
 ```
 

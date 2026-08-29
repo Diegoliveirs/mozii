@@ -31,6 +31,8 @@ export interface RepositorioAutenticacao {
   }): Promise<{ precisaConfirmarEmail: boolean }>
   /** Reenvia o e-mail de confirmação do cadastro. */
   reenviarConfirmacao(email: string): Promise<void>
+  /** Lê a sessão criada pelo Supabase ao retornar do link de confirmação. */
+  confirmarEmail(): Promise<void>
   entrar(dados: { email: string; senha: string }): Promise<void>
   sair(): Promise<void>
   usuarioAtual(): Promise<UsuarioAutenticado | null>

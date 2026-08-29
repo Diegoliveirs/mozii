@@ -4,6 +4,7 @@ import { ExigirCasal } from './componentes/guardas/ExigirCasal'
 import { CascaApp } from './componentes/layout/CascaApp'
 import { PaginaAjustes } from './paginas/PaginaAjustes'
 import { PaginaCadastro } from './paginas/PaginaCadastro'
+import { PaginaConfirmarEmail } from './paginas/PaginaConfirmarEmail'
 import { PaginaCinema } from './paginas/PaginaCinema'
 import { PaginaEntrar } from './paginas/PaginaEntrar'
 import { PaginaFilme } from './paginas/PaginaFilme'
@@ -24,6 +25,7 @@ export function App() {
     <Routes>
       <Route path="/entrar" element={<PaginaEntrar />} />
       <Route path="/cadastro" element={<PaginaCadastro />} />
+      <Route path="/confirmar-email" element={<PaginaConfirmarEmail />} />
 
       <Route element={<ExigirAutenticacao />}>
         <Route path="/parear" element={<PaginaParear />} />
