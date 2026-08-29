@@ -30,7 +30,7 @@ Estado de cada função do app. Uma feature só muda para ✅ com esta página a
 
 Cadastro (nome + e-mail + senha, mínimo 8) e entrada por e-mail/senha. O trigger do banco cria o perfil na hora do cadastro. Sem sessão, qualquer rota privada volta para `/entrar`; com sessão e sem casal, volta para `/parear`.
 
-**Confirmação de e-mail** (ativada pelo Diego no dashboard em 02/08/2026): quando o `signUp` volta sem sessão, o cadastro mostra a tela "Confirma seu e-mail 💌" com o endereço, botão de reenvio (`auth.resend`) e link para entrar. Tentar entrar antes de confirmar mostra mensagem específica (código `email_not_confirmed`), não "e-mail ou senha incorretos". A detecção é dinâmica (`signUp` sem sessão ⇒ tela de confirmação). Detalhe do Supabase com confirmação ativa: cadastrar e-mail repetido volta como "sucesso" sem `identities` (anti-enumeração) — o repositório traduz isso para o erro de "e-mail já tem conta".
+**Confirmação de e-mail** (ativada pelo Diego no dashboard em 02/08/2026): quando o `signUp` volta sem sessão, o cadastro mostra a tela "Confirma seu e-mail 💌" com o endereço, botão de reenvio (`auth.resend`) e link para entrar. O link volta para `/confirmar-email`, onde o Supabase cria a sessão e leva a pessoa direto ao app; links expirados mostram orientação clara. Tentar entrar antes de confirmar mostra mensagem específica (código `email_not_confirmed`), não "e-mail ou senha incorretos". A sessão do PWA persiste no `localStorage`, renova tokens automaticamente e não é apagada por atualizações do service worker. Detalhe do Supabase com confirmação ativa: cadastrar e-mail repetido volta como "sucesso" sem `identities` (anti-enumeração) — o repositório traduz isso para o erro de "e-mail já tem conta".
 
 ### 2. Pareamento (entregue na Fase 1)
 

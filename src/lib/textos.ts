@@ -49,6 +49,10 @@ export const textos = {
     reenviar: 'Reenviar e-mail',
     reenviado: 'E-mail reenviado!',
     jaConfirmei: 'Já confirmei, entrar',
+    linkInvalidoTitulo: 'Esse link não deu certo',
+    linkInvalidoDescricao:
+      'Ele pode ter expirado ou já ter sido usado. Entre para pedir outro link.',
+    voltarParaEntrar: 'Ir para entrar',
   },
 
   parear: {

@@ -17,8 +17,8 @@
 --
 -- 4. `notificar_par()` roda como SECURITY DEFINER, valida o tipo contra uma
 --    lista fechada e engole qualquer erro: push NUNCA derruba a ação que o
---    disparou. A URL da função e o segredo do gatilho vivem no Vault
---    (nada de segredo em código versionado).
+--    disparou. A URL, a chave publicável e o segredo do gatilho vivem no
+--    Vault (nada de segredo em código versionado).
 --
 -- 5. Os triggers só empacotam dados crus e chamam `net.http_post`
 --    (assíncrono). O TEXTO da notificação mora na Edge Function, perto do
@@ -111,6 +111,7 @@ declare
   v_quer boolean;
   v_url text;
   v_segredo text;
+  v_chave_api text;
 begin
   -- Lista fechada: o tipo É o nome da coluna de preferência.
   if p_tipo not in ('comentarios', 'publicacoes', 'curtidas', 'memorias', 'listas', 'casal') then
@@ -137,12 +138,15 @@ begin
   from vault.decrypted_secrets where name = 'push_url_funcao';
   select decrypted_secret into v_segredo
   from vault.decrypted_secrets where name = 'push_segredo_gatilho';
-  if v_url is null or v_segredo is null then return; end if;
+  select decrypted_secret into v_chave_api
+  from vault.decrypted_secrets where name = 'push_chave_publicavel';
+  if v_url is null or v_segredo is null or v_chave_api is null then return; end if;
 
   perform net.http_post(
     url := v_url,
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
+      'apikey', v_chave_api,
       'X-Segredo', v_segredo
     ),
     body := jsonb_build_object(

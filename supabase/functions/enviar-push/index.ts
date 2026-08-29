@@ -92,7 +92,7 @@ Deno.serve(async (requisicao) => {
   const mensagem = montarMensagem(corpo)
 
   webpush.setVapidDetails(
-    'mailto:diego.oliveira@tbmtextil.com.br',
+    'mailto:tidiegoliveira@gmail.com',
     Deno.env.get('VAPID_CHAVE_PUBLICA')!,
     Deno.env.get('VAPID_CHAVE_PRIVADA')!,
   )

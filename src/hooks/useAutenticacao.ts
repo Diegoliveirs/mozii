@@ -58,6 +58,11 @@ export function useReenviarConfirmacao() {
   })
 }
 
+export function useConfirmarEmail() {
+  const { autenticacao } = useRepositorios()
+  return useMutation({ mutationFn: () => autenticacao.confirmarEmail() })
+}
+
 export function useSair() {
   const { autenticacao } = useRepositorios()
   const clienteQuery = useQueryClient()
