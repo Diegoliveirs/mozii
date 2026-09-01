@@ -389,3 +389,59 @@ select status_code, error_msg from net._http_response order by created desc limi
 ### Depois de aplicar
 
 - [ ] Avisar no chat que a 008 foi aplicada, a função foi deployada e as conferências bateram.
+
+---
+
+## Roteiro da 008_avaliacoes_por_filme.sql
+
+**Status:** ⏳ aguardando aplicação
+**Arquivo:** `supabase/migrations/008_avaliacoes_por_filme.sql`
+
+> Aplicar depois da `009_autenticar_push_pg_net.sql`.
+
+### O que muda
+
+- Cada pessoa pode manter somente uma avaliação por filme; para mudar nota ou texto, edita a avaliação existente.
+- A página do filme passa a consultar as avaliações do casal com um índice próprio.
+- A migration não remove avaliações antigas. Caso encontre repetidas para a mesma pessoa e filme, ela para com erro antes de criar os índices.
+
+### Como aplicar
+
+1. No SQL Editor do Supabase, confira primeiro se a consulta abaixo retorna zero linhas.
+2. Cole o conteúdo completo de `008_avaliacoes_por_filme.sql` e execute.
+
+```sql
+select autor_id, tmdb_id, count(*) as quantidade
+from public.publicacoes
+where tipo = 'avaliacao'
+group by autor_id, tmdb_id
+having count(*) > 1;
+```
+
+### Queries de conferência
+
+```sql
+-- Esperado: os dois índices da migration 008.
+select indexname, indexdef
+from pg_indexes
+where schemaname = 'public'
+  and tablename = 'publicacoes'
+  and indexname in (
+    'publicacoes_uma_avaliacao_por_autor_filme',
+    'publicacoes_avaliacoes_por_filme'
+  )
+order by indexname;
+```
+
+```sql
+-- Esperado: zero linhas; a regra de dados continua válida.
+select autor_id, tmdb_id, count(*) as quantidade
+from public.publicacoes
+where tipo = 'avaliacao'
+group by autor_id, tmdb_id
+having count(*) > 1;
+```
+
+### Depois de aplicar
+
+- [ ] Avisar no chat que a 008 foi aplicada e as conferências bateram.

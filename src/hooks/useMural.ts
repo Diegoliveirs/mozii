@@ -9,6 +9,8 @@ export const chaveFeed = ['mural', 'feed'] as const
 export const chaveComentarios = (publicacaoId: string) =>
   ['mural', 'comentarios', publicacaoId] as const
 export const chaveReacoes = (ids: string[]) => ['mural', 'reacoes', ids] as const
+export const chaveAvaliacoesDoFilme = (tmdbId: number) =>
+  ['mural', 'avaliacoes-filme', tmdbId] as const
 
 export function useFeedInfinito(autorId?: string) {
   const { mural } = useRepositorios()
@@ -29,6 +31,15 @@ export function usePublicacao(id: string) {
   })
 }
 
+export function useAvaliacoesDoFilme(tmdbId: number | null) {
+  const { mural } = useRepositorios()
+  return useQuery({
+    queryKey: chaveAvaliacoesDoFilme(tmdbId ?? 0),
+    queryFn: () => mural.avaliacoesDoFilme(tmdbId!),
+    enabled: tmdbId !== null,
+  })
+}
+
 export function useCriarTexto() {
   const { mural } = useRepositorios()
   const clienteQuery = useQueryClient()
@@ -45,7 +56,11 @@ export function useCriarAvaliacao() {
   return useMutation({
     mutationFn: (dados: { filme: RefFilme; nota: number; corpo: string | null }) =>
       mural.criarAvaliacao(dados),
-    onSuccess: () => clienteQuery.invalidateQueries({ queryKey: chaveFeed }),
+    onSuccess: () => {
+      clienteQuery.invalidateQueries({ queryKey: chaveFeed })
+      clienteQuery.invalidateQueries({ queryKey: ['mural', 'avaliacoes-filme'] })
+      clienteQuery.invalidateQueries({ queryKey: ['perfil', 'avaliacoes'] })
+    },
   })
 }
 
@@ -58,6 +73,8 @@ export function useEditarAvaliacao() {
     onSuccess: (_r, { id }) => {
       clienteQuery.invalidateQueries({ queryKey: chaveFeed })
       clienteQuery.invalidateQueries({ queryKey: ['mural', 'publicacao', id] })
+      clienteQuery.invalidateQueries({ queryKey: ['mural', 'avaliacoes-filme'] })
+      clienteQuery.invalidateQueries({ queryKey: ['perfil', 'avaliacoes'] })
     },
   })
 }
@@ -67,7 +84,11 @@ export function useExcluirPublicacao() {
   const clienteQuery = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => mural.excluirPublicacao(id),
-    onSuccess: () => clienteQuery.invalidateQueries({ queryKey: chaveFeed }),
+    onSuccess: () => {
+      clienteQuery.invalidateQueries({ queryKey: chaveFeed })
+      clienteQuery.invalidateQueries({ queryKey: ['mural', 'avaliacoes-filme'] })
+      clienteQuery.invalidateQueries({ queryKey: ['perfil', 'avaliacoes'] })
+    },
   })
 }
 

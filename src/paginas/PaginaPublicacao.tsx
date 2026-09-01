@@ -29,7 +29,9 @@ import { textos } from '../lib/textos'
 export function PaginaPublicacao() {
   const { publicacaoId } = useParams()
   const navegar = useNavigate()
-  const { state } = useLocation() as { state?: { focarComentario?: boolean } }
+  const { state } = useLocation() as {
+    state?: { focarComentario?: boolean; voltarPara?: string }
+  }
   const { usuario } = useAutenticacao()
   const casal = useCasalComMembros()
   const publicacao = usePublicacao(publicacaoId!)
@@ -50,7 +52,7 @@ export function PaginaPublicacao() {
   if (publicacao.isPending) {
     return (
       <main>
-        <CabecalhoPagina titulo={textos.publicacao.titulo} fallback="/" />
+        <CabecalhoPagina titulo={textos.publicacao.titulo} fallback={state?.voltarPara ?? '/'} />
         <div className="mt-4 px-5">
           <Esqueleto className="h-56 rounded-2xl" />
         </div>
@@ -60,7 +62,7 @@ export function PaginaPublicacao() {
   if (!publicacao.data) {
     return (
       <main>
-        <CabecalhoPagina titulo={textos.publicacao.titulo} fallback="/" />
+        <CabecalhoPagina titulo={textos.publicacao.titulo} fallback={state?.voltarPara ?? '/'} />
         <p className="px-5 pt-4 text-nevoa">{textos.publicacao.naoEncontrada}</p>
       </main>
     )
@@ -82,18 +84,19 @@ export function PaginaPublicacao() {
       corpo: corpoEditado.trim() || null,
     })
     setEditando(false)
+    if (state?.voltarPara) navegar(state.voltarPara, { replace: true })
   }
 
   async function aoExcluir() {
     await excluir.mutateAsync(dados.id)
-    navegar('/', { replace: true })
+    navegar(state?.voltarPara ?? '/', { replace: true })
   }
 
   return (
     <main className="pb-8">
       <CabecalhoPagina
         titulo={textos.publicacao.titulo}
-        fallback="/"
+        fallback={state?.voltarPara ?? '/'}
         acao={
           <div className="flex items-center gap-1">
             {dados.tipo === 'avaliacao' && !editando && (
