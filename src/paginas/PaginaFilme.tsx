@@ -1,22 +1,28 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { urlBackdrop, urlLogoProvedor } from '../api/tmdb'
+import { AvaliacoesDoFilme } from '../componentes/filmes/AvaliacoesDoFilme'
 import { Poster } from '../componentes/filmes/Poster'
 import { FolhaAdicionarALista } from '../componentes/filmes/FolhaAdicionarALista'
 import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
 import { ModalAgendarSessao } from '../componentes/sessoes/ModalAgendarSessao'
 import { Botao } from '../componentes/ui/Botao'
 import { Esqueleto } from '../componentes/ui/Esqueleto'
-import { IconeMais, IconeSessao } from '../componentes/ui/icones'
+import { IconeEstrela, IconeMais, IconeSessao } from '../componentes/ui/icones'
+import { useAutenticacao } from '../hooks/useAutenticacao'
+import { useAvaliacoesDoFilme } from '../hooks/useMural'
 import { useFilmeTmdb, useOndeAssistir } from '../hooks/useTmdb'
 import { textos } from '../lib/textos'
 
 /** Página do filme: dados do TMDB, onde assistir no Brasil e adicionar à lista. */
 export function PaginaFilme() {
   const { tmdbId } = useParams()
+  const navegar = useNavigate()
+  const { usuario } = useAutenticacao()
   const id = tmdbId ? Number(tmdbId) : null
   const filme = useFilmeTmdb(id)
   const ondeAssistir = useOndeAssistir(id)
+  const avaliacoes = useAvaliacoesDoFilme(id)
   const [folhaAberta, setFolhaAberta] = useState(false)
   const [agendando, setAgendando] = useState(false)
 
@@ -40,6 +46,7 @@ export function PaginaFilme() {
   }
 
   const dados = filme.data
+  const minhaAvaliacao = avaliacoes.data?.find((avaliacao) => avaliacao.autorId === usuario?.id)
   const fundo = urlBackdrop(dados.caminhoBackdrop)
   const provedores =
     ondeAssistir.data && ondeAssistir.data.streaming.length > 0
@@ -112,6 +119,33 @@ export function PaginaFilme() {
             <IconeSessao size={17} aria-hidden />
             {textos.sessao.agendarBotao}
           </Botao>
+          <Botao
+            variante="secundario"
+            disabled={avaliacoes.isLoading}
+            onClick={() => {
+              if (minhaAvaliacao) {
+                navegar(`/publicacao/${minhaAvaliacao.id}`, {
+                  state: { voltarPara: `/filme/${dados.tmdbId}` },
+                })
+                return
+              }
+              navegar('/novo', {
+                state: {
+                  filme: {
+                    tmdbId: dados.tmdbId,
+                    titulo: dados.titulo,
+                    caminhoPoster: dados.caminhoPoster,
+                    anoLancamento: dados.anoLancamento,
+                  },
+                  voltarPara: `/filme/${dados.tmdbId}`,
+                },
+              })
+            }}
+            className="flex-1"
+          >
+            <IconeEstrela size={17} aria-hidden />
+            {minhaAvaliacao ? textos.filme.editarAvaliacao : textos.filme.avaliar}
+          </Botao>
         </div>
 
         {/* Onde assistir (região BR) — atribuição JustWatch exigida pelo TMDB */}
@@ -153,6 +187,8 @@ export function PaginaFilme() {
             <p className="mt-2 text-sm text-cinza">{textos.filme.semProvedores}</p>
           )}
         </section>
+
+        <AvaliacoesDoFilme tmdbId={dados.tmdbId} />
       </div>
 
       {agendando && (

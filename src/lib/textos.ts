@@ -91,6 +91,7 @@ export const textos = {
     publicando: 'Publicando…',
     faltaConteudo: 'Escreva algo, escolha uma foto ou avalie um filme.',
     faltaNota: 'Toque nas estrelas para dar a nota.',
+    avaliacaoExistente: 'Você já avaliou este filme. Edite sua avaliação.',
   },
 
   publicacao: {
@@ -211,6 +212,10 @@ export const textos = {
 
   filme: {
     adicionarALista: 'Adicionar à lista',
+    avaliar: 'Avaliar filme',
+    editarAvaliacao: 'Editar avaliação',
+    avaliacoes: 'Avaliações',
+    semAvaliacoes: 'Ainda não há avaliações deste filme.',
     ondeAssistir: 'Onde assistir',
     aluguel: 'Para alugar',
     semProvedores: 'Sem streaming no Brasil por enquanto.',

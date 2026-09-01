@@ -82,6 +82,8 @@ export interface RepositorioMural {
   feed(cursor: string | null, autorId?: string): Promise<PaginaDeFeed>
   /** Todas as avaliações de uma pessoa — base das estatísticas e do histograma. */
   avaliacoesDe(autorId: string): Promise<Publicacao[]>
+  /** Avaliações do casal para um filme — no máximo uma por pessoa. */
+  avaliacoesDoFilme(tmdbId: number): Promise<Publicacao[]>
   publicacao(id: string): Promise<Publicacao | null>
   criarTexto(dados: { corpo: string | null; caminhoFoto: string | null }): Promise<Publicacao>
   criarAvaliacao(dados: {

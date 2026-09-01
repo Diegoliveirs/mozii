@@ -11,13 +11,16 @@ import { useRepositorios } from '../dados/ContextoRepositorios'
 import type { RefFilme } from '../dominio/tipos'
 import { useCriarAvaliacao, useCriarTexto } from '../hooks/useMural'
 import { useConcluirSessao } from '../hooks/useSessoes'
+import { useAutenticacao } from '../hooks/useAutenticacao'
+import { useAvaliacoesDoFilme } from '../hooks/useMural'
 import { redimensionarFoto } from '../lib/imagem'
 import { textos } from '../lib/textos'
 
 /** O cartão de sessão navega para cá com o filme e a sessão a concluir. */
-interface EstadoDeSessao {
+interface EstadoDaNovaPublicacao {
   filme?: RefFilme
   sessaoId?: string
+  voltarPara?: string
 }
 
 /**
@@ -27,7 +30,8 @@ interface EstadoDeSessao {
  */
 export function PaginaNovaPublicacao() {
   const navegar = useNavigate()
-  const estado = (useLocation().state ?? {}) as EstadoDeSessao
+  const estado = (useLocation().state ?? {}) as EstadoDaNovaPublicacao
+  const { usuario } = useAutenticacao()
   const { arquivos } = useRepositorios()
   const criarTexto = useCriarTexto()
   const criarAvaliacao = useCriarAvaliacao()
@@ -41,6 +45,10 @@ export function PaginaNovaPublicacao() {
   const [erro, setErro] = useState<string | null>(null)
   const [publicando, setPublicando] = useState(false)
   const campoFoto = useRef<HTMLInputElement>(null)
+  const avaliacoesDoFilme = useAvaliacoesDoFilme(filme?.tmdbId ?? null)
+  const minhaAvaliacao = avaliacoesDoFilme.data?.find(
+    (avaliacao) => avaliacao.autorId === usuario?.id,
+  )
 
   const previewFoto = foto ? URL.createObjectURL(foto) : null
 
@@ -49,6 +57,13 @@ export function PaginaNovaPublicacao() {
     const texto = corpo.trim() || null
 
     if (filme) {
+      if (minhaAvaliacao) {
+        navegar(`/publicacao/${minhaAvaliacao.id}`, {
+          replace: true,
+          state: { voltarPara: estado.voltarPara ?? `/filme/${filme.tmdbId}` },
+        })
+        return
+      }
       if (nota === 0) {
         setErro(textos.novo.faltaNota)
         return
@@ -64,7 +79,7 @@ export function PaginaNovaPublicacao() {
             publicacaoAvaliacaoId: avaliacao.id,
           })
         }
-        navegar('/', { replace: true })
+        navegar(estado.voltarPara ?? '/', { replace: true })
       } catch {
         setErro(textos.comuns.erroInesperado)
       } finally {
@@ -121,6 +136,19 @@ export function PaginaNovaPublicacao() {
                 <p className="truncate font-medium text-neve">{filme.titulo}</p>
                 <p className="mt-1 text-sm text-nevoa">{textos.novo.notaRotulo}</p>
                 <EstrelasNota valor={nota} aoMudar={setNota} />
+                {minhaAvaliacao && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navegar(`/publicacao/${minhaAvaliacao.id}`, {
+                        state: { voltarPara: estado.voltarPara ?? `/filme/${filme.tmdbId}` },
+                      })
+                    }
+                    className="mt-2 text-sm text-rosa-suave underline"
+                  >
+                    {textos.novo.avaliacaoExistente}
+                  </button>
+                )}
               </div>
               <button
                 type="button"
@@ -182,7 +210,12 @@ export function PaginaNovaPublicacao() {
 
         {erro && <p className="mt-3 text-sm text-erro">{erro}</p>}
 
-        <Botao onClick={aoPublicar} carregando={publicando} className="mt-5 w-full">
+        <Botao
+          onClick={aoPublicar}
+          carregando={publicando}
+          disabled={Boolean(filme && (avaliacoesDoFilme.isLoading || minhaAvaliacao))}
+          className="mt-5 w-full"
+        >
           {textos.novo.publicar}
         </Botao>
 

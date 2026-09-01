@@ -57,6 +57,17 @@ export const repositorioMuralSupabase: RepositorioMural = {
     return (data as unknown as LinhaPublicacao[]).map(paraPublicacao)
   },
 
+  async avaliacoesDoFilme(tmdbId: number): Promise<Publicacao[]> {
+    const { data, error } = await supabase
+      .from('publicacoes')
+      .select(COLUNAS)
+      .eq('tipo', 'avaliacao')
+      .eq('tmdb_id', tmdbId)
+      .order('criado_em', { ascending: false })
+    if (error) throw error
+    return (data as unknown as LinhaPublicacao[]).map(paraPublicacao)
+  },
+
   async publicacao(id: string): Promise<Publicacao | null> {
     const { data, error } = await supabase
       .from('publicacoes')
