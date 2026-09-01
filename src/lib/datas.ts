@@ -57,6 +57,11 @@ export function formatarQuando(iso: string): string {
   return `${dia} · ${format(data, 'HH')}h${minutos === '00' ? '' : minutos}`
 }
 
+/** Valor local, sem sufixo de fuso, aceito por `<input type="datetime-local">`. */
+export function valorParaCampoDataHoraLocal(iso: string): string {
+  return format(new Date(iso), "yyyy-MM-dd'T'HH:mm")
+}
+
 /**
  * Contagem regressiva do cartão de sessão: "em 3 dias", "em 5 h",
  * "em 42 min", "é agora! 🍿" — e `null` quando o horário já passou
