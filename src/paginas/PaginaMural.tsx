@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ConviteNotificacoes } from '../componentes/mural/ConviteNotificacoes'
 import { FeedPublicacoes } from '../componentes/mural/FeedPublicacoes'
 import { useCasalComMembros } from '../hooks/useCasal'
 import { textos } from '../lib/textos'
@@ -22,6 +23,8 @@ export function PaginaMural() {
           {textos.mural.esperandoPar}
         </p>
       )}
+
+      <ConviteNotificacoes casalCompleto={membros.length === 2} />
 
       <FeedPublicacoes
         mensagemVazio={textos.mural.vazio}

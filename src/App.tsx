@@ -4,6 +4,7 @@ import { ExigirCasal } from './componentes/guardas/ExigirCasal'
 import { CascaApp } from './componentes/layout/CascaApp'
 import { PaginaAjustes } from './paginas/PaginaAjustes'
 import { PaginaCadastro } from './paginas/PaginaCadastro'
+import { PaginaConfirmarEmail } from './paginas/PaginaConfirmarEmail'
 import { PaginaCinema } from './paginas/PaginaCinema'
 import { PaginaEntrar } from './paginas/PaginaEntrar'
 import { PaginaFilme } from './paginas/PaginaFilme'
@@ -14,6 +15,7 @@ import { PaginaNovaPublicacao } from './paginas/PaginaNovaPublicacao'
 import { PaginaPerfil } from './paginas/PaginaPerfil'
 import { PaginaParear } from './paginas/PaginaParear'
 import { PaginaPublicacao } from './paginas/PaginaPublicacao'
+import { PaginaSessoes } from './paginas/PaginaSessoes'
 
 /**
  * Mapa de rotas. Aninhamento das guardas:
@@ -24,6 +26,7 @@ export function App() {
     <Routes>
       <Route path="/entrar" element={<PaginaEntrar />} />
       <Route path="/cadastro" element={<PaginaCadastro />} />
+      <Route path="/confirmar-email" element={<PaginaConfirmarEmail />} />
 
       <Route element={<ExigirAutenticacao />}>
         <Route path="/parear" element={<PaginaParear />} />
@@ -34,6 +37,7 @@ export function App() {
             <Route path="/novo" element={<PaginaNovaPublicacao />} />
             <Route path="/publicacao/:publicacaoId" element={<PaginaPublicacao />} />
             <Route path="/cinema" element={<PaginaCinema />} />
+            <Route path="/cinema/sessoes" element={<PaginaSessoes />} />
             <Route path="/filme/:tmdbId" element={<PaginaFilme />} />
             <Route path="/listas/:listaId" element={<PaginaLista />} />
             <Route path="/momentos" element={<PaginaMomentos />} />

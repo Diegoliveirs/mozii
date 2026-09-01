@@ -50,6 +50,15 @@ describe('formatarQuando', () => {
   })
 })
 
+describe('valorParaCampoDataHoraLocal', () => {
+  it('gera o formato aceito pelo campo datetime-local', async () => {
+    const { valorParaCampoDataHoraLocal } = await import('../datas')
+    expect(valorParaCampoDataHoraLocal('2026-08-15T20:30:00-03:00')).toMatch(
+      /^2026-08-(15|16)T\d{2}:30$/,
+    )
+  })
+})
+
 describe('rotuloDoDia', () => {
   it('hoje, ontem, mesmo ano e ano diferente', async () => {
     const { rotuloDoDia } = await import('../datas')

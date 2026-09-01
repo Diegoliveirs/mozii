@@ -64,7 +64,7 @@ export function SessoesPassadas() {
   )
 }
 
-function SessaoPendente({ sessao }: { sessao: SessaoCinema }) {
+export function SessaoPendente({ sessao }: { sessao: SessaoCinema }) {
   const navegar = useNavigate()
   const concluir = useConcluirSessao()
   const cancelar = useCancelarSessao()

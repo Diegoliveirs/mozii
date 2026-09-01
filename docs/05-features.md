@@ -2,22 +2,25 @@
 
 Estado de cada função do app. Uma feature só muda para ✅ com esta página atualizada e os testes verdes.
 
-| #   | Feature                                                   | Fase | Status |
-| --- | --------------------------------------------------------- | ---- | ------ |
-| 1   | Autenticação (e-mail + senha)                             | 1    | ✅     |
-| 2   | Pareamento por código de convite (máx. 2)                 | 1    | ✅     |
-| 3   | Mural (feed do casal, 4 tipos de publicação)              | 3    | ✅     |
-| 4   | Curtida (like de coração) + comentários                   | 3/R  | ✅     |
-| 5   | Listas de filmes (ilimitadas)                             | 2    | ✅     |
-| 6   | Busca TMDB + página do filme + onde assistir              | 2    | ✅     |
-| 7   | Sorteio "O que ver hoje" (caça-níquel)                    | 2    | ✅     |
-| 8   | Momentos (diário de fotos do casal)                       | 4    | ✅     |
-| 9   | Perfil estilo Letterboxd + favoritos + histograma         | 4    | ✅     |
-| 10  | Cartão de compartilhar (Stories 1080×1920, 3 temas)       | 4    | ✅     |
-| 11  | Tempo real (mudanças do par sem recarregar)               | 3    | ✅     |
-| 12  | Ajustes (nome, avatar, sair, excluir conta com carência)  | 1/4  | ✅     |
-| 13  | Sessão de cinema agendada                                 | 5    | ✅     |
-| 14  | **Redesign "cara de app"** (design system, ícones, fonte) | R    | ✅     |
+| #   | Feature                                                  | Fase | Status |
+| --- | -------------------------------------------------------- | ---- | ------ |
+| 1   | Autenticação (e-mail + senha)                            | 1    | ✅     |
+| 2   | Pareamento por código de convite (máx. 2)                | 1    | ✅     |
+| 3   | Mural (feed do casal, 4 tipos de publicação)             | 3    | ✅     |
+| 4   | Curtida (like de coração) + comentários                  | 3/R  | ✅     |
+| 5   | Listas de filmes (ilimitadas)                            | 2    | ✅     |
+| 6   | Busca TMDB + página do filme + onde assistir             | 2    | ✅     |
+| 7   | Sorteio "O que ver hoje" (caça-níquel)                   | 2    | ✅     |
+| 8   | Momentos (diário de fotos do casal)                      | 4    | ✅     |
+| 9   | Perfil estilo Letterboxd + favoritos + histograma        | 4    | ✅     |
+| 10  | Cartão de compartilhar (Stories 1080×1920, 3 temas)      | 4    | ✅     |
+| 11  | Tempo real (mudanças do par sem recarregar)              | 3    | ✅     |
+| 12  | Ajustes (nome, avatar, sair, excluir conta com carência) | 1/4  | ✅     |
+| 13  | Sessão de cinema agendada                                | 5    | ✅     |
+| 14  | Redesign "cara de app" (design system, ícones, fonte)    | R    | ✅     |
+| 15  | **Notificações push + permissões do aparelho**           | 7    | 🚧     |
+
+> Feature 15: o front está pronto; falta o Diego aplicar a migration 008 e deployar a Edge Function (roteiro em [03-roteiros-sql.md](03-roteiros-sql.md)).
 
 > **Fase R** = redesign UX/UI de 02/08/2026 (aprovado por mockups no chat).
 
@@ -27,7 +30,7 @@ Estado de cada função do app. Uma feature só muda para ✅ com esta página a
 
 Cadastro (nome + e-mail + senha, mínimo 8) e entrada por e-mail/senha. O trigger do banco cria o perfil na hora do cadastro. Sem sessão, qualquer rota privada volta para `/entrar`; com sessão e sem casal, volta para `/parear`.
 
-**Confirmação de e-mail** (ativada pelo Diego no dashboard em 02/08/2026): quando o `signUp` volta sem sessão, o cadastro mostra a tela "Confirma seu e-mail 💌" com o endereço, botão de reenvio (`auth.resend`) e link para entrar. Tentar entrar antes de confirmar mostra mensagem específica (código `email_not_confirmed`), não "e-mail ou senha incorretos". A detecção é dinâmica (`signUp` sem sessão ⇒ tela de confirmação). Detalhe do Supabase com confirmação ativa: cadastrar e-mail repetido volta como "sucesso" sem `identities` (anti-enumeração) — o repositório traduz isso para o erro de "e-mail já tem conta".
+**Confirmação de e-mail** (ativada pelo Diego no dashboard em 02/08/2026): quando o `signUp` volta sem sessão, o cadastro mostra a tela "Confirma seu e-mail 💌" com o endereço, botão de reenvio (`auth.resend`) e link para entrar. O link volta para `/confirmar-email`, onde o Supabase cria a sessão e leva a pessoa direto ao app; links expirados mostram orientação clara. Tentar entrar antes de confirmar mostra mensagem específica (código `email_not_confirmed`), não "e-mail ou senha incorretos". A sessão do PWA persiste no `localStorage`, renova tokens automaticamente e não é apagada por atualizações do service worker. Detalhe do Supabase com confirmação ativa: cadastrar e-mail repetido volta como "sucesso" sem `identities` (anti-enumeração) — o repositório traduz isso para o erro de "e-mail já tem conta".
 
 ### 2. Pareamento (entregue na Fase 1)
 
@@ -54,6 +57,12 @@ Pedir exclusão grava `exclusao_solicitada_em`; um job do pg_cron apaga a conta 
 ### 13. Sessão de cinema agendada (entregue na Fase 5)
 
 O casal agenda um filme para uma data/hora por três caminhos: página do filme, botão de pipoca no item da lista ou "Agendar este!" no resultado do sorteio. Desde o redesign, as sessões **moram no Cinema**: a próxima sessão futura é um **ingresso perfurado** em destaque no topo da tela (canhoto com a data e a **contagem regressiva ao vivo** — "em 3 dias" → "em 5 h" → "é agora! 🍿"), de onde saem o "Calendário" (`.ics` com alarme de 30 min — o calendário do celular lembra, zero infra), reagendar e cancelar. Passado o horário, a sessão desce para a seção **"Sessões passadas"** (fim da aba Listas): não avaliada ganha a pill **"Como foi?"** (avaliar abre o composer pré-preenchido e publicar chama a RPC `concluir_sessao` — assistida + vínculo com a avaliação + `assistido` no item de origem, numa transação; ou "só marcar como assistida"); concluída vira linha apagada com check. Agendar publica a atividade no Mural, e o tempo real leva tudo ao par. Reagendar/cancelar/concluir é ação de **qualquer membro**, não só de quem criou.
+
+### 15. Notificações push e permissões do aparelho (Fase 7 — 03/08/2026)
+
+**Push do casal, sempre para o PAR** (quem age nunca recebe): comentários, publicações/avaliações, curtidas (❤️), memórias, "adicionou filme à lista" e "entrou no espaço". Arquitetura própria, sem FCM/OneSignal: trigger SQL → `notificar_par()` (checa a preferência do destinatário) → `pg_net` → Edge Function `enviar-push` (Deno + web-push/VAPID) → service worker (`src/sw.ts`, agora `injectManifest`) mostra a notificação e o toque abre a rota certa. Endpoints mortos (404/410) são limpos pela função. Textos das notificações moram na função, em pt-BR.
+
+**Controle**: Ajustes → seção Notificações com o toggle geral (ligar É o gesto que pede a permissão nativa e inscreve o aparelho em `inscricoes_push`) + toggles por tipo (`preferencias_notificacao`; sem linha = tudo ligado). Convite único no Mural (dispensável, localStorage). **Permissões do aparelho** ("lembrar"): seção nos Ajustes com o estado vivo — notificações concedida/negada/não pedida (recheca ao voltar o foco), câmera/fotos marcadas como gerenciadas pelo sistema (o seletor nativo pede na hora), e a dica de reativação para quem negou. iOS: push só com o app instalado na tela inicial — a UI avisa em vez de falhar.
 
 ### 14. Redesign "cara de app" (entregue na Fase R — 02/08/2026)
 

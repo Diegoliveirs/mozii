@@ -131,4 +131,16 @@ test('perfil: estatísticas, favorito, cartão de compartilhar e avatar', async 
   await page.getByRole('link', { name: 'Ajustes' }).click()
   await page.locator('input[type=file]').first().setInputFiles(foto('avatar.png'))
   await expect(page.getByText('Foto atualizada!')).toBeVisible({ timeout: 15_000 })
+
+  // A foto recém-enviada aparece tanto no cartão do Mural quanto nos comentários.
+  await page.getByRole('link', { name: 'Mural' }).click()
+  const cartao = page.locator('article').filter({ hasText: 'Épico do começo ao fim.' })
+  await expect(cartao.getByRole('img', { name: 'Pessoa Um' })).toBeVisible({ timeout: 15_000 })
+  await cartao.getByRole('button', { name: 'Comentar' }).click()
+  await page.getByPlaceholder('Comentar…').fill('Avatar também aparece nos comentários.')
+  await page.getByRole('button', { name: 'Enviar' }).click()
+  const comentario = page.locator('div.flex.items-start').filter({
+    hasText: 'Avatar também aparece nos comentários.',
+  })
+  await expect(comentario.getByRole('img', { name: 'Pessoa Um' })).toBeVisible({ timeout: 15_000 })
 })

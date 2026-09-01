@@ -9,6 +9,8 @@ import {
   useSairDoCasal,
   useSolicitarExclusaoConta,
 } from '../hooks/useCasal'
+import { SecaoNotificacoes } from '../componentes/ajustes/SecaoNotificacoes'
+import { SecaoPermissoes } from '../componentes/ajustes/SecaoPermissoes'
 import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
 import { AvatarPerfil } from '../componentes/mural/AvatarPerfil'
 import { useAviso } from '../componentes/ui/Avisos'
@@ -144,6 +146,10 @@ export function PaginaAjustes() {
             )}
           </section>
         )}
+
+        {/* Notificações e permissões do aparelho */}
+        <SecaoNotificacoes />
+        <SecaoPermissoes />
 
         {/* Sair da conta */}
         <Botao variante="fantasma" onClick={aoSairDaConta} className="mt-4 w-full">

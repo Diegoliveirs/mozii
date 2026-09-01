@@ -49,6 +49,10 @@ export const textos = {
     reenviar: 'Reenviar e-mail',
     reenviado: 'E-mail reenviado!',
     jaConfirmei: 'Já confirmei, entrar',
+    linkInvalidoTitulo: 'Esse link não deu certo',
+    linkInvalidoDescricao:
+      'Ele pode ter expirado ou já ter sido usado. Entre para pedir outro link.',
+    voltarParaEntrar: 'Ir para entrar',
   },
 
   parear: {
@@ -131,11 +135,25 @@ export const textos = {
     avaliarFilme: 'Avaliar filme',
     soMarcar: 'Só marcar como assistida',
     reagendar: 'Reagendar',
+    novaDataRotulo: 'Nova data e horário',
     cancelar: 'Cancelar sessão',
     cancelarConfirmar: 'Cancelar esta sessão?',
     cancelarExplicacao: 'O agendamento some para vocês dois; o filme continua nas listas.',
     calendario: 'Calendário',
     descricaoIcs: 'Sessão de cinema do casal, marcada no Mozii 💜',
+    gestaoAtalho: 'Sessões',
+    gestaoTitulo: 'Sessões agendadas',
+    programacao: 'Na programação',
+    gestaoResumo: (quantidade: number) =>
+      quantidade === 1 ? '1 sessão para gerenciar' : `${quantidade} sessões para gerenciar`,
+    proximasTitulo: 'Próximas sessões',
+    aguardandoTitulo: 'Aguardando vocês',
+    aguardandoDescricao: 'O horário passou. Marque como assistida, avalie ou cancele.',
+    vazioTitulo: 'Nenhuma sessão agendada',
+    vazioDescricao: 'Quando vocês marcarem um filme, ele aparece aqui para gerenciar.',
+    buscarFilme: 'Buscar um filme',
+    erroCarregar: 'Não foi possível carregar as sessões',
+    erroCarregarDica: 'Confira a conexão e tente abrir esta tela novamente.',
   },
 
   compartilhar: {
@@ -274,6 +292,37 @@ export const textos = {
     excluirContaExplicacao:
       'Sua conta e tudo que você criou somem de verdade após 30 minutos. Entrar de novo dentro desse prazo cancela a exclusão.',
     excluirContaConfirmar: 'Excluir sua conta de verdade?',
+  },
+
+  notificacoes: {
+    titulo: 'Notificações',
+    descricao: 'Avisos quando seu par mexer no espaço de vocês.',
+    ativadas: 'Notificações ativadas 💜',
+    desativadas: 'Notificações desativadas.',
+    tipos: {
+      comentarios: 'Comentários',
+      publicacoes: 'Publicações',
+      curtidas: 'Curtidas',
+      memorias: 'Memórias',
+      listas: 'Filmes na lista',
+      casal: 'Casal',
+    },
+    precisaInstalarIos: 'Instale o Mozii na tela inicial para ativar as notificações.',
+    indisponivel: 'Este navegador não suporta notificações.',
+    semChave: 'O push ainda não foi configurado neste ambiente.',
+    permissoesTitulo: 'Permissões do aparelho',
+    permissaoNotificacoes: 'Notificações',
+    permissaoCameraFotos: 'Câmera e fotos',
+    estadoConcedida: 'concedida neste aparelho',
+    estadoNegada: 'negada neste aparelho',
+    estadoNaoPedida: 'ainda não pedida',
+    cameraGerenciadaPeloSistema: 'o sistema pede na hora de usar',
+    dicaReativar:
+      'Negou sem querer? Reative em Ajustes › Notificações › Mozii (iPhone) ou nas permissões do site (Android).',
+    conviteTitulo: 'Quer saber quando seu par publicar?',
+    conviteDescricao: 'Ative as notificações — dá para escolher o quê.',
+    conviteAtivar: 'Ativar notificações',
+    conviteDepois: 'Agora não',
   },
 
   atualizacao: {

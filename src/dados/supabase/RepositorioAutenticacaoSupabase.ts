@@ -1,5 +1,6 @@
 import type { RepositorioAutenticacao } from '../repositorios'
 import type { UsuarioAutenticado } from '../../dominio/tipos'
+import { urlDeConfirmacaoEmail } from '../../lib/autenticacao'
 import { supabase } from './cliente'
 
 /**
@@ -12,7 +13,10 @@ export const repositorioAutenticacaoSupabase: RepositorioAutenticacao = {
     const { data, error } = await supabase.auth.signUp({
       email,
       password: senha,
-      options: { data: { nome_exibicao: nomeExibicao } },
+      options: {
+        data: { nome_exibicao: nomeExibicao },
+        emailRedirectTo: urlDeConfirmacaoEmail(window.location.origin),
+      },
     })
     if (error) throw error
     // Com confirmação ativa, e-mail repetido volta como "sucesso" sem
@@ -26,8 +30,20 @@ export const repositorioAutenticacaoSupabase: RepositorioAutenticacao = {
   },
 
   async reenviarConfirmacao(email) {
-    const { error } = await supabase.auth.resend({ type: 'signup', email })
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: urlDeConfirmacaoEmail(window.location.origin) },
+    })
     if (error) throw error
+  },
+
+  async confirmarEmail() {
+    // detectSessionInUrl troca o código/hash do Supabase por uma sessão antes
+    // desta leitura. Se não houver sessão, o link está expirado ou é inválido.
+    const { data, error } = await supabase.auth.getSession()
+    if (error) throw error
+    if (!data.session) throw new Error('link-confirmacao-invalido')
   },
 
   async entrar({ email, senha }) {

@@ -3,6 +3,11 @@
 # nada aqui altera o projeto hospedado.
 project_id = "mozii"
 
+# A função é chamada por pg_net, que usa a chave de projeto no header `apikey`
+# e o segredo próprio X-Segredo — não há JWT de usuário nessa chamada.
+[functions.enviar-push]
+verify_jwt = false
+
 [api]
 enabled = true
 port = 54321
