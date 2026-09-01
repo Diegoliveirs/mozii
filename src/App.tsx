@@ -14,6 +14,7 @@ import { PaginaNovaPublicacao } from './paginas/PaginaNovaPublicacao'
 import { PaginaPerfil } from './paginas/PaginaPerfil'
 import { PaginaParear } from './paginas/PaginaParear'
 import { PaginaPublicacao } from './paginas/PaginaPublicacao'
+import { PaginaSessoes } from './paginas/PaginaSessoes'
 
 /**
  * Mapa de rotas. Aninhamento das guardas:
@@ -34,6 +35,7 @@ export function App() {
             <Route path="/novo" element={<PaginaNovaPublicacao />} />
             <Route path="/publicacao/:publicacaoId" element={<PaginaPublicacao />} />
             <Route path="/cinema" element={<PaginaCinema />} />
+            <Route path="/cinema/sessoes" element={<PaginaSessoes />} />
             <Route path="/filme/:tmdbId" element={<PaginaFilme />} />
             <Route path="/listas/:listaId" element={<PaginaLista />} />
             <Route path="/momentos" element={<PaginaMomentos />} />
