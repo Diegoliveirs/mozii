@@ -58,44 +58,52 @@ export function PaginaFilme() {
   return (
     <main>
       <CabecalhoPagina titulo={dados.titulo} fallback="/cinema" />
-      {fundo && (
-        <div className="relative h-44 w-full">
-          <img src={fundo} alt="" className="h-full w-full object-cover opacity-50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-noite to-transparent" />
-        </div>
-      )}
+      <section className={`relative ${fundo ? 'overflow-hidden bg-noite' : 'px-5 pt-8'}`}>
+        {fundo && (
+          <>
+            <img
+              src={fundo}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover opacity-55"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-noite/10 via-noite/55 to-noite" />
+          </>
+        )}
 
-      <div className={`px-5 ${fundo ? '-mt-16' : 'pt-8'}`}>
-        <div className="flex items-end gap-4">
-          <Poster
-            caminho={dados.caminhoPoster}
-            titulo={dados.titulo}
-            largura={342}
-            className="w-28 rounded-lg border border-linha-forte shadow-cartao"
-          />
-          <div className="pb-1">
-            {/* O h1 é o do cabeçalho; aqui é só o destaque visual do herói */}
-            <p className="font-voz text-2xl leading-tight font-semibold text-neve">
-              {dados.titulo}
-            </p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {[
-                dados.anoLancamento ? String(dados.anoLancamento) : null,
-                dados.duracaoMinutos ? textos.filme.duracao(dados.duracaoMinutos) : null,
-              ]
-                .filter((pedaco): pedaco is string => pedaco !== null)
-                .map((pedaco) => (
-                  <span
-                    key={pedaco}
-                    className="rounded-full bg-veu px-2.5 py-0.5 text-xs text-nevoa"
-                  >
-                    {pedaco}
-                  </span>
-                ))}
+        <div className={`relative ${fundo ? 'px-5 pt-24 pb-5' : ''}`}>
+          <div className="flex items-end gap-4">
+            <Poster
+              caminho={dados.caminhoPoster}
+              titulo={dados.titulo}
+              largura={342}
+              className="w-28 rounded-lg border border-linha-forte shadow-cartao"
+            />
+            <div className="pb-1">
+              {/* O h1 é o do cabeçalho; aqui é só o destaque visual do herói */}
+              <p className="font-voz text-2xl leading-tight font-semibold text-neve">
+                {dados.titulo}
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {[
+                  dados.anoLancamento ? String(dados.anoLancamento) : null,
+                  dados.duracaoMinutos ? textos.filme.duracao(dados.duracaoMinutos) : null,
+                ]
+                  .filter((pedaco): pedaco is string => pedaco !== null)
+                  .map((pedaco) => (
+                    <span
+                      key={pedaco}
+                      className="rounded-full bg-veu px-2.5 py-0.5 text-xs text-nevoa"
+                    >
+                      {pedaco}
+                    </span>
+                  ))}
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
+      <div className="px-5">
         {dados.generos.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {dados.generos.map((genero) => (
