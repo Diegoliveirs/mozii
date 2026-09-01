@@ -23,14 +23,8 @@ export function Comentarios({
   const comentar = useComentar()
   const [corpo, setCorpo] = useState('')
 
-  function indiceDe(autorId: string): number {
-    return Math.max(
-      0,
-      membros.findIndex((membro) => membro.id === autorId),
-    )
-  }
-  function nomeDe(autorId: string): string {
-    return membros.find((membro) => membro.id === autorId)?.nomeExibicao ?? '…'
+  function perfilDe(autorId: string) {
+    return membros.find((membro) => membro.id === autorId)
   }
 
   function aoEnviar(evento: FormEvent) {
@@ -43,20 +37,29 @@ export function Comentarios({
 
   return (
     <div className="space-y-3">
-      {comentarios.data?.map((comentario) => (
-        <div key={comentario.id} className="flex items-start gap-2">
-          <AvatarPerfil
-            nome={nomeDe(comentario.autorId)}
-            indice={indiceDe(comentario.autorId)}
-            tamanho="pequeno"
-          />
-          <p className="min-w-0 flex-1 text-sm text-nevoa">
-            <span className="font-medium text-neve">{nomeDe(comentario.autorId)}</span>{' '}
-            {comentario.corpo}
-            <span className="ml-2 text-xs text-cinza">{tempoAtras(comentario.criadoEm)}</span>
-          </p>
-        </div>
-      ))}
+      {comentarios.data?.map((comentario) => {
+        const autor = perfilDe(comentario.autorId)
+        const nomeAutor = autor?.nomeExibicao ?? '…'
+        const indiceAutor = Math.max(
+          0,
+          membros.findIndex((membro) => membro.id === comentario.autorId),
+        )
+
+        return (
+          <div key={comentario.id} className="flex items-start gap-2">
+            <AvatarPerfil
+              nome={nomeAutor}
+              indice={indiceAutor}
+              caminhoAvatar={autor?.urlAvatar}
+              tamanho="pequeno"
+            />
+            <p className="min-w-0 flex-1 text-sm text-nevoa">
+              <span className="font-medium text-neve">{nomeAutor}</span> {comentario.corpo}
+              <span className="ml-2 text-xs text-cinza">{tempoAtras(comentario.criadoEm)}</span>
+            </p>
+          </div>
+        )
+      })}
 
       <form onSubmit={aoEnviar} className="flex items-center gap-2">
         <input

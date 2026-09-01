@@ -43,11 +43,12 @@ export function CartaoPublicacao({
   /** Abre o detalhe; ausente quando o cartão JÁ é o detalhe. */
   aoAbrir?: () => void
 }) {
+  const autor = membros.find((membro) => membro.id === publicacao.autorId)
   const indiceAutor = Math.max(
     0,
-    membros.findIndex((m) => m.id === publicacao.autorId),
+    membros.findIndex((membro) => membro.id === publicacao.autorId),
   )
-  const nomeAutor = membros.find((m) => m.id === publicacao.autorId)?.nomeExibicao ?? '…'
+  const nomeAutor = autor?.nomeExibicao ?? '…'
 
   const curtidasDeCoracao = reacoes.filter((reacao) => reacao.emoji === EMOJI_CURTIDA)
   const curti = curtidasDeCoracao.some((reacao) => reacao.autorId === meuId)
@@ -86,7 +87,7 @@ export function CartaoPublicacao({
       }`}
     >
       <header className="flex items-center gap-2 px-4 pt-3.5">
-        <AvatarPerfil nome={nomeAutor} indice={indiceAutor} />
+        <AvatarPerfil nome={nomeAutor} indice={indiceAutor} caminhoAvatar={autor?.urlAvatar} />
         <span className="font-medium text-neve">{nomeAutor}</span>
         <span className="ml-auto text-xs text-cinza">{tempoAtras(publicacao.criadoEm)}</span>
       </header>
