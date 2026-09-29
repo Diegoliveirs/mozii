@@ -103,7 +103,7 @@ test('avaliação com meia estrela aparece no Mural', async ({ browser }) => {
 test('avaliar na página do filme mostra as duas avaliações e bloqueia repetição', async ({
   browser,
 }) => {
-  test.skip(!migracaoAplicada, 'aplicar 004_mural.sql e 008_avaliacoes_por_filme antes (docs/03)')
+  test.skip(!migracaoAplicada, 'aplicar 004_mural.sql e 010_avaliacoes_por_filme antes (docs/03)')
 
   const contextoUm = await browser.newContext()
   const paginaUm = await contextoUm.newPage()

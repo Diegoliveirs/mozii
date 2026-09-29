@@ -25,6 +25,12 @@ describe('gerarIcs', () => {
     expect(ics).toContain('DESCRIPTION:Sessão do casal\\; leva pipoca\\, por favor')
   })
 
+  it('escapa CR e LF: texto do usuário nunca vira linha nova no .ics', () => {
+    const ics = gerarIcs({ ...evento, titulo: 'Duna\rURL:https://x.test\r\nATTACH:a\nfim' })
+    expect(ics).toContain('SUMMARY:Duna\\nURL:https://x.test\\nATTACH:a\\nfim\r\n')
+    expect(ics.split(/\r\n|\r|\n/).filter((linha) => linha.startsWith('URL:'))).toHaveLength(0)
+  })
+
   it('usa CRLF entre as linhas', () => {
     expect(gerarIcs(evento)).toContain('\r\n')
   })

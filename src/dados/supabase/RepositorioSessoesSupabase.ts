@@ -34,7 +34,7 @@ export const repositorioSessoesSupabase: RepositorioSessoes = {
     const { data, error } = await supabase
       .from('sessoes_cinema')
       .select(COLUNAS)
-      .eq('status', 'concluida')
+      .eq('status', 'assistida')
       .order('agendada_para', { ascending: false })
       .limit(limite)
     if (error) throw error

@@ -19,11 +19,15 @@ function paraUtc(data: Date): string {
 }
 
 function escapar(texto: string): string {
-  return texto
-    .replace(/\\/g, '\\\\')
-    .replace(/;/g, '\\;')
-    .replace(/,/g, '\\,')
-    .replace(/\n/g, '\\n')
+  return (
+    texto
+      .replace(/\\/g, '\\\\')
+      .replace(/;/g, '\\;')
+      .replace(/,/g, '\\,')
+      // CR solto (ou CRLF) vira quebra escapada também: alguns calendários
+      // tratam CR como fim de linha e o texto viraria propriedade nova.
+      .replace(/\r\n?|\n/g, '\\n')
+  )
 }
 
 export function gerarIcs(evento: DadosEvento): string {

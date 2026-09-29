@@ -116,6 +116,8 @@ Deno.serve(async (requisicao) => {
       await webpush.sendNotification(
         { endpoint: inscricao.endpoint, keys: { p256dh: inscricao.p256dh, auth: inscricao.auth } },
         JSON.stringify(mensagem),
+        // Sem timeout, um endpoint que não responde prende a função inteira.
+        { timeout: 10_000 },
       )
       enviadas++
     } catch (excecao) {

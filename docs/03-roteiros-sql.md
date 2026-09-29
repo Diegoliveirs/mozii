@@ -392,10 +392,10 @@ select status_code, error_msg from net._http_response order by created desc limi
 
 ---
 
-## Roteiro da 008_avaliacoes_por_filme.sql
+## Roteiro da 010_avaliacoes_por_filme.sql
 
-**Status:** ⏳ aguardando aplicação
-**Arquivo:** `supabase/migrations/008_avaliacoes_por_filme.sql`
+**Status:** ✅ aplicada pelo Diego em 2026-09-28
+**Arquivo:** `supabase/migrations/010_avaliacoes_por_filme.sql`
 
 > Aplicar depois da `009_autenticar_push_pg_net.sql`.
 
@@ -408,7 +408,7 @@ select status_code, error_msg from net._http_response order by created desc limi
 ### Como aplicar
 
 1. No SQL Editor do Supabase, confira primeiro se a consulta abaixo retorna zero linhas.
-2. Cole o conteúdo completo de `008_avaliacoes_por_filme.sql` e execute.
+2. Cole o conteúdo completo de `010_avaliacoes_por_filme.sql` e execute.
 
 ```sql
 select autor_id, tmdb_id, count(*) as quantidade
@@ -421,7 +421,7 @@ having count(*) > 1;
 ### Queries de conferência
 
 ```sql
--- Esperado: os dois índices da migration 008.
+-- Esperado: os dois índices da migration 010.
 select indexname, indexdef
 from pg_indexes
 where schemaname = 'public'
@@ -444,4 +444,118 @@ having count(*) > 1;
 
 ### Depois de aplicar
 
-- [ ] Avisar no chat que a 008 foi aplicada e as conferências bateram.
+- [ ] Avisar no chat que a 010 foi aplicada e as conferências bateram.
+
+---
+
+## Roteiro do pacote de segurança 011–016 (auditoria de 2026-09-28)
+
+**Status:** ✅ aplicadas pelo Diego em 2026-09-28; Edge Function redeployada pelo painel (timeout de 10 s)
+**Arquivos:** `supabase/migrations/011_rpcs_so_autenticados.sql` … `016_push_permissoes_e_limites.sql`
+
+> **Pré-requisito:** a `010_avaliacoes_por_filme.sql` (antiga `008_avaliacoes_por_filme.sql`, renumerada porque duas migrations com versão 008 quebram o `supabase start`) precisa estar aplicada. Se ainda não foi, siga o roteiro dela logo acima antes deste.
+
+### Por que existe
+
+Uma auditoria de segurança com staging local (Supabase em Docker, só dados fictícios) confirmou:
+
+- a chave anon chamava as RPCs, o que permitia força bruta do código de convite sem limite e escrita no cache de filmes;
+- `gravar_filme` reescrevia título e pôster usados por outro casal;
+- `concluir_sessao` marcava item da lista de outro casal;
+- faltavam tetos de tamanho;
+- as tabelas de push não tinham GRANT.
+
+O relatório completo está fora do repo, em `~/security-audit-skill/mozii/run-1/REPORT.md`.
+
+| #   | Arquivo                              | O que corrige                                                                                  |
+| --- | ------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| 011 | `011_rpcs_so_autenticados.sql`       | revoga o EXECUTE público/anon de todas as funções; funções internas só para o dono             |
+| 012 | `012_entrada_no_casal_com_trava.sql` | `for update` no casal ao entrar: duas entradas simultâneas não viram 3 pessoas                 |
+| 013 | `013_filmes_sem_sobrescrita.sql`     | `gravar_filme` só cria a linha (e completa pôster/ano nulos); recusa caracteres de controle    |
+| 014 | `014_sessoes_vinculos_do_casal.sql`  | sessão só referencia item de lista e avaliação do próprio casal                                |
+| 015 | `015_limites_de_tamanho.sql`         | tetos em caminhos de foto, `meta_atividade`, `url_avatar`; bucket `fotos` com 2 MB por arquivo |
+| 016 | `016_push_permissoes_e_limites.sql`  | GRANTs das tabelas de push, policies só para `authenticated`, até 10 aparelhos por pessoa      |
+
+### Antes de aplicar (no dashboard, sem SQL)
+
+1. **Desligar o cadastro público:** _Authentication → Sign In / Providers → Email → "Allow new users to sign up"_ desligado. As duas contas reais já existem. É o único controle que limita a quota de fotos e o número de contas que um estranho consegue criar.
+2. Rodar esta checagem. O esperado é **zero linhas**; se voltar algo, a 015 vai falhar, então pare e me avise:
+
+   ```sql
+   select 'publicacoes' as tabela, id::text from public.publicacoes
+   where length(caminho_foto) > 300 or pg_column_size(meta_atividade) > 8192
+   union all
+   select 'momentos', id::text from public.momentos
+   where cardinality(caminhos_fotos) > 50 or length(array_to_string(caminhos_fotos, '')) > 15000
+   union all
+   select 'perfis', id::text from public.perfis where length(url_avatar) > 300
+   union all
+   select 'inscricoes_push', id::text from public.inscricoes_push
+   where endpoint !~ '^https://' or length(endpoint) > 1000 or length(p256dh) > 200 or length(auth) > 200;
+   ```
+
+### Como aplicar
+
+No SQL Editor, cole e execute **um arquivo por vez, na ordem**: 011 → 012 → 013 → 014 → 015 → 016. Cada um deve terminar sem erro.
+
+### Queries de conferência
+
+```sql
+-- 1. (011) Nenhuma função do app atende anon (esperado: anon_exec = false em TODAS as linhas)
+select p.proname, has_function_privilege('anon', p.oid, 'execute') as anon_exec
+from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public' order by p.proname;
+```
+
+```sql
+-- 2. (011) As RPCs do app seguem liberadas para quem está logado
+--    (esperado: true nas 7 primeiras; false em purgar_contas_excluidas e gerar_codigo_convite)
+select proname, has_function_privilege('authenticated', oid, 'execute') as autenticado
+from pg_proc where pronamespace = 'public'::regnamespace
+  and proname in ('criar_casal','entrar_no_casal','sair_do_casal','solicitar_exclusao_conta',
+                  'cancelar_exclusao_conta','gravar_filme','concluir_sessao',
+                  'purgar_contas_excluidas','gerar_codigo_convite')
+order by 2 desc, 1;
+```
+
+```sql
+-- 3. (012/013/014) Funções novas no lugar (esperado: 3 linhas, todas true)
+select proname, prosrc like '%autenticação obrigatória%' as nova
+from pg_proc where pronamespace = 'public'::regnamespace
+  and proname in ('entrar_no_casal','gravar_filme','concluir_sessao');
+```
+
+```sql
+-- 4. (015) Tetos criados (esperado: 4 constraints) e bucket com 2 MB (esperado: 2097152)
+select conname from pg_constraint where conname like '%_tamanho' order by conname;
+select file_size_limit from storage.buckets where id = 'fotos';
+```
+
+```sql
+-- 5. (016) Push com acesso declarado (esperado: authenticated com DELETE, INSERT, SELECT, UPDATE
+--    em inscricoes_push e INSERT, SELECT, UPDATE em preferencias_notificacao; service_role com DELETE, SELECT)
+select table_name, grantee, string_agg(privilege_type, ', ' order by privilege_type)
+from information_schema.role_table_grants
+where table_schema = 'public' and table_name in ('inscricoes_push','preferencias_notificacao')
+  and grantee in ('authenticated','service_role')
+group by 1, 2 order by 1, 2;
+```
+
+### Depois de aplicar
+
+1. **Redeployar a Edge Function**, porque ela ganhou timeout de 10 s por envio:
+
+   ```bash
+   supabase functions deploy enviar-push --no-verify-jwt
+   ```
+
+2. **Teste rápido no app**, com o deploy do front já nesta branch:
+   - entrar;
+   - adicionar um filme a uma lista;
+   - agendar e concluir uma sessão;
+   - ligar e desligar as notificações;
+   - sair e entrar de novo.
+
+   Tudo deve funcionar como antes.
+
+- [ ] Avisar no chat que as 011–016 foram aplicadas, a função foi redeployada e as conferências bateram.
