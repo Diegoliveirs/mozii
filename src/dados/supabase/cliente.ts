@@ -10,6 +10,11 @@ export const supabase = createClient(ambiente.supabaseUrl, ambiente.supabaseChav
     // Sessão do PWA fica no localStorage e sobrevive a fechar/reabrir ou atualizar o app.
     persistSession: true,
     autoRefreshToken: true,
+    // PKCE: o retorno do link só vira sessão se o fluxo começou NESTE
+    // navegador (verificador guardado no cadastro). No fluxo implícito
+    // padrão, qualquer link com `#access_token=` de outra conta trocava a
+    // sessão de quem abrisse — ver docs/01-arquitetura.md § Decisões.
+    flowType: 'pkce',
     // Processa o retorno do link de confirmação em /confirmar-email.
     detectSessionInUrl: true,
   },

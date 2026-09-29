@@ -1,5 +1,5 @@
 -- ==========================================================================
--- 008_avaliacoes_por_filme.sql — Uma avaliação de cada pessoa por filme
+-- 010_avaliacoes_por_filme.sql — Uma avaliação de cada pessoa por filme
 -- ==========================================================================
 
 -- Não apaga histórico automaticamente: se houver duplicatas antigas, a
@@ -15,7 +15,7 @@ begin
     having count(*) > 1
   ) then
     raise exception
-      'Há avaliações repetidas para a mesma pessoa e filme. Resolva-as antes de aplicar a 008.';
+      'Há avaliações repetidas para a mesma pessoa e filme. Resolva-as antes de aplicar a 010.';
   end if;
 end $$;
 

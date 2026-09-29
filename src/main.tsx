@@ -8,6 +8,7 @@ import { AvisoAtualizacao } from './componentes/ui/AvisoAtualizacao'
 import { ProvedorAvisos } from './componentes/ui/Avisos'
 import { FaltaConfiguracao } from './componentes/ui/FaltaConfiguracao'
 import { variaveisFaltando } from './lib/ambiente'
+import { aoTrocarDeConta } from './lib/trocaDeConta'
 import { travarZoom } from './lib/travarZoom'
 import './index.css'
 
@@ -37,11 +38,16 @@ async function iniciar() {
   }
 
   const { criarRepositoriosSupabase } = await import('./dados/supabase/indice')
+  const repositorios = criarRepositoriosSupabase()
+
+  // Conta nova = cache zerado, venha a troca de onde vier (botão Sair, logout
+  // em outra aba, sessão expirada): dados de uma conta nunca aparecem na outra.
+  repositorios.autenticacao.aoMudarAutenticacao(aoTrocarDeConta(() => clienteQuery.clear()))
 
   createRoot(raiz).render(
     <StrictMode>
       <QueryClientProvider client={clienteQuery}>
-        <ProvedorRepositorios repositorios={criarRepositoriosSupabase()}>
+        <ProvedorRepositorios repositorios={repositorios}>
           <BrowserRouter>
             <ProvedorAvisos>
               <App />

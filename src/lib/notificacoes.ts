@@ -78,8 +78,11 @@ export async function inscrever(chavePublicaVapid: string): Promise<DadosInscric
 
 /** Desfaz a inscrição deste aparelho; retorna o endpoint removido (ou null). */
 export async function desinscrever(): Promise<string | null> {
-  const registro = await navigator.serviceWorker.ready
-  const inscricao = await registro.pushManager.getSubscription()
+  // getRegistration (e não `ready`): no logout pode não haver service worker
+  // — `ready` esperaria para sempre.
+  if (!('serviceWorker' in navigator)) return null
+  const registro = await navigator.serviceWorker.getRegistration()
+  const inscricao = await registro?.pushManager?.getSubscription()
   if (!inscricao) return null
   const endpoint = inscricao.endpoint
   await inscricao.unsubscribe()

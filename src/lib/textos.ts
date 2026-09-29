@@ -51,7 +51,7 @@ export const textos = {
     jaConfirmei: 'Já confirmei, entrar',
     linkInvalidoTitulo: 'Esse link não deu certo',
     linkInvalidoDescricao:
-      'Ele pode ter expirado ou já ter sido usado. Entre para pedir outro link.',
+      'Ele pode ter expirado, já ter sido usado ou ter sido aberto em outro navegador. Entre com sua senha — se ainda faltar confirmar, pedimos outro link.',
     voltarParaEntrar: 'Ir para entrar',
   },
 
