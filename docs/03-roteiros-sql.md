@@ -450,7 +450,7 @@ having count(*) > 1;
 
 ## Roteiro do pacote de segurança 011–016 (auditoria de 2026-09-28)
 
-**Status:** ✅ aplicadas pelo Diego em 2026-09-28 — falta rodar as conferências e redeployar a Edge Function
+**Status:** ✅ aplicadas pelo Diego em 2026-09-28; Edge Function redeployada pelo painel (timeout de 10 s)
 **Arquivos:** `supabase/migrations/011_rpcs_so_autenticados.sql` … `016_push_permissoes_e_limites.sql`
 
 > **Pré-requisito:** a `010_avaliacoes_por_filme.sql` (antiga `008_avaliacoes_por_filme.sql`, renumerada porque duas migrations com versão 008 quebram o `supabase start`) precisa estar aplicada. Se ainda não foi, siga o roteiro dela logo acima antes deste.
