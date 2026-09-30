@@ -63,6 +63,18 @@ Todo visual é uma pasta em `src/temas/<id>/`. O padrão é o **Noir**, e o visu
 - As fontes moram em `public/fontes/`, com as licenças OFL. O `@font-face` fica no `fontes.css` de cada tema, e a CSP é `font-src 'self'`.
 - O grão de filme é um `body::before`.
 - As primitivas ficam em `componentes/ui/`: `Botao` (e `classesBotao` para `<Link>`), `Campo`/`AreaTexto`, `FolhaBase`, `ModalBase`, `DialogoConfirmar`, `ProvedorAvisos`/`useAviso`, `Esqueleto`, `EstadoVazio`, `ControleSegmentado`.
+- **Variações das primitivas:**
+  - `Botao grande`, o botão principal de uma tela;
+  - `Campo rotulo="…"`, com o rótulo dentro da moldura (nome acessível = rótulo);
+  - `AreaTexto livre`, sem moldura, usada no compositor.
+- **Peças de composição do layout Noir:**
+  - `TituloAfetivo`, o título em duas vozes com o destaque em itálico afetivo;
+  - `ColagemPosteres`, a vitrine decorativa do Entrar;
+  - `SeloEnvelope`, o envelope das telas de e-mail;
+  - `CapaEmLeque`, as capas de lista abertas em leque.
+
+  As páginas usam essa estrutura em todos os temas (decisão de 29/09/2026, caminho A); o tema muda só a pele.
+
 - **Nenhum componente escreve classes de botão, campo ou modal à mão.** A exceção é o compositor de comentário, que é em pílula de propósito.
 - **Página nunca pergunta qual é o tema.** Estrutura diferente vira slot ou encaixe (`useTema()`, `<EncaixeAdereco>`).
 

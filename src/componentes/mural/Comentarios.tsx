@@ -71,13 +71,13 @@ export function Comentarios({
           placeholder={textos.publicacao.comentarDica}
           value={corpo}
           onChange={(evento) => setCorpo(evento.target.value)}
-          className="min-w-0 flex-1 rounded-full border border-borda bg-vidro px-4 py-2.5 text-sm text-texto outline-none transition-colors placeholder:text-texto-discreto focus:border-primario focus:ring-2 focus:ring-primario/25"
+          className="min-w-0 flex-1 rounded-full border border-vidro-borda bg-vidro px-5 py-3.5 text-texto outline-none transition-colors placeholder:text-texto-discreto focus:border-primario focus:ring-2 focus:ring-primario/25"
         />
         <button
           type="submit"
           aria-label={textos.publicacao.enviar}
           disabled={corpo.trim().length === 0}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primario text-primario-texto transition-transform active:scale-90 disabled:opacity-50"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primario text-primario-texto transition-transform active:scale-90 disabled:opacity-50"
         >
           <IconeEnviar size={17} weight="fill" aria-hidden />
         </button>

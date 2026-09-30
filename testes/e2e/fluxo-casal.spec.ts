@@ -52,7 +52,7 @@ test('o casal se forma: um cria o espaço, o outro entra com o código', async (
 
   // Entrou: Mural com os dois nomes unidos pelo coração.
   await expect(paginaDois.getByRole('link', { name: 'Momentos' })).toBeVisible()
-  await expect(paginaDois.getByText('Pessoa Um ♥ Pessoa Dois')).toBeVisible()
+  await expect(paginaDois.getByText('Pessoa Um & Pessoa Dois')).toBeVisible()
 
   // ── Ajustes (via engrenagem do Perfil): sem código com o casal completo ──
   await paginaDois.getByRole('link', { name: 'Perfil', exact: true }).click()

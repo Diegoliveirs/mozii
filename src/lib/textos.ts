@@ -33,7 +33,9 @@ export const textos = {
   },
 
   cadastro: {
-    titulo: 'Criar sua conta',
+    tituloInicio: 'Criar sua',
+    tituloDestaque: 'conta',
+    subtitulo: 'Um espaço só de vocês dois — filmes, memórias e sessões.',
     nome: 'Seu nome',
     nomeDica: 'Como seu par te chama?',
     email: 'E-mail',
@@ -46,6 +48,7 @@ export const textos = {
   },
 
   confirmarEmail: {
+    antetitulo: 'Quase lá',
     titulo: 'Confirma seu e-mail 💌',
     explicacaoAntes: 'Enviamos um link para',
     explicacaoDepois: 'Toca nele para ativar sua conta — depois é só entrar.',
@@ -59,7 +62,9 @@ export const textos = {
   },
 
   parear: {
-    titulo: 'Falta uma pessoa',
+    antetitulo: 'Último passo',
+    tituloInicio: 'Falta',
+    tituloDestaque: 'uma pessoa',
     subtitulo: 'O Mozii é feito para vocês dois. Crie o espaço ou entre no do seu par.',
     criarTitulo: 'Começar o nosso espaço',
     criarBotao: 'Criar espaço do casal',
@@ -77,6 +82,8 @@ export const textos = {
 
   mural: {
     titulo: 'Mural',
+    saudacaoDoDia: (hora: number) =>
+      hora >= 5 && hora < 12 ? 'Bom dia,' : hora >= 12 && hora < 18 ? 'Boa tarde,' : 'Boa noite,',
     esperandoPar: 'Seu par ainda não entrou — o código de convite está nos Ajustes.',
     vazio: 'O Mural de vocês começa aqui 💜',
     vazioDica: 'Publiquem a primeira memória de cinema.',

@@ -119,22 +119,25 @@ export function PaginaNovaPublicacao() {
           placeholder={textos.novo.dicaTexto}
           value={corpo}
           onChange={(evento) => setCorpo(evento.target.value)}
-          className="mt-2 resize-none"
+          livre
+          className="mt-3 resize-none font-titulo text-2xl leading-snug font-light italic"
         />
 
         {/* Filme escolhido → avaliação */}
         {filme && (
-          <div className="mt-3 rounded-cartao border border-borda bg-superficie p-4">
-            <div className="flex items-center gap-3">
+          <div className="mt-4 rounded-cartao border border-borda bg-superficie p-4">
+            <div className="flex items-center gap-4">
               <Poster
                 caminho={filme.caminhoPoster}
                 titulo={filme.titulo}
                 largura={185}
-                className="w-12"
+                className="w-20"
               />
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium text-texto">{filme.titulo}</p>
-                <p className="mt-1 text-sm text-texto-secundario">{textos.novo.notaRotulo}</p>
+                <p className="truncate titulo text-xl text-texto">{filme.titulo}</p>
+                <p className="mt-3 text-[11px] font-medium tracking-[0.12em] text-texto-discreto uppercase">
+                  {textos.novo.notaRotulo}
+                </p>
                 <EstrelasNota valor={nota} aoMudar={setNota} />
                 {minhaAvaliacao && (
                   <button
@@ -144,7 +147,7 @@ export function PaginaNovaPublicacao() {
                         state: { voltarPara: estado.voltarPara ?? `/filme/${filme.tmdbId}` },
                       })
                     }
-                    className="mt-2 text-sm text-afeto-claro underline"
+                    className="mt-2 text-sm text-texto-secundario underline decoration-texto/30 underline-offset-4"
                   >
                     {textos.novo.avaliacaoExistente}
                   </button>
@@ -168,19 +171,19 @@ export function PaginaNovaPublicacao() {
         {/* Foto escolhida (só em publicação de texto) */}
         {previewFoto && !filme && (
           <div className="relative mt-3">
-            <img src={previewFoto} alt="" className="max-h-72 w-full rounded-xl object-cover" />
+            <img src={previewFoto} alt="" className="max-h-72 w-full rounded-cartao object-cover" />
             <button
               type="button"
               aria-label={textos.novo.removerFoto}
               onClick={() => setFoto(null)}
-              className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-fundo-profundo/80 text-texto"
+              className="absolute top-2.5 right-2.5 flex h-9 w-9 items-center justify-center rounded-full border border-vidro-borda bg-fundo-profundo/60 text-texto backdrop-blur-vidro"
             >
               <IconeFechar size={16} aria-hidden />
             </button>
           </div>
         )}
 
-        <div className="mt-4 flex gap-2">
+        <div className="mt-5 flex gap-2">
           {!filme && (
             <>
               <Botao
@@ -214,7 +217,8 @@ export function PaginaNovaPublicacao() {
           onClick={aoPublicar}
           carregando={publicando}
           disabled={Boolean(filme && (avaliacoesDoFilme.isLoading || minhaAvaliacao))}
-          className="mt-5 w-full"
+          grande
+          className="mt-6 w-full"
         >
           {textos.novo.publicar}
         </Botao>

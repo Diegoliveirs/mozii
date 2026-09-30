@@ -93,6 +93,19 @@ O visual anterior continua disponível como tema **Clássico**.
 - `?tema=<id>` na URL pré-visualiza qualquer tema.
 - `?tema=` com um id desconhecido cai no padrão.
 
+**Layout das telas:** as páginas seguem as composições do canvas, e esse layout vale para todos os temas, com o Clássico mudando só a pele:
+
+- **Entrar:** colagem de cartazes;
+- **Cadastro e Parear:** títulos em duas vozes;
+- **Campos:** rótulo dentro da moldura;
+- **Mural:** saudação do dia com o casal em itálico e publicações sem caixa, separadas por divisores;
+- **Cinema:** ingresso com data grande, abas sublinhadas e listas em carrossel com capas em leque;
+- **Filme:** herói com o título grande;
+- **Lista:** capa em leque;
+- **Momentos:** dias em itálico e marco de aniversário centralizado;
+- **Perfil:** seletor do casal, avatar em destaque, números com divisores e avaliações recentes em carrossel;
+- **Ajustes:** código de convite em ingresso.
+
 **Cartão de compartilhar:** o estilo "Meia-noite" segue a paleta Noir e desenha os títulos em Fraunces.
 
 **Ícone e splash:** foram regenerados com as cores do Noir.

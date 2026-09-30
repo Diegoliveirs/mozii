@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { IconeCoracao, IconeEmail } from '../componentes/ui/icones'
+import { SeloEnvelope } from '../componentes/ui/SeloEnvelope'
 import { classesBotao } from '../componentes/ui/estiloBotao'
 import { TelaAbertura } from '../componentes/ui/TelaAbertura'
 import { useConfirmarEmail } from '../hooks/useAutenticacao'
@@ -29,21 +29,13 @@ export function PaginaConfirmarEmail() {
   if (!erro) return <TelaAbertura />
 
   return (
-    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6 text-center">
-      <div>
-        <IconeCoracao size={30} weight="fill" className="mx-auto text-afeto" aria-hidden />
-        <p className="mt-1 titulo text-2xl text-texto">{textos.app.nome}</p>
-      </div>
-      <span className="mx-auto mt-9 flex h-18 w-18 items-center justify-center rounded-full border border-afeto/40 bg-afeto/15">
-        <IconeEmail size={32} className="text-afeto-claro" aria-hidden />
-      </span>
-      <h1 className="mt-5 titulo text-2xl tracking-tight text-texto">
+    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col items-center px-6 pt-24 pb-8 text-center">
+      <SeloEnvelope />
+      <h1 className="mt-10 titulo text-3xl tracking-tight text-texto">
         {textos.confirmarEmail.linkInvalidoTitulo}
       </h1>
-      <p className="mt-3 text-sm text-texto-secundario">
-        {textos.confirmarEmail.linkInvalidoDescricao}
-      </p>
-      <Link to="/entrar" className={`mt-7 ${classesBotao('secundario')}`}>
+      <p className="mt-4 text-texto-secundario">{textos.confirmarEmail.linkInvalidoDescricao}</p>
+      <Link to="/entrar" className={`mt-auto w-full ${classesBotao('primario', true)}`}>
         {textos.confirmarEmail.voltarParaEntrar}
       </Link>
     </main>

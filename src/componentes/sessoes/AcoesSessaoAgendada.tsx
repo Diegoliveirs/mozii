@@ -38,7 +38,7 @@ export function AcoesSessaoAgendada({ sessao }: { sessao: SessaoCinema }) {
         <button
           type="button"
           onClick={aoBaixarIcs}
-          className="flex items-center gap-1 rounded-full bg-vidro px-3 py-1.5 text-xs text-texto-secundario"
+          className="flex h-9 items-center gap-1.5 rounded-full border border-vidro-borda bg-vidro px-3 text-xs text-texto-secundario"
         >
           <IconeCalendario size={14} aria-hidden />
           {textos.sessao.calendario}
@@ -47,7 +47,7 @@ export function AcoesSessaoAgendada({ sessao }: { sessao: SessaoCinema }) {
           type="button"
           aria-expanded={reagendando}
           onClick={() => setReagendando((estava) => !estava)}
-          className="flex items-center gap-1 rounded-full bg-vidro px-3 py-1.5 text-xs text-texto-secundario"
+          className="flex h-9 items-center gap-1.5 rounded-full border border-vidro-borda bg-vidro px-3 text-xs text-texto-secundario"
         >
           <IconeReagendar size={14} aria-hidden />
           {textos.sessao.reagendar}

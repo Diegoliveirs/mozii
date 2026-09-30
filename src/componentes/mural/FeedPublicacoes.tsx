@@ -60,7 +60,7 @@ export function FeedPublicacoes({
         </div>
       )}
 
-      <div className="mt-5 space-y-4">
+      <div className="mt-6 divide-y divide-borda [&>*]:py-6 [&>*:first-child]:pt-0">
         {publicacoes.map((publicacao) => (
           <CartaoPublicacao
             key={publicacao.id}
@@ -80,7 +80,7 @@ export function FeedPublicacoes({
           type="button"
           onClick={() => feed.fetchNextPage()}
           disabled={feed.isFetchingNextPage}
-          className="mt-4 w-full rounded-xl border border-borda-forte py-3 text-sm text-texto-secundario disabled:opacity-50"
+          className="mt-4 w-full rounded-botao border border-borda-forte py-3 text-sm text-texto-secundario disabled:opacity-50"
         >
           {feed.isFetchingNextPage ? textos.comuns.carregando : textos.mural.carregarMais}
         </button>

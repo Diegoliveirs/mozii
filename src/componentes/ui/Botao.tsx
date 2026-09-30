@@ -8,6 +8,7 @@ import { classesBotao, type VarianteBotao } from './estiloBotao'
 export function Botao({
   variante = 'primario',
   carregando = false,
+  grande = false,
   className = '',
   disabled,
   children,
@@ -16,12 +17,13 @@ export function Botao({
 }: ButtonHTMLAttributes<HTMLButtonElement> & {
   variante?: VarianteBotao
   carregando?: boolean
+  grande?: boolean
 }) {
   return (
     <button
       type={type}
       disabled={disabled || carregando}
-      className={`${classesBotao(variante)} ${className}`}
+      className={`${classesBotao(variante, grande)} ${className}`}
       {...resto}
     >
       {carregando && (

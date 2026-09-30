@@ -1,14 +1,14 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useCriarLista, useListas } from '../../hooks/useListas'
-import { urlPoster } from '../../api/tmdb'
 import { textos } from '../../lib/textos'
+import { CapaEmLeque } from '../filmes/CapaEmLeque'
 import { Botao } from '../ui/Botao'
 import { Campo } from '../ui/Campo'
 import { EstadoVazio } from '../ui/EstadoVazio'
 import { IconeSessao } from '../ui/icones'
 
-/** Aba de listas do Cinema: grade com capa em mosaico + criação rápida. */
+/** Aba de listas do Cinema: vitrine horizontal com capas em leque + criação rápida. */
 export function ListasCinema() {
   const listas = useListas()
   const criar = useCriarLista()
@@ -22,7 +22,43 @@ export function ListasCinema() {
 
   return (
     <div>
-      <form onSubmit={aoCriar} className="flex gap-2">
+      {listas.data?.length === 0 && (
+        <div className="mt-5">
+          <EstadoVazio
+            icone={<IconeSessao size={26} aria-hidden />}
+            titulo={textos.cinema.semListas}
+          />
+        </div>
+      )}
+
+      <ul className="-mx-5 mt-5 flex snap-x gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none]">
+        {listas.data?.map((lista) => (
+          <li key={lista.id} className="shrink-0 snap-start">
+            <Link
+              to={`/listas/${lista.id}`}
+              className="flex h-64 w-44 flex-col rounded-cartao border border-borda bg-superficie p-4 transition-transform active:scale-[0.98]"
+            >
+              <CapaEmLeque caminhos={lista.postersCapa} />
+              <p className="mt-auto line-clamp-2 titulo text-xl leading-tight text-texto">
+                {lista.nome}
+              </p>
+              <div className="mt-2.5 h-[3px] rounded-full bg-borda-forte">
+                <div
+                  className="h-full rounded-full bg-afeto"
+                  style={{
+                    width: `${lista.qtdItens ? (lista.qtdAssistidos / lista.qtdItens) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+              <p className="mt-1.5 text-xs text-texto-discreto">
+                {textos.lista.progresso(lista.qtdAssistidos, lista.qtdItens)}
+              </p>
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      <form onSubmit={aoCriar} className="mt-4 flex gap-2">
         <Campo
           type="text"
           maxLength={60}
@@ -40,45 +76,6 @@ export function ListasCinema() {
           {textos.cinema.novaListaBotao}
         </Botao>
       </form>
-
-      {listas.data?.length === 0 && (
-        <div className="mt-5">
-          <EstadoVazio
-            icone={<IconeSessao size={26} aria-hidden />}
-            titulo={textos.cinema.semListas}
-          />
-        </div>
-      )}
-
-      <ul className="mt-4 grid grid-cols-2 gap-3">
-        {listas.data?.map((lista) => (
-          <li key={lista.id}>
-            <Link
-              to={`/listas/${lista.id}`}
-              className="cartao block p-3 transition-transform active:scale-[0.98]"
-            >
-              <div className="flex h-24 items-center justify-center gap-1 overflow-hidden rounded-lg bg-vidro">
-                {lista.postersCapa.length > 0 ? (
-                  lista.postersCapa.map((caminho) => (
-                    <img
-                      key={caminho}
-                      src={urlPoster(caminho, 185) ?? ''}
-                      alt=""
-                      className="h-full w-1/3 rounded object-cover"
-                    />
-                  ))
-                ) : (
-                  <IconeSessao size={26} className="text-texto-discreto" aria-hidden />
-                )}
-              </div>
-              <p className="mt-2 truncate font-medium text-texto">{lista.nome}</p>
-              <p className="text-xs text-texto-discreto">
-                {textos.lista.progresso(lista.qtdAssistidos, lista.qtdItens)}
-              </p>
-            </Link>
-          </li>
-        ))}
-      </ul>
     </div>
   )
 }

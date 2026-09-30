@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Botao } from '../componentes/ui/Botao'
 import { Campo } from '../componentes/ui/Campo'
+import { TituloAfetivo } from '../componentes/ui/TituloAfetivo'
 import { IconeCoracao } from '../componentes/ui/icones'
 import { useCriarCasal, useEntrarNoCasal } from '../hooks/useCasal'
 import { codigoCompleto, normalizarCodigo } from '../lib/codigo'
@@ -49,7 +50,7 @@ export function PaginaParear() {
   if (codigoCriado) {
     return (
       <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 px-6 text-center">
-        <h1 className="titulo text-3xl tracking-tight text-texto">
+        <h1 className="titulo text-4xl tracking-tight text-texto">
           {textos.parear.codigoCriadoTitulo}
         </h1>
         <p className="text-texto-secundario">{textos.parear.codigoCriadoDica}</p>
@@ -58,7 +59,7 @@ export function PaginaParear() {
           <p className="px-8 pt-6 rotulo-secao">{textos.ajustes.codigoConvite}</p>
           <p
             data-testid="codigo-convite"
-            className="px-8 pt-2 pb-5 font-mono text-4xl tracking-[0.3em] text-afeto-claro"
+            className="px-8 pt-2 pb-5 font-mono text-4xl tracking-[0.3em] text-texto"
           >
             {codigoCriado}
           </p>
@@ -77,7 +78,7 @@ export function PaginaParear() {
           </div>
         </div>
 
-        <Botao onClick={() => navegar('/', { replace: true })} className="mt-2 w-full">
+        <Botao onClick={() => navegar('/', { replace: true })} grande className="mt-2 w-full">
           {textos.parear.irParaApp}
         </Botao>
       </main>
@@ -85,45 +86,50 @@ export function PaginaParear() {
   }
 
   return (
-    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
-      <h1 className="flex items-center gap-2 titulo text-3xl tracking-tight text-texto">
-        {textos.parear.titulo}
-        <IconeCoracao size={22} weight="fill" className="text-afeto" aria-hidden />
+    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col px-6 pt-16 pb-8">
+      <p className="rotulo-secao">{textos.parear.antetitulo}</p>
+      <h1 className="mt-3 titulo text-5xl leading-none tracking-tight text-texto">
+        <TituloAfetivo
+          inicio={textos.parear.tituloInicio}
+          destaque={textos.parear.tituloDestaque}
+        />
       </h1>
-      <p className="mt-2 text-texto-secundario">{textos.parear.subtitulo}</p>
+      <p className="mt-4 text-texto-secundario">{textos.parear.subtitulo}</p>
 
-      <section className="cartao mt-8 p-5">
-        <h2 className="font-medium text-texto">{textos.parear.criarTitulo}</h2>
-        <Botao onClick={aoCriar} carregando={criar.isPending} className="mt-3 w-full">
+      <section className="ingresso mt-8 p-5">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="titulo text-xl text-texto">{textos.parear.criarTitulo}</h2>
+          <IconeCoracao size={22} weight="fill" className="shrink-0 text-afeto" aria-hidden />
+        </div>
+        <Botao onClick={aoCriar} carregando={criar.isPending} grande className="mt-4 w-full">
           {textos.parear.criarBotao}
         </Botao>
       </section>
 
-      <div className="my-4 flex items-center gap-3 text-sm text-texto-discreto">
+      <div className="my-5 flex items-center gap-3 font-titulo text-texto-discreto italic">
         <span aria-hidden className="h-px flex-1 bg-borda" />
         {textos.parear.ou}
         <span aria-hidden className="h-px flex-1 bg-borda" />
       </div>
 
       <section className="cartao p-5">
-        <h2 className="font-medium text-texto">{textos.parear.entrarTitulo}</h2>
-        <form onSubmit={aoEntrar} className="mt-3 flex flex-col gap-3">
-          <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
-            {textos.parear.entrarRotulo}
-            <Campo
-              type="text"
-              inputMode="text"
-              autoCapitalize="characters"
-              value={codigo}
-              onChange={(e) => setCodigo(normalizarCodigo(e.target.value))}
-              className="text-center font-mono text-2xl tracking-[0.3em]"
-            />
-          </label>
+        <h2 className="titulo text-xl text-texto">{textos.parear.entrarTitulo}</h2>
+        <form onSubmit={aoEntrar} className="mt-4 flex flex-col gap-3">
+          <Campo
+            rotulo={textos.parear.entrarRotulo}
+            type="text"
+            inputMode="text"
+            autoCapitalize="characters"
+            value={codigo}
+            onChange={(e) => setCodigo(normalizarCodigo(e.target.value))}
+            className="[&_input]:text-center [&_input]:font-mono [&_input]:text-2xl [&_input]:tracking-[0.3em]"
+          />
           <Botao
             type="submit"
             variante="secundario"
             carregando={entrar.isPending}
             disabled={!codigoCompleto(codigo)}
+            grande
           >
             {textos.parear.entrarBotao}
           </Botao>

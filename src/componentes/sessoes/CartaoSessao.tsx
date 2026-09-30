@@ -36,50 +36,54 @@ function Ingresso({ sessao }: { sessao: SessaoCinema }) {
   const restante = contagemRegressiva(sessao.agendadaPara)
 
   return (
-    <section className="mt-4">
+    <section className="mt-8">
       <p className="flex items-center gap-1.5 rotulo-secao">
         <IconeSessao size={14} aria-hidden />
         {textos.sessao.cartaoTitulo}
       </p>
 
-      <div className="relative mt-2 flex overflow-hidden ingresso">
+      <div className="relative mt-3 flex overflow-hidden ingresso">
         <EncaixeAdereco nome="ingresso-canto" />
         {/* Canhoto do ingresso */}
-        <div className="w-[88px] shrink-0 border-r-2 border-dashed border-borda-forte px-2 py-3 text-center">
-          <p className="text-[11px] tracking-widest text-texto-discreto uppercase">
+        <div className="flex w-[100px] shrink-0 flex-col items-center justify-center border-r-2 border-dashed border-borda-forte px-2 py-4 text-center">
+          <p className="text-[11px] tracking-[0.18em] text-texto-secundario uppercase">
             {format(quando, 'EEEEEE', { locale: ptBR })}
           </p>
-          <p className="titulo text-3xl leading-tight text-texto">{format(quando, 'dd')}</p>
-          <p className="text-[11px] text-texto-discreto">
+          <p className="titulo text-5xl leading-none tracking-tight text-texto">
+            {format(quando, 'dd')}
+          </p>
+          <p className="mt-1 text-[11px] tracking-[0.12em] text-texto-secundario uppercase">
             {format(quando, 'MMM', { locale: ptBR })} · {format(quando, 'HH:mm')}
           </p>
-          {restante && (
-            <p className="mt-2 inline-block rounded-full bg-afeto/25 px-2 py-0.5 text-[11px] text-afeto-claro">
-              {restante}
-            </p>
-          )}
         </div>
 
         {/* Perfurações do bilhete */}
         <span
           aria-hidden
-          className="absolute -top-2 left-[80px] h-4 w-4 rounded-full border border-borda bg-fundo"
+          className="absolute -top-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
         />
         <span
           aria-hidden
-          className="absolute -bottom-2 left-[80px] h-4 w-4 rounded-full border border-borda bg-fundo"
+          className="absolute -bottom-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
         />
 
         {/* Corpo: o filme e as ações */}
-        <div className="min-w-0 flex-1 px-4 py-3">
+        <div className="min-w-0 flex-1 px-4 py-4">
+          {restante && (
+            <p className="inline-block rounded-full bg-afeto/20 px-2.5 py-0.5 text-[11px] font-medium text-afeto-claro">
+              {restante}
+            </p>
+          )}
           <Link
             to={`/filme/${sessao.filme.tmdbId}`}
-            className="block truncate titulo text-lg text-texto"
+            className="mt-2 block truncate titulo text-xl text-texto"
           >
             {sessao.filme.titulo}
           </Link>
           {sessao.observacao && (
-            <p className="mt-0.5 truncate text-xs text-texto-discreto">{sessao.observacao}</p>
+            <p className="mt-0.5 truncate font-titulo text-sm text-texto-secundario italic">
+              {sessao.observacao}
+            </p>
           )}
 
           <div className="mt-3">

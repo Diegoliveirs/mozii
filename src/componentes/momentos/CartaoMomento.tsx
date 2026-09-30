@@ -32,10 +32,10 @@ export function CartaoMomento({
   const autor = membros.find((membro) => membro.id === momento.autorId)
 
   return (
-    <article className="cartao overflow-hidden">
+    <article>
       {momento.caminhosFotos.length > 0 && (
         <div
-          className={`grid gap-0.5 ${momento.caminhosFotos.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}
+          className={`grid gap-1 overflow-hidden rounded-cartao ${momento.caminhosFotos.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}
         >
           {urls.data
             ? urls.data.map((url, indice) => (
@@ -49,14 +49,14 @@ export function CartaoMomento({
         </div>
       )}
 
-      <div className="px-4 pt-3 pb-3.5">
+      <div className="pt-3.5">
         {momento.legenda && (
-          <p className="font-titulo text-[15px] whitespace-pre-wrap text-texto italic">
+          <p className="font-titulo text-lg leading-snug whitespace-pre-wrap text-texto">
             {momento.legenda}
           </p>
         )}
 
-        <footer className="mt-3 flex items-center gap-2 text-xs text-texto-discreto">
+        <footer className="mt-2 flex items-center gap-2 text-xs text-texto-discreto">
           {autor && (
             <>
               <AvatarPerfil

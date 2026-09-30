@@ -3,7 +3,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAviso } from '../componentes/ui/Avisos'
 import { Botao } from '../componentes/ui/Botao'
 import { Campo } from '../componentes/ui/Campo'
-import { IconeCoracao, IconeEmail } from '../componentes/ui/icones'
+import { IconeVoltar } from '../componentes/ui/icones'
+import { SeloEnvelope } from '../componentes/ui/SeloEnvelope'
+import { TituloAfetivo } from '../componentes/ui/TituloAfetivo'
+import { classesBotao } from '../componentes/ui/estiloBotao'
 import { useCadastrar, useReenviarConfirmacao } from '../hooks/useAutenticacao'
 import { textos } from '../lib/textos'
 
@@ -45,104 +48,102 @@ export function PaginaCadastro() {
   // Cadastro feito com confirmação de e-mail ativa: falta tocar no link.
   if (emailParaConfirmar) {
     return (
-      <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6 text-center">
-        <div>
-          <IconeCoracao size={30} weight="fill" className="mx-auto text-afeto" aria-hidden />
-          <p className="mt-1 titulo text-2xl text-texto">{textos.app.nome}</p>
-        </div>
-
-        <span className="mx-auto mt-9 flex h-18 w-18 items-center justify-center rounded-full border border-afeto/40 bg-afeto/15">
-          <IconeEmail size={32} className="text-afeto-claro" aria-hidden />
-        </span>
-
-        <h1 className="mt-5 titulo text-2xl tracking-tight text-texto">
+      <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col items-center px-6 pt-24 pb-8 text-center">
+        <SeloEnvelope />
+        <p className="mt-10 rotulo-secao">{textos.confirmarEmail.antetitulo}</p>
+        <h1 className="mt-3 titulo text-3xl tracking-tight text-texto">
           {textos.confirmarEmail.titulo}
         </h1>
-        <p className="mt-3 text-sm text-texto-secundario">
-          {textos.confirmarEmail.explicacaoAntes}
-          <br />
-          <span className="font-medium text-texto">{emailParaConfirmar}</span>
-          <br />
+        <p className="mt-4 text-texto-secundario">{textos.confirmarEmail.explicacaoAntes}</p>
+        <span className="mt-2 rounded-full border border-vidro-borda bg-vidro px-4 py-2 font-medium text-texto">
+          {emailParaConfirmar}
+        </span>
+        <p className="mt-4 max-w-72 text-texto-secundario">
           {textos.confirmarEmail.explicacaoDepois}
         </p>
 
-        <Botao
-          variante="secundario"
-          carregando={reenviar.isPending}
-          onClick={() =>
-            reenviar.mutate(emailParaConfirmar, {
-              onSuccess: () => avisar(textos.confirmarEmail.reenviado),
-              onError: () => avisar(textos.comuns.erroInesperado, 'erro'),
-            })
-          }
-          className="mt-7 w-full"
-        >
-          {textos.confirmarEmail.reenviar}
-        </Botao>
-
-        <Link to="/entrar" className="mt-5 text-sm text-afeto-claro underline">
-          {textos.confirmarEmail.jaConfirmei}
-        </Link>
+        <div className="mt-auto flex w-full flex-col gap-2.5 pt-8">
+          <Link to="/entrar" className={classesBotao('primario', true)}>
+            {textos.confirmarEmail.jaConfirmei}
+          </Link>
+          <Botao
+            variante="secundario"
+            carregando={reenviar.isPending}
+            onClick={() =>
+              reenviar.mutate(emailParaConfirmar, {
+                onSuccess: () => avisar(textos.confirmarEmail.reenviado),
+                onError: () => avisar(textos.comuns.erroInesperado, 'erro'),
+              })
+            }
+            grande
+          >
+            {textos.confirmarEmail.reenviar}
+          </Botao>
+        </div>
       </main>
     )
   }
 
   return (
-    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
-      <div className="text-center">
-        <IconeCoracao size={34} weight="fill" className="mx-auto text-afeto" aria-hidden />
-        <p className="mt-1 titulo text-2xl text-texto">{textos.app.nome}</p>
-        <p className="text-sm text-texto-discreto">{textos.app.slogan}</p>
+    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col px-6 pt-4 pb-8">
+      <div className="flex items-center justify-between">
+        <Link
+          to="/entrar"
+          aria-label={textos.comuns.voltar}
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-vidro-borda bg-vidro text-texto"
+        >
+          <IconeVoltar size={18} aria-hidden />
+        </Link>
+        <span className="titulo text-xl tracking-tight text-texto">{textos.app.nome}</span>
+        <span aria-hidden className="w-11" />
       </div>
 
-      <h1 className="mt-9 titulo text-2xl tracking-tight text-texto">{textos.cadastro.titulo}</h1>
+      <h1 className="mt-10 titulo text-4xl leading-tight tracking-tight text-texto">
+        <TituloAfetivo
+          inicio={textos.cadastro.tituloInicio}
+          destaque={textos.cadastro.tituloDestaque}
+        />
+      </h1>
+      <p className="mt-3 text-texto-secundario">{textos.cadastro.subtitulo}</p>
 
-      <form onSubmit={aoEnviar} className="mt-5 flex flex-col gap-4">
-        <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
-          {textos.cadastro.nome}
-          <Campo
-            type="text"
-            required
-            maxLength={40}
-            placeholder={textos.cadastro.nomeDica}
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-          />
-        </label>
-
-        <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
-          {textos.cadastro.email}
-          <Campo
-            type="email"
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
-
-        <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
-          {textos.cadastro.senha}
-          <Campo
-            type="password"
-            required
-            minLength={8}
-            autoComplete="new-password"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-          />
-        </label>
+      <form onSubmit={aoEnviar} className="mt-8 flex flex-col gap-2.5">
+        <Campo
+          rotulo={textos.cadastro.nome}
+          type="text"
+          required
+          maxLength={40}
+          placeholder={textos.cadastro.nomeDica}
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+        />
+        <Campo
+          rotulo={textos.cadastro.email}
+          type="email"
+          required
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Campo
+          rotulo={textos.cadastro.senha}
+          type="password"
+          required
+          minLength={8}
+          autoComplete="new-password"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+        />
 
         {erro && <p className="text-sm text-perigo-texto">{erro}</p>}
 
-        <Botao type="submit" carregando={cadastrar.isPending} className="mt-2">
+        <Botao type="submit" carregando={cadastrar.isPending} grande className="mt-3">
           {textos.cadastro.botao}
         </Botao>
       </form>
 
-      <p className="mt-6 text-center text-sm text-texto-discreto">
+      <p className="mt-auto pt-8 text-center text-sm text-texto-discreto">
         {textos.cadastro.jaTemConta}{' '}
-        <Link to="/entrar" className="text-afeto-claro underline">
+        <Link to="/entrar" className="text-texto underline decoration-texto/30 underline-offset-4">
           {textos.cadastro.linkEntrar}
         </Link>
       </p>

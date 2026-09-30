@@ -13,7 +13,11 @@ const variantes = {
 
 export type VarianteBotao = keyof typeof variantes
 
-/** Pele do botão canônico — para `<Link>` que precisa parecer botão. */
-export function classesBotao(variante: VarianteBotao = 'primario') {
-  return `inline-flex items-center justify-center gap-2 rounded-botao px-4 py-3 text-sm transition-transform duration-100 active:scale-[0.97] disabled:opacity-60 disabled:active:scale-100 ${variantes[variante]}`
+/**
+ * Pele do botão canônico — também para `<Link>` que precisa parecer botão.
+ * `grande` é o botão principal de uma tela (formulários de entrada).
+ */
+export function classesBotao(variante: VarianteBotao = 'primario', grande = false) {
+  const tamanho = grande ? 'px-5 py-4 text-[15px]' : 'px-4 py-3 text-sm'
+  return `inline-flex items-center justify-center gap-2 rounded-botao ${tamanho} transition-transform duration-100 active:scale-[0.97] disabled:opacity-60 disabled:active:scale-100 ${variantes[variante]}`
 }

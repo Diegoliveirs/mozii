@@ -7,8 +7,9 @@ import { ModalSorteio } from '../componentes/filmes/ModalSorteio'
 import { Poster } from '../componentes/filmes/Poster'
 import { ModalAgendarSessao } from '../componentes/sessoes/ModalAgendarSessao'
 import { EstadoVazio } from '../componentes/ui/EstadoVazio'
+import { Botao } from '../componentes/ui/Botao'
+import { CapaEmLeque } from '../componentes/filmes/CapaEmLeque'
 import {
-  IconeAvancar,
   IconeConfirmado,
   IconeFechar,
   IconeFilme,
@@ -60,28 +61,40 @@ export function PaginaLista() {
       <CabecalhoPagina titulo={lista?.nome ?? '…'} fallback="/cinema?aba=listas" />
       <div className="px-5">
         {lista && (
-          <div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-vidro">
-              <div className="h-full bg-afeto transition-all" style={{ width: `${progresso}%` }} />
+          <div className="relative flex flex-col items-center pt-2 text-center">
+            <div
+              aria-hidden
+              className="absolute top-0 h-56 w-56 rounded-full bg-afeto/15 blur-3xl"
+            />
+            <div className="relative w-56">
+              <CapaEmLeque caminhos={lista.postersCapa} tamanho="grande" />
             </div>
-            <p className="mt-1.5 text-xs text-texto-discreto">
-              {textos.lista.progresso(lista.qtdAssistidos, lista.qtdItens)}
+            <p className="relative mt-4 titulo text-4xl leading-tight tracking-tight text-texto">
+              {lista.nome}
             </p>
+            <div className="relative mt-3 flex w-56 items-center gap-2.5">
+              <div className="h-[3px] flex-1 rounded-full bg-borda-forte">
+                <div
+                  className="h-full rounded-full bg-afeto transition-all"
+                  style={{ width: `${progresso}%` }}
+                />
+              </div>
+              <p className="shrink-0 text-xs text-texto-secundario">
+                {textos.lista.progresso(lista.qtdAssistidos, lista.qtdItens)}
+              </p>
+            </div>
           </div>
         )}
 
-        <button
-          type="button"
+        <Botao
           onClick={() => setSorteioAberto(true)}
           disabled={naoAssistidos.length === 0}
-          className="mt-3 flex w-full items-center gap-3 rounded-cartao border border-afeto/40 bg-superficie px-4 py-3 text-left shadow-cartao transition-transform active:scale-[0.98] disabled:opacity-50"
+          grande
+          className="mt-6 w-full"
         >
-          <IconeSorteio size={24} className="shrink-0 text-afeto-claro" aria-hidden />
-          <span className="min-w-0 flex-1">
-            <span className="block text-sm font-medium text-texto">{textos.sorteio.botao}</span>
-          </span>
-          <IconeAvancar size={16} className="shrink-0 text-texto-discreto" aria-hidden />
-        </button>
+          <IconeSorteio size={20} aria-hidden />
+          {textos.sorteio.botao}
+        </Botao>
 
         {itens.data?.length === 0 && (
           <div className="mt-5">
@@ -98,7 +111,7 @@ export function PaginaLista() {
         )}
 
         {(itens.data?.length ?? 0) > 0 && naoAssistidos.length === 0 && (
-          <p className="mt-4 rounded-xl border border-borda bg-superficie p-3 text-center text-sm text-afeto-claro">
+          <p className="mt-4 text-center font-titulo text-texto-secundario italic">
             {textos.sorteio.todosAssistidos}
           </p>
         )}
@@ -107,7 +120,7 @@ export function PaginaLista() {
           {itens.data?.map((item) => (
             <li
               key={item.id}
-              className={`flex items-center gap-3 border-b border-borda py-2.5 last:border-b-0 ${
+              className={`flex items-center gap-3.5 border-b border-borda py-3 last:border-b-0 ${
                 item.assistido ? 'opacity-55' : ''
               }`}
             >
@@ -116,15 +129,15 @@ export function PaginaLista() {
                   caminho={item.filme.caminhoPoster}
                   titulo={item.filme.titulo}
                   largura={185}
-                  className="w-11"
+                  className="w-12"
                 />
               </Link>
 
               <div className="min-w-0 flex-1">
                 <Link
                   to={`/filme/${item.filme.tmdbId}`}
-                  className={`block truncate text-sm font-medium ${
-                    item.assistido ? 'text-texto-discreto line-through' : 'text-texto'
+                  className={`block truncate titulo text-lg ${
+                    item.assistido ? 'text-texto-discreto' : 'text-texto'
                   }`}
                 >
                   {item.filme.titulo}
@@ -140,7 +153,7 @@ export function PaginaLista() {
                   type="button"
                   aria-label={`${textos.sessao.modalTitulo}: ${item.filme.titulo}`}
                   onClick={() => setAgendandoItem(item)}
-                  className="p-1 text-afeto-claro transition-transform active:scale-90"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-vidro-borda text-texto-secundario transition-transform active:scale-90"
                 >
                   <IconeSessao size={20} aria-hidden />
                 </button>
@@ -160,8 +173,10 @@ export function PaginaLista() {
                     nomeLista: lista?.nome ?? '',
                   })
                 }
-                className={`p-1 transition-transform active:scale-90 ${
-                  item.assistido ? 'text-sucesso' : 'text-texto-discreto'
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-transform active:scale-90 ${
+                  item.assistido
+                    ? 'bg-metal/15 text-metal'
+                    : 'border border-vidro-borda text-texto-secundario'
                 }`}
               >
                 <IconeConfirmado
@@ -185,7 +200,7 @@ export function PaginaLista() {
 
         <Link
           to="/cinema"
-          className="mb-2 flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-borda-forte py-3 text-sm text-texto-secundario"
+          className="mb-3 flex items-center justify-center gap-1.5 rounded-botao border border-dashed border-borda-forte py-3.5 text-sm text-texto-secundario"
         >
           <IconeMais size={16} aria-hidden />
           {textos.lista.adicionarFilme}

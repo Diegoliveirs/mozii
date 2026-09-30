@@ -97,16 +97,14 @@ export function PaginaAjustes() {
               }}
             />
           </div>
-          <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
-            {textos.ajustes.nomeRotulo}
-            <Campo
-              type="text"
-              required
-              maxLength={40}
-              value={nomeAtual}
-              onChange={(e) => setNome(e.target.value)}
-            />
-          </label>
+          <Campo
+            rotulo={textos.ajustes.nomeRotulo}
+            type="text"
+            required
+            maxLength={40}
+            value={nomeAtual}
+            onChange={(e) => setNome(e.target.value)}
+          />
           <Botao
             type="submit"
             carregando={atualizarNome.isPending}
@@ -120,7 +118,7 @@ export function PaginaAjustes() {
         {/* Nosso espaço */}
         {casal.data && (
           <section className="cartao mt-4 p-5">
-            <h2 className="font-medium text-texto">{textos.ajustes.casalTitulo}</h2>
+            <h2 className="rotulo-secao">{textos.ajustes.casalTitulo}</h2>
 
             <p className="mt-3 text-sm text-texto-secundario">{textos.ajustes.membros}</p>
             <ul className="mt-1 space-y-1">
@@ -136,11 +134,15 @@ export function PaginaAjustes() {
 
             {casal.data.membros.length < 2 && (
               <div className="mt-4">
-                <p className="text-sm text-texto-secundario">{textos.ajustes.codigoConvite}</p>
-                <p className="mt-1 w-fit rounded-xl border border-dashed border-borda-forte bg-vidro px-4 py-2 font-mono text-2xl tracking-[0.3em] text-afeto-claro">
-                  {casal.data.casal.codigoConvite}
-                </p>
-                <p className="mt-1 text-xs text-texto-discreto">{textos.ajustes.codigoDica}</p>
+                <div className="ingresso px-5 py-4">
+                  <p className="text-[11px] tracking-[0.14em] text-texto-secundario uppercase">
+                    {textos.ajustes.codigoConvite}
+                  </p>
+                  <p className="mt-1.5 font-mono text-3xl tracking-[0.3em] text-texto">
+                    {casal.data.casal.codigoConvite}
+                  </p>
+                </div>
+                <p className="mt-2 text-xs text-texto-discreto">{textos.ajustes.codigoDica}</p>
               </div>
             )}
           </section>
@@ -157,31 +159,31 @@ export function PaginaAjustes() {
         </Botao>
 
         {/* Zona de perigo */}
-        <section className="mt-8 rounded-cartao border border-perigo/40 p-5">
-          <h2 className="text-sm font-medium tracking-wide text-perigo-texto uppercase">
-            {textos.ajustes.zonaPerigo}
+        <section className="mt-8 rounded-cartao border border-perigo/30 p-5">
+          <h2 className="rotulo-secao">
+            <span className="text-perigo-texto">{textos.ajustes.zonaPerigo}</span>
           </h2>
 
           <div className="mt-4">
-            <button
-              type="button"
+            <Botao
+              variante="fantasma"
               onClick={() => setConfirmando('sair-casal')}
-              className="text-perigo-texto underline"
+              className="w-full"
             >
               {textos.ajustes.sairCasal}
-            </button>
-            <p className="mt-1 text-xs text-texto-discreto">{textos.ajustes.sairCasalExplicacao}</p>
+            </Botao>
+            <p className="mt-2 text-xs text-texto-discreto">{textos.ajustes.sairCasalExplicacao}</p>
           </div>
 
-          <div className="mt-4">
-            <button
-              type="button"
+          <div className="mt-5 border-t border-borda pt-5">
+            <Botao
+              variante="perigo"
               onClick={() => setConfirmando('excluir-conta')}
-              className="text-perigo-texto underline"
+              className="w-full"
             >
               {textos.ajustes.excluirConta}
-            </button>
-            <p className="mt-1 text-xs text-texto-discreto">
+            </Botao>
+            <p className="mt-2 text-xs text-texto-discreto">
               {textos.ajustes.excluirContaExplicacao}
             </p>
           </div>

@@ -36,7 +36,7 @@ export function AvaliacoesDoFilme({ tmdbId }: { tmdbId: number }) {
         <p className="mt-2 text-sm text-texto-discreto">{textos.filme.semAvaliacoes}</p>
       )}
 
-      <div className="mt-3 space-y-4">
+      <div className="mt-4 divide-y divide-borda [&>*]:py-5 [&>*:first-child]:pt-0">
         {avaliacoes.data?.map((avaliacao) => (
           <CartaoPublicacao
             key={avaliacao.id}
