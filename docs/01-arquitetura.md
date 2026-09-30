@@ -35,7 +35,7 @@ O Mozii é uma SPA React mobile-first, em português do Brasil, que conversa **d
 | Camada             | Escolha                                         | Por quê                                                                 |
 | ------------------ | ----------------------------------------------- | ----------------------------------------------------------------------- |
 | UI                 | React 19 + Vite                                 | Base sólida, build rápido                                               |
-| Estilo             | Tailwind v4 (tema inline no `index.css`)        | Um arquivo a menos; tokens viram classes                                |
+| Estilo             | Tailwind v4 + temas em `src/temas/`             | Tokens semânticos viram classes; cada tema é uma pasta trocável         |
 | Rotas              | react-router-dom 7                              | ~12 rotas estáveis; roteador com codegen seria complexidade sem retorno |
 | Estado de servidor | TanStack Query 5                                | Cache + updates otimistas; dispensa Redux/Zustand                       |
 | Datas              | date-fns 4 (locale pt-BR)                       | Contagem regressiva, "há 2 dias", aniversário                           |
@@ -70,3 +70,19 @@ Registro cronológico. Cada entrada tem 3–5 linhas: contexto → decisão → 
 **2026-08-02 — Sessões moram no Cinema; reações viram curtida.** Pedido do Diego sobre os mockups: a próxima sessão em destaque no topo do Cinema (prioridade até o dia chegar) e as passadas discretas abaixo das listas ("Como foi?" até avaliar); o Mural fica só com publicações. Reações por emoji livre viraram **like de coração estilo Threads** (grava sempre `'❤️'` — zero migration) + balão que abre o detalhe, onde a lixeira é visível no topo. Fotos passam a sangrar de borda a borda nos cartões (Mural e Momentos).
 
 **2026-09-28 — Pacote de segurança pós-auditoria (migrations 011–016 + PKCE).** Uma auditoria com staging local confirmou que o EXECUTE padrão de PUBLIC nunca tinha sido revogado: a chave anon chamava as RPCs, o que dava força bruta do convite sem limite e escrita no cache de filmes. Também confirmou que recursos compartilhados (cache `filmes`, sessões com FK para outro casal) aceitavam escrita entre casais. Decidido: nenhuma função atende anon (default privileges revogados, todo GRANT explícito); `gravar_filme` só cria linha; contagem de membros com `for update`; tetos de tamanho no banco; login pelo fluxo **PKCE** (o implícito aceitava `#access_token` de outra conta em qualquer link). Consequências: o link de confirmação só loga no mesmo navegador do cadastro (em outro, a pessoa entra com a senha); o cache do TanStack é zerado em QUALQUER troca de conta (`lib/trocaDeConta.ts`) e o logout desliga o push do aparelho antes de sair. Ficaram para uma fase própria: purga de fotos via Edge Function e Realtime por Broadcast privado.
+
+**2026-09-29 — Temas em `src/temas/`, com Noir como padrão.** O Diego aprovou o visual Noir no canvas e pediu que todo visual vire uma pasta fácil de trocar, inclusive temas de evento (Natal, com adereços e outra navbar) e um futuro Liquid Glass (barra em ilha). O bloqueio era de nomenclatura: os tokens tinham nome de cor (`rosa`, `noite`…) e eram usados 511 vezes em 54 arquivos, então qualquer tema novo faria os nomes mentirem.
+
+- **Decisão:**
+  - **Tokens nomeados pela função.** `fundo`, `texto`, `primario`, `afeto`, `metal` e `perigo` ficam no `@theme inline` e apontam para variáveis que cada tema define em `[data-tema~='id']`.
+  - **Tema como pacote.** Um tema é tokens + slots (`BarraNavegacao`, `CabecalhoPagina`, `TelaAbertura`, `CamadaAderecos`) + encaixes de adereço + textos (em `textos.temas.<id>`) + ativos.
+  - **Tema completo × tema de evento.** Os completos são `classico` (o visual de 02/08, preservado) e `noir`. Um evento é parcial: declara `base` e só o que muda.
+  - **Carregamento.** Todo tema carrega por `import()` antes do render.
+  - **Escolha do tema.** `?tema=` na URL vence a janela de datas, que vence o padrão.
+- **Consequências:**
+  - O padrão é uma linha (`TEMA_PADRAO`).
+  - **Primitivas continuam únicas e reagem a tokens,** inclusive tokens de componente: botão secundário, título, rótulo de seção, ingresso e respiro da navegação.
+  - **Página nunca pergunta qual é o tema:** se um tema precisa de estrutura diferente, isso vira slot ou encaixe.
+  - Ícone, splash e manifest ficam estáticos, com as cores do tema base.
+  - **Segurança:** o contraste WCAG de cada `tokens.css` é verificado no Vitest, e o e2e fixa `?tema=` para não mudar em dezembro.
+  - Receitas em `src/temas/LEIAME.md`.

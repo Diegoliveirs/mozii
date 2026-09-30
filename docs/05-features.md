@@ -19,12 +19,13 @@ Estado de cada função do app. Uma feature só muda para ✅ com esta página a
 | 13  | Sessão de cinema agendada                                | 5    | ✅     |
 | 14  | Redesign "cara de app" (design system, ícones, fonte)    | R    | ✅     |
 | 15  | **Notificações push + permissões do aparelho**           | 7    | 🚧     |
+| 16  | Tema Noir + sistema de temas trocáveis (`src/temas/`)    | T    | ✅     |
 
 > Feature 15: o front está pronto; falta o Diego aplicar a migration 008 e deployar a Edge Function (roteiro em [03-roteiros-sql.md](03-roteiros-sql.md)).
 
 > **Segurança (28/09/2026):** auditoria completa com staging local; correções nas migrations 011–016 (aplicadas em 28/09/2026 — roteiro em [03-roteiros-sql.md](03-roteiros-sql.md)) e no app (PKCE, limpeza de cache/push na troca de conta, `.ics` sem injeção de linha). Detalhes na decisão de 2026-09-28 em [01-arquitetura.md](01-arquitetura.md).
 
-> **Fase R** = redesign UX/UI de 02/08/2026 (aprovado por mockups no chat).
+> **Fase R** = redesign UX/UI de 02/08/2026 (aprovado por mockups no chat). **Fase T** = temas, 29/09/2026 (Noir aprovado no canvas "Mozii — Telas").
 
 ## Detalhes por feature
 
@@ -69,3 +70,31 @@ O casal agenda um filme para uma data/hora por três caminhos: página do filme,
 ### 14. Redesign "cara de app" (entregue na Fase R — 02/08/2026)
 
 Sistema de design próprio no lugar do look "gerado por IA": ícones **Phosphor** com nomes PT (`componentes/ui/icones.tsx`; fill = ativo), fonte de voz **Fraunces variável** self-hosted, grão de filme sutil no fundo, tokens novos (`erro`, `sucesso`, `cartao-alto`, `shadow-cartao`) e primitivas compartilhadas (`Botao` com spinner, `Campo`, `FolhaBase` com alça/Esc/trava de scroll, `ProvedorAvisos` com toasts, `Esqueleto`, `EstadoVazio`, `ControleSegmentado`). Assinatura visual: o **ingresso perfurado** (próxima sessão e código de convite). Splash mínima no boot (coração pulsando), tab bar com rótulos, estados vazios com convite + ação, splash screens iOS e ícone novo da PWA em formato de bilhete. Mockups aprovados no chat antes do código.
+
+### 16. Tema Noir e sistema de temas (Fase T — 29/09/2026)
+
+**O que mudou:** o app ganhou o visual **Noir**, que virou o padrão:
+
+- quase preto;
+- marfim para ação;
+- rosa só para afeto;
+- estrelas champanhe;
+- Instrument Sans no corpo e Fraunces fina nos títulos;
+- botões em pílula;
+- navegação flutuante de vidro, só com ícones, em que a aba ativa mostra o nome.
+
+O visual anterior continua disponível como tema **Clássico**.
+
+**Como funciona:** todo visual é uma pasta em `src/temas/`, com seus tokens, seus componentes estruturais (barra, cabeçalho, abertura, camada de adereços), seus encaixes de enfeite e seus textos.
+
+**Ativação:**
+
+- Um tema de evento (ex.: Natal) liga sozinho dentro da sua janela de datas e herda do tema base tudo o que não define.
+- `?tema=<id>` na URL pré-visualiza qualquer tema.
+- `?tema=` com um id desconhecido cai no padrão.
+
+**Cartão de compartilhar:** o estilo "Meia-noite" segue a paleta Noir e desenha os títulos em Fraunces.
+
+**Ícone e splash:** foram regenerados com as cores do Noir.
+
+**Receitas:** tema de evento, tema completo, slot novo e encaixe novo estão em [`src/temas/LEIAME.md`](../src/temas/LEIAME.md).

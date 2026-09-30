@@ -38,6 +38,15 @@ Unitários (`src/lib/__testes__/`):
 - `ambiente.teste.ts` — detecção de variáveis de ambiente ausentes.
 - `codigo.teste.ts` — normalização do código de convite.
 - `sorteio.teste.ts` — a lógica pura do caça-níquel: sequência circular que termina no vencedor e atrasos crescentes.
+
+Unitários dos temas (`src/temas/__testes__/`):
+
+- `resolverTema.teste.ts` — janela de datas (inclusive a que atravessa o ano), `?tema=` vencendo a data, pedido desconhecido ignorado, pilha base + evento.
+- `mesclarTema.teste.ts` — o evento sobrescreve só o que declara; o resto vem da base.
+- `contraste.teste.ts` — WCAG de cada `tokens.css` (4,5:1 em textos; 3:1 em afeto, metal e rótulo do botão principal). Todo tema novo entra sozinho no teste.
+
+O e2e navega com `irPara()` (`testes/e2e/apoio.ts`), que fixa `?tema=` para a aparência não mudar quando um tema de evento entrar na janela.
+
 - `datas.teste.ts` — tempo relativo do Mural ("agora", "há 5 min", "ontem", data por extenso).
 
 E2E (`testes/e2e/`):

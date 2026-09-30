@@ -13,26 +13,58 @@ Regra do projeto: **tudo em pt-BR**, inclusive identificadores. Exemplos do padr
 | Funções SQL | verbo no infinitivo                                | `criar_casal()`, `entrar_no_casal()`, `gravar_filme()`       |
 | Testes      | `*.teste.ts` (unitário), `*.spec.ts` (E2E)         | `ambiente.teste.ts`, `fumaca.spec.ts`                        |
 
-## Tema visual (Tailwind v4, inline em `src/index.css`)
+## Temas (`src/temas/`)
 
-Mesma identidade do Mozii original: fundo escuro quente, rosa como cor de afeto, dourado nas estrelas. Os tokens viram classes automaticamente (`--color-noite` → `bg-noite`).
+Todo visual é uma pasta em `src/temas/<id>/`. O padrão é o **Noir**, e o visual de 02/08 continua disponível como **Clássico**. Receitas, peças e regras estão em [`src/temas/LEIAME.md`](../src/temas/LEIAME.md). Um tema traz:
 
-| Token                         | Valor                             | Uso                                |
-| ----------------------------- | --------------------------------- | ---------------------------------- |
-| `noite`                       | `#16131c`                         | fundo padrão                       |
-| `abismo`                      | `#0e0b12`                         | fundo atrás de modais/navegação    |
-| `cartao`                      | `#221d2b`                         | superfícies elevadas               |
-| `veu`                         | `#2e2839`                         | chips e campos sobre o cartão      |
-| `linha` / `linha-forte`       | `#2a2533` / `#3a3346`             | divisores                          |
-| `rosa` / `rosa-suave`         | `#d4537e` / `#ed93b1`             | ações principais / detalhes        |
-| `estrela` / `estrela-apagada` | `#efb927` / `#4a4356`             | notas                              |
-| `erro` / `sucesso`            | `#e56b6b` / `#6bbf8e`             | estados (rosa é afeto, não erro)   |
-| `cartao-alto`                 | `#2a2435`                         | superfícies sobre o cartão         |
-| `neve` / `nevoa` / `cinza`    | `#f2edf5` / `#c3bccd` / `#8d8499` | textos (forte → discreto)          |
-| `--font-voz`                  | Fraunces variável (self-hosted)   | títulos afetivos (`font-voz`)      |
-| `--shadow-cartao`             | sombra dupla suave                | cartões elevados (`shadow-cartao`) |
+- tokens (`tokens.css`);
+- slots (barra, cabeçalho, abertura, camada de adereços);
+- encaixes de enfeite;
+- textos (`textos.temas.<id>`).
 
-Desde o redesign (02/08/2026): ícones são **Phosphor** via `componentes/ui/icones.tsx` (nomes PT; fill = ativo, regular = inativo) — emoji só como afeto em textos; a Fraunces mora em `public/fontes/` (`@font-face` no `index.css`, CSP `font-src 'self'`); o grão de filme é um `body::before` com SVG em data-URI; primitivas de UI em `componentes/ui/` (`Botao`, `Campo`/`AreaTexto`, `FolhaBase`, `DialogoConfirmar`, `ProvedorAvisos`/`useAviso`, `Esqueleto`, `EstadoVazio`, `ControleSegmentado`) — **nenhum componente escreve classes de botão/campo/folha à mão**.
+**Como funciona:**
+
+- Os tokens têm nome de **função**, nunca de cor.
+- O `@theme inline` do `index.css` mapeia cada classe para a variável que o tema ativo define em `[data-tema~='id']`: `--color-fundo: var(--fundo)` gera `bg-fundo`.
+- Opacidade funciona normalmente (`bg-afeto/20`).
+
+| Token (classe)                                                          | Noir                       | Clássico              | Uso                                   |
+| ----------------------------------------------------------------------- | -------------------------- | --------------------- | ------------------------------------- |
+| `fundo`                                                                 | `#0c0a0f`                  | `#16131c`             | fundo da tela                         |
+| `fundo-profundo`                                                        | `#07060a`                  | `#0e0b12`             | atrás de modais e navegação           |
+| `superficie`                                                            | `#16131b`                  | `#221d2b`             | cartões                               |
+| `vidro` / `vidro-borda`                                                 | branco 4,5% / 8%           | `#2e2839` / `#3a3346` | campos, chips, botões de vidro        |
+| `borda` / `borda-forte`                                                 | branco 6% / 12%            | `#2a2533` / `#3a3346` | divisores                             |
+| `texto` / `texto-secundario` / `texto-discreto` / `texto-apagado`       | marfim → cinzas            | neve → cinzas         | textos, do forte ao decorativo        |
+| `primario` / `primario-texto`                                           | marfim / quase preto       | rosa / neve           | **ação** (botão principal, "+", foco) |
+| `afeto` / `afeto-claro`                                                 | `#e48aa6` / `#f0a9bf`      | `#d4537e` / `#ed93b1` | coração, ingresso, detalhes afetivos  |
+| `metal` / `metal-apagado`                                               | champanhe                  | dourado               | estrelas                              |
+| `perigo` / `perigo-texto` / `sucesso`                                   |                            |                       | estados (afeto nunca é erro)          |
+| `avatar-1(-texto)` / `avatar-2(-texto)`                                 |                            |                       | inicial do avatar por pessoa          |
+| `font-titulo` / `font-corpo`                                            | Fraunces / Instrument Sans | Fraunces / system-ui  | tipografia                            |
+| `rounded-botao` / `rounded-campo` / `rounded-cartao` / `rounded-poster` | pílula / 18 / 24 / 12 px   | 12 / 12 / 16 / 8 px   | formas                                |
+| `shadow-cartao` / `shadow-poster` / `backdrop-blur-vidro`               |                            |                       | profundidade e vidro                  |
+
+**Receitas de `src/temas/materiais.css`** (combinam tokens, então valem em qualquer tema):
+
+| Utility        | O que é                          |
+| -------------- | -------------------------------- |
+| `cartao`       | cartão elevado                   |
+| `vidro`        | vidro fosco                      |
+| `titulo`       | família e peso do título do tema |
+| `rotulo-secao` | caixa-alta de seção              |
+| `ingresso`     | a assinatura do ingresso         |
+
+**Tokens de componente:** o que muda de natureza entre temas vira token de componente. É o caso de `--botao-secundario-*` (contorno no Clássico, vidro no Noir) e de `--respiro-navegacao` (a barra flutuante pede mais espaço).
+
+**Base do redesign (continua valendo):**
+
+- Ícones são **Phosphor** via `componentes/ui/icones.tsx` (nomes PT; fill = ativo, regular = inativo). Emoji só como afeto em textos.
+- As fontes moram em `public/fontes/`, com as licenças OFL. O `@font-face` fica no `fontes.css` de cada tema, e a CSP é `font-src 'self'`.
+- O grão de filme é um `body::before`.
+- As primitivas ficam em `componentes/ui/`: `Botao` (e `classesBotao` para `<Link>`), `Campo`/`AreaTexto`, `FolhaBase`, `ModalBase`, `DialogoConfirmar`, `ProvedorAvisos`/`useAviso`, `Esqueleto`, `EstadoVazio`, `ControleSegmentado`.
+- **Nenhum componente escreve classes de botão, campo ou modal à mão.** A exceção é o compositor de comentário, que é em pílula de propósito.
+- **Página nunca pergunta qual é o tema.** Estrutura diferente vira slot ou encaixe (`useTema()`, `<EncaixeAdereco>`).
 
 ## iOS (regras do Diego — não relaxar)
 
@@ -58,5 +90,6 @@ src/
 ├── hooks/          # wrappers TanStack Query por área
 ├── componentes/    # ui/ layout/ mural/ filmes/ cinema/ momentos/ perfil/ compartilhar/ sessoes/
 ├── paginas/        # 1 arquivo por rota
+├── temas/          # um tema por pasta (noir/, classico/) + contrato, registro, comum/
 └── lib/            # textos, datas, imagem, ics... + __testes__/
 ```
