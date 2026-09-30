@@ -631,13 +631,15 @@ Avisar por push quem ativou as notificações quando sai uma versão com nota de
 **Junto com o deploy desta branch** (o app novo lê a coluna `novidades` nos Ajustes), na mesma leva da 018:
 
 1. No SQL Editor, rodar o conteúdo de `supabase/migrations/019_notificacao_de_novidades.sql`.
-2. **Redeployar a Edge Function**, que ganhou o tipo `novidades`:
+2. **Redeployar a Edge Function** pelo painel (sem CLI), porque ela ganhou o tipo `novidades`: _Edge Functions → enviar-push → Code_, substituir todo o conteúdo pelo de `supabase/functions/enviar-push/index.ts` e clicar em **Deploy**. Em _Details_, **Verify JWT** continua **desligado** (é o `--no-verify-jwt`). Com CLI, o equivalente é `supabase functions deploy enviar-push --no-verify-jwt`.
 
-   ```bash
-   supabase functions deploy enviar-push --no-verify-jwt
+3. **GitHub → Settings → Secrets and variables → Actions → New repository secret:** `SEGREDO_GATILHO`, com o **mesmo valor** do secret `SEGREDO_GATILHO` da Edge Function. O painel do Supabase só mostra o hash dos secrets, mas o valor também está no Vault desde a 008 — ler no SQL Editor e copiar direto para o GitHub:
+
+   ```sql
+   select decrypted_secret from vault.decrypted_secrets where name = 'push_segredo_gatilho';
    ```
 
-3. **GitHub → Settings → Secrets and variables → Actions → New repository secret:** `SEGREDO_GATILHO`, com o **mesmo valor** do secret `SEGREDO_GATILHO` da Edge Function (o do `supabase secrets set` da 008). `SUPABASE_URL` e `SUPABASE_ANON_KEY` já existem por causa do `manter-ativo.yml`.
+   `SUPABASE_URL` e `SUPABASE_ANON_KEY` já existem por causa do `manter-ativo.yml`.
 
 ### Queries de conferência
 
