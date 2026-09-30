@@ -16,10 +16,10 @@ export function EstadoVazio({
   acao?: ReactNode
 }) {
   return (
-    <div className="rounded-2xl border border-linha bg-cartao px-6 py-8 text-center">
-      <div className="text-cinza [&>svg]:mx-auto">{icone}</div>
-      <p className="mt-3 font-medium text-neve">{titulo}</p>
-      {descricao && <p className="mt-1 text-sm text-cinza">{descricao}</p>}
+    <div className="rounded-cartao border border-borda bg-superficie px-6 py-8 text-center">
+      <div className="text-texto-discreto [&>svg]:mx-auto">{icone}</div>
+      <p className="mt-3 font-medium text-texto">{titulo}</p>
+      {descricao && <p className="mt-1 text-sm text-texto-discreto">{descricao}</p>}
       {acao && <div className="mt-4 flex justify-center">{acao}</div>}
     </div>
   )

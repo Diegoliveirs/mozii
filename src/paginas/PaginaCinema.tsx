@@ -23,16 +23,14 @@ export function PaginaCinema() {
   return (
     <main className="area-segura-topo px-5 pt-8 pb-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="font-voz text-3xl font-semibold tracking-tight text-neve">
-          {textos.cinema.titulo}
-        </h1>
+        <h1 className="titulo text-3xl tracking-tight text-texto">{textos.cinema.titulo}</h1>
         <Link
           to="/cinema/sessoes"
-          className="flex items-center gap-1.5 rounded-full border border-linha bg-cartao px-3 py-2 text-xs font-medium text-nevoa transition-colors active:border-rosa/50"
+          className="flex items-center gap-1.5 rounded-full border border-borda bg-superficie px-3 py-2 text-xs font-medium text-texto-secundario transition-colors active:border-afeto/50"
         >
-          <IconeCalendario size={15} className="text-rosa-suave" aria-hidden />
+          <IconeCalendario size={15} className="text-afeto-claro" aria-hidden />
           {textos.sessao.gestaoAtalho}
-          <IconeAvancar size={12} className="text-cinza" aria-hidden />
+          <IconeAvancar size={12} className="text-texto-discreto" aria-hidden />
         </Link>
       </div>
 

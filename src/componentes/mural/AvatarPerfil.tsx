@@ -4,7 +4,7 @@ import { useUrlFoto } from '../../hooks/useMural'
  * Avatar: a foto de perfil (caminho no bucket, assinado na hora) ou a
  * inicial do nome. A cor vem do índice da pessoa no casal.
  */
-const CORES = ['bg-rosa text-neve', 'bg-estrela text-abismo']
+const CORES = ['bg-avatar-1 text-avatar-1-texto', 'bg-avatar-2 text-avatar-2-texto']
 
 export function AvatarPerfil({
   nome,

@@ -11,10 +11,10 @@
       <circle cx="64" cy="32" r="5" fill="#000"/>
     </mask>
   </defs>
-  <rect width="64" height="64" rx="14" fill="#16131c" mask="url(#bilhete)"/>
+  <rect width="64" height="64" rx="14" fill="#0c0a0f" mask="url(#bilhete)"/>
   <path
     d="M32 44c-.6 0-1.2-.2-1.7-.6C22.5 37.2 16 31.6 16 24.6 16 19.3 20.1 15 25.2 15c2.7 0 5.2 1.2 6.8 3.2C33.6 16.2 36.1 15 38.8 15 43.9 15 48 19.3 48 24.6c0 7-6.5 12.6-14.3 18.8-.5.4-1.1.6-1.7.6z"
-    fill="#d4537e"
+    fill="#e48aa6"
   />
-  <line x1="17" y1="52" x2="47" y2="52" stroke="#3a3346" stroke-width="2" stroke-dasharray="3 3" stroke-linecap="round"/>
+  <line x1="17" y1="52" x2="47" y2="52" stroke="#3a3440" stroke-width="2" stroke-dasharray="3 3" stroke-linecap="round"/>
 </svg>

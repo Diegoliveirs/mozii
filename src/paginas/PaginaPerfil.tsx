@@ -30,19 +30,17 @@ export function PaginaPerfil() {
   const souEu = perfilExibido?.id === usuario?.id
 
   if (!perfilExibido) {
-    return <main className="px-5 pt-8 text-cinza">{textos.comuns.carregando}</main>
+    return <main className="px-5 pt-8 text-texto-discreto">{textos.comuns.carregando}</main>
   }
 
   return (
     <main className="area-segura-topo px-5 pt-8 pb-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-voz text-3xl font-semibold tracking-tight text-neve">
-          {textos.perfil.titulo}
-        </h1>
+        <h1 className="titulo text-3xl tracking-tight text-texto">{textos.perfil.titulo}</h1>
         <Link
           to="/ajustes"
           aria-label={textos.ajustes.titulo}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-veu text-nevoa transition-transform active:scale-90"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-vidro text-texto-secundario transition-transform active:scale-90"
         >
           <IconeAjustes size={19} aria-hidden />
         </Link>
@@ -64,7 +62,7 @@ export function PaginaPerfil() {
             />
           </Link>
         ))}
-        <span className="font-voz text-xl text-neve">{perfilExibido.nomeExibicao}</span>
+        <span className="font-titulo text-xl text-texto">{perfilExibido.nomeExibicao}</span>
       </div>
 
       {/* As 4 estatísticas */}
@@ -78,9 +76,9 @@ export function PaginaPerfil() {
               [estatisticas.listasCriadas, textos.perfil.stats.listas],
             ] as const
           ).map(([valor, rotulo]) => (
-            <div key={rotulo} className="rounded-xl border border-linha bg-cartao p-3">
-              <p className="font-voz text-xl font-semibold text-neve">{valor}</p>
-              <p className="mt-0.5 text-[11px] leading-tight text-cinza">{rotulo}</p>
+            <div key={rotulo} className="rounded-xl border border-borda bg-superficie p-3">
+              <p className="titulo text-xl text-texto">{valor}</p>
+              <p className="mt-0.5 text-[11px] leading-tight text-texto-discreto">{rotulo}</p>
             </div>
           ))}
         </div>
@@ -90,11 +88,9 @@ export function PaginaPerfil() {
 
       {/* Avaliações recentes */}
       <section className="mt-7">
-        <h2 className="text-xs font-medium tracking-wide text-rosa-suave uppercase">
-          {textos.perfil.avaliacoesRecentes}
-        </h2>
+        <h2 className="rotulo-secao">{textos.perfil.avaliacoesRecentes}</h2>
         {avaliacoes.data?.length === 0 && (
-          <p className="mt-2 text-sm text-cinza">{textos.perfil.semAvaliacoes}</p>
+          <p className="mt-2 text-sm text-texto-discreto">{textos.perfil.semAvaliacoes}</p>
         )}
         <div className="mt-3 grid grid-cols-3 gap-2">
           {avaliacoes.data?.slice(0, 9).map(
@@ -123,7 +119,7 @@ export function PaginaPerfil() {
 
       {/* Feed pessoal */}
       <section className="mt-7">
-        <h2 className="flex items-center gap-1.5 text-xs font-medium tracking-wide text-rosa-suave uppercase">
+        <h2 className="flex items-center gap-1.5 rotulo-secao">
           <IconePegadas size={14} aria-hidden />
           {souEu ? textos.perfil.pegadas : textos.perfil.pegadasDe(perfilExibido.nomeExibicao)}
         </h2>

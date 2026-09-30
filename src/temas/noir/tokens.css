@@ -1,0 +1,74 @@
+/*
+ * Tema Noir — escuro quase preto, marfim para ação, rosa só para afeto,
+ * champanhe nas estrelas. Superfícies de vidro fosco e formas em pílula.
+ * Aprovado no canvas "Mozii — Telas" (página v2 — Chique), 29/09/2026.
+ */
+[data-tema~='noir'] {
+  /* Fundos */
+  --fundo: #0c0a0f;
+  --fundo-profundo: #07060a;
+  --superficie: #16131b;
+  --vidro: rgb(255 255 255 / 0.045);
+  --vidro-borda: rgb(255 255 255 / 0.08);
+
+  /* Traços */
+  --borda: rgb(255 255 255 / 0.06);
+  --borda-forte: rgb(255 255 255 / 0.12);
+
+  /* Textos */
+  --texto: #f5efe8;
+  --texto-secundario: #b3abbb;
+  --texto-discreto: #8a8292;
+  --texto-apagado: #5f5868;
+
+  /* Ação em marfim; rosa reservado ao afeto; champanhe nas estrelas */
+  --primario: #f5efe8;
+  --primario-texto: #0c0a0f;
+  --afeto: #e48aa6;
+  --afeto-claro: #f0a9bf;
+  --metal: #d8b98a;
+  --metal-apagado: #3a3440;
+
+  /* Estados */
+  --perigo: #e0787a;
+  --perigo-texto: #eb8f90;
+  --sucesso: #6bbf8e;
+
+  /* Avatares */
+  --avatar-1: #3a1c2a;
+  --avatar-1-texto: #e48aa6;
+  --avatar-2: #262130;
+  --avatar-2-texto: #b3abbb;
+
+  /* Botão secundário: pílula de vidro */
+  --botao-secundario-fundo: var(--vidro);
+  --botao-secundario-borda: var(--vidro-borda);
+  --botao-secundario-texto: var(--texto);
+
+  /* Tipografia */
+  --fonte-titulo: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --fonte-corpo: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+  --peso-titulo: 350;
+
+  /* Rótulo de seção: micro, caixa-alta, discreto */
+  --rotulo-secao-cor: var(--texto-discreto);
+  --rotulo-secao-tamanho: 11px;
+  --rotulo-secao-espacamento: 0.18em;
+
+  /* Ingresso: véu rosa em diagonal */
+  --ingresso-fundo: linear-gradient(135deg, rgb(228 138 166 / 0.14), rgb(228 138 166 / 0.03));
+  --ingresso-borda: rgb(228 138 166 / 0.22);
+
+  /* Formas, sombras e material */
+  --raio-botao: 999px;
+  --raio-campo: 18px;
+  --raio-cartao: 24px;
+  --raio-poster: 12px;
+  --sombra-cartao: 0 20px 40px -24px rgb(0 0 0 / 0.8);
+  --sombra-poster: 0 18px 36px -14px rgb(0 0 0 / 0.85), inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  --desfoque-vidro: 24px;
+  --saturacao-vidro: 1.6;
+
+  /* A barra flutua: o conteúdo precisa de mais respiro no rodapé */
+  --respiro-navegacao: 7.5rem;
+}

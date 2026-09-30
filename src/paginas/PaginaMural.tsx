@@ -1,25 +1,30 @@
 import { Link } from 'react-router-dom'
+import { classesBotao } from '../componentes/ui/estiloBotao'
 import { ConviteNotificacoes } from '../componentes/mural/ConviteNotificacoes'
 import { FeedPublicacoes } from '../componentes/mural/FeedPublicacoes'
 import { useCasalComMembros } from '../hooks/useCasal'
+import { useTema } from '../temas/contextoTema'
+import { EncaixeAdereco } from '../temas/EncaixeAdereco'
 import { textos } from '../lib/textos'
 
 /** O Mural: cabeçalho do casal + feed infinito compartilhado. */
 export function PaginaMural() {
   const casal = useCasalComMembros()
   const membros = casal.data?.membros ?? []
+  const tema = useTema()
 
   return (
-    <main className="area-segura-topo px-5 pt-8 pb-4">
-      <h1 className="font-voz text-3xl font-semibold tracking-tight text-neve">
+    <main className="area-segura-topo relative px-5 pt-8 pb-4">
+      <h1 className="titulo text-3xl tracking-tight text-texto">
         {casal.data && membros.length > 0
-          ? textos.mural.juntos(membros.map((membro) => membro.nomeExibicao))
+          ? tema.textos.saudacao(membros.map((membro) => membro.nomeExibicao))
           : textos.mural.titulo}
       </h1>
-      <p className="mt-1 text-sm text-rosa-suave">{textos.app.slogan}</p>
+      <EncaixeAdereco nome="mural-topo" />
+      <p className="mt-1 text-sm text-afeto-claro">{textos.app.slogan}</p>
 
       {casal.data && membros.length < 2 && (
-        <p className="mt-4 rounded-xl border border-linha bg-cartao p-4 text-sm text-nevoa">
+        <p className="mt-4 rounded-xl border border-borda bg-superficie p-4 text-sm text-texto-secundario">
           {textos.mural.esperandoPar}
         </p>
       )}
@@ -30,7 +35,7 @@ export function PaginaMural() {
         mensagemVazio={textos.mural.vazio}
         descricaoVazio={textos.mural.vazioDica}
         acaoVazio={
-          <Link to="/novo" className="rounded-full bg-rosa px-5 py-2 text-sm font-medium text-neve">
+          <Link to="/novo" className={classesBotao()}>
             {textos.mural.vazioAcao}
           </Link>
         }

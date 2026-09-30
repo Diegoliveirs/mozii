@@ -24,18 +24,16 @@ export function AvaliacoesDoFilme({ tmdbId }: { tmdbId: number }) {
 
   return (
     <section className="mt-7 pb-8">
-      <h2 className="text-xs font-medium tracking-wide text-rosa-suave uppercase">
-        {textos.filme.avaliacoes}
-      </h2>
+      <h2 className="rotulo-secao">{textos.filme.avaliacoes}</h2>
 
       {avaliacoes.isLoading && (
         <div className="mt-3 space-y-3">
-          <Esqueleto className="h-32 rounded-2xl" />
+          <Esqueleto className="h-32 rounded-cartao" />
         </div>
       )}
 
       {avaliacoes.isSuccess && avaliacoes.data.length === 0 && (
-        <p className="mt-2 text-sm text-cinza">{textos.filme.semAvaliacoes}</p>
+        <p className="mt-2 text-sm text-texto-discreto">{textos.filme.semAvaliacoes}</p>
       )}
 
       <div className="mt-3 space-y-4">

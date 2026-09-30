@@ -124,7 +124,7 @@ export function PaginaNovaPublicacao() {
 
         {/* Filme escolhido → avaliação */}
         {filme && (
-          <div className="mt-3 rounded-2xl border border-linha bg-cartao p-4">
+          <div className="mt-3 rounded-cartao border border-borda bg-superficie p-4">
             <div className="flex items-center gap-3">
               <Poster
                 caminho={filme.caminhoPoster}
@@ -133,8 +133,8 @@ export function PaginaNovaPublicacao() {
                 className="w-12"
               />
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium text-neve">{filme.titulo}</p>
-                <p className="mt-1 text-sm text-nevoa">{textos.novo.notaRotulo}</p>
+                <p className="truncate font-medium text-texto">{filme.titulo}</p>
+                <p className="mt-1 text-sm text-texto-secundario">{textos.novo.notaRotulo}</p>
                 <EstrelasNota valor={nota} aoMudar={setNota} />
                 {minhaAvaliacao && (
                   <button
@@ -144,7 +144,7 @@ export function PaginaNovaPublicacao() {
                         state: { voltarPara: estado.voltarPara ?? `/filme/${filme.tmdbId}` },
                       })
                     }
-                    className="mt-2 text-sm text-rosa-suave underline"
+                    className="mt-2 text-sm text-afeto-claro underline"
                   >
                     {textos.novo.avaliacaoExistente}
                   </button>
@@ -157,7 +157,7 @@ export function PaginaNovaPublicacao() {
                   setFilme(null)
                   setNota(0)
                 }}
-                className="p-1 text-cinza transition-transform active:scale-90"
+                className="p-1 text-texto-discreto transition-transform active:scale-90"
               >
                 <IconeFechar size={17} aria-hidden />
               </button>
@@ -173,7 +173,7 @@ export function PaginaNovaPublicacao() {
               type="button"
               aria-label={textos.novo.removerFoto}
               onClick={() => setFoto(null)}
-              className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-abismo/80 text-neve"
+              className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-fundo-profundo/80 text-texto"
             >
               <IconeFechar size={16} aria-hidden />
             </button>
@@ -208,7 +208,7 @@ export function PaginaNovaPublicacao() {
           )}
         </div>
 
-        {erro && <p className="mt-3 text-sm text-erro">{erro}</p>}
+        {erro && <p className="mt-3 text-sm text-perigo-texto">{erro}</p>}
 
         <Botao
           onClick={aoPublicar}

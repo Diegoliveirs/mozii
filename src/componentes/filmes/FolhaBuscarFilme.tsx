@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { RefFilme } from '../../dominio/tipos'
 import { useBuscaTmdb } from '../../hooks/useTmdb'
 import { textos } from '../../lib/textos'
+import { Campo } from '../ui/Campo'
 import { FolhaBase } from '../ui/FolhaBase'
 import { IconeBusca } from '../ui/icones'
 import { Poster } from './Poster'
@@ -23,15 +24,15 @@ export function FolhaBuscarFilme({
         <IconeBusca
           size={18}
           aria-hidden
-          className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-cinza"
+          className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-texto-discreto"
         />
-        <input
+        <Campo
           type="search"
           autoFocus
           placeholder={textos.cinema.buscarDica}
           value={termo}
           onChange={(evento) => setTermo(evento.target.value)}
-          className="w-full rounded-xl border border-linha bg-veu py-3 pr-4 pl-11 text-neve outline-none transition-colors placeholder:text-cinza focus:border-rosa focus:ring-2 focus:ring-rosa/25"
+          className="pl-11"
         />
       </div>
 
@@ -48,7 +49,7 @@ export function FolhaBuscarFilme({
                   anoLancamento: filme.anoLancamento,
                 })
               }
-              className="flex w-full items-center gap-3 rounded-xl bg-veu p-2 text-left transition-transform active:scale-[0.98]"
+              className="flex w-full items-center gap-3 rounded-xl bg-vidro p-2 text-left transition-transform active:scale-[0.98]"
             >
               <Poster
                 caminho={filme.caminhoPoster}
@@ -56,10 +57,10 @@ export function FolhaBuscarFilme({
                 largura={185}
                 className="w-10"
               />
-              <span className="text-sm text-neve">
+              <span className="text-sm text-texto">
                 {filme.titulo}
                 {filme.anoLancamento && (
-                  <span className="text-cinza"> ({filme.anoLancamento})</span>
+                  <span className="text-texto-discreto"> ({filme.anoLancamento})</span>
                 )}
               </span>
             </button>

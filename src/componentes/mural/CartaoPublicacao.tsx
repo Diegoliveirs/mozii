@@ -69,7 +69,7 @@ export function CartaoPublicacao({
           ? IconeFilme
           : IconeConfirmado
     return (
-      <div className="flex items-center gap-2 px-1 text-sm text-cinza">
+      <div className="flex items-center gap-2 px-1 text-sm text-texto-discreto">
         <Icone size={16} aria-hidden className="shrink-0" />
         <Link to={`/filme/${meta.tmdbId}`} className="min-w-0 truncate">
           {frase}
@@ -82,14 +82,14 @@ export function CartaoPublicacao({
   return (
     <article
       onClick={aoAbrir}
-      className={`overflow-hidden rounded-2xl border border-linha bg-cartao shadow-cartao ${
-        aoAbrir ? 'cursor-pointer' : ''
-      }`}
+      className={`cartao overflow-hidden ${aoAbrir ? 'cursor-pointer' : ''}`}
     >
       <header className="flex items-center gap-2 px-4 pt-3.5">
         <AvatarPerfil nome={nomeAutor} indice={indiceAutor} caminhoAvatar={autor?.urlAvatar} />
-        <span className="font-medium text-neve">{nomeAutor}</span>
-        <span className="ml-auto text-xs text-cinza">{tempoAtras(publicacao.criadoEm)}</span>
+        <span className="font-medium text-texto">{nomeAutor}</span>
+        <span className="ml-auto text-xs text-texto-discreto">
+          {tempoAtras(publicacao.criadoEm)}
+        </span>
       </header>
 
       {publicacao.caminhoFoto && <FotoDaPublicacao caminho={publicacao.caminhoFoto} />}
@@ -112,11 +112,11 @@ export function CartaoPublicacao({
             <Link
               to={`/filme/${publicacao.filme.tmdbId}`}
               onClick={(evento) => evento.stopPropagation()}
-              className="font-voz text-lg font-semibold text-neve"
+              className="titulo text-lg text-texto"
             >
               {publicacao.filme.titulo}
               {publicacao.filme.anoLancamento && (
-                <span className="font-sans text-sm font-normal text-cinza">
+                <span className="font-sans text-sm font-normal text-texto-discreto">
                   {' '}
                   ({publicacao.filme.anoLancamento})
                 </span>
@@ -132,7 +132,7 @@ export function CartaoPublicacao({
       )}
 
       {publicacao.corpo && (
-        <p className="mt-2.5 px-4 whitespace-pre-wrap text-nevoa">{publicacao.corpo}</p>
+        <p className="mt-2.5 px-4 whitespace-pre-wrap text-texto-secundario">{publicacao.corpo}</p>
       )}
 
       <div className="px-4 pt-3 pb-3.5">

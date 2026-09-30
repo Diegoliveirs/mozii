@@ -1,81 +1,66 @@
 @import 'tailwindcss';
 
-/*
- * Fraunces variável — a "voz" do Mozii (títulos, diário, momentos afetivos).
- * Self-hosted em public/fontes/ porque a CSP só permite font-src 'self'.
- */
-@font-face {
-  font-family: 'Fraunces';
-  src: url('/fontes/fraunces-variavel.woff2') format('woff2');
-  font-weight: 300 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Fraunces';
-  src: url('/fontes/fraunces-italico-variavel.woff2') format('woff2');
-  font-weight: 300 700;
-  font-style: italic;
-  font-display: swap;
-}
+@import './temas/materiais.css';
 
 /*
- * Tema do Mozii — Tailwind v4, configurado inline (sem tailwind.config.js).
- * Cada token vira uma classe utilitária: --color-noite → bg-noite, text-noite etc.
- *
- * A identidade visual é a mesma do Mozii original: fundo escuro quente,
- * rosa como cor de afeto e dourado para as estrelas de avaliação.
+ * Tokens semânticos — nomeados pela FUNÇÃO, nunca pela cor.
+ * Tailwind v4, inline (sem tailwind.config.js): cada token vira classe
+ * (--color-fundo → bg-fundo) apontando para a variável que o TEMA ativo
+ * define em src/temas/<id>/tokens.css. `inline` é o que faz a troca de
+ * tema valer em tempo de execução.
  */
-@theme {
-  /* Fundos, do mais raso ao mais profundo */
-  --color-noite: #16131c; /* fundo padrão do app */
-  --color-abismo: #0e0b12; /* fundo atrás de modais e da navegação */
-  --color-cartao: #221d2b; /* superfícies elevadas (cartões) */
-  --color-cartao-alto: #2a2435; /* superfícies sobre o cartão */
-  --color-veu: #2e2839; /* camadas sobre o cartão (chips, campos) */
+@theme inline {
+  --color-fundo: var(--fundo);
+  --color-fundo-profundo: var(--fundo-profundo);
+  --color-superficie: var(--superficie);
+  --color-vidro: var(--vidro);
+  --color-vidro-borda: var(--vidro-borda);
+  --color-borda: var(--borda);
+  --color-borda-forte: var(--borda-forte);
+  --color-texto: var(--texto);
+  --color-texto-secundario: var(--texto-secundario);
+  --color-texto-discreto: var(--texto-discreto);
+  --color-texto-apagado: var(--texto-apagado);
+  --color-primario: var(--primario);
+  --color-primario-texto: var(--primario-texto);
+  --color-afeto: var(--afeto);
+  --color-afeto-claro: var(--afeto-claro);
+  --color-metal: var(--metal);
+  --color-metal-apagado: var(--metal-apagado);
+  --color-perigo: var(--perigo);
+  --color-perigo-texto: var(--perigo-texto);
+  --color-sucesso: var(--sucesso);
+  --color-avatar-1: var(--avatar-1);
+  --color-avatar-1-texto: var(--avatar-1-texto);
+  --color-avatar-2: var(--avatar-2);
+  --color-avatar-2-texto: var(--avatar-2-texto);
 
-  /* Traços e divisores */
-  --color-linha: #2a2533;
-  --color-linha-forte: #3a3346;
+  --font-titulo: var(--fonte-titulo);
+  --font-corpo: var(--fonte-corpo);
 
-  /* Cores de destaque */
-  --color-rosa: #d4537e; /* ações principais e afeto */
-  --color-rosa-suave: #ed93b1; /* variação para textos e detalhes */
-  --color-estrela: #efb927; /* nota preenchida */
-  --color-estrela-apagada: #4a4356; /* nota vazia */
+  --radius-botao: var(--raio-botao);
+  --radius-campo: var(--raio-campo);
+  --radius-cartao: var(--raio-cartao);
+  --radius-poster: var(--raio-poster);
 
-  /* Estados semânticos — erro nunca usa rosa, que é a cor do afeto */
-  --color-erro: #e56b6b;
-  --color-sucesso: #6bbf8e;
+  --shadow-cartao: var(--sombra-cartao);
+  --shadow-poster: var(--sombra-poster);
 
-  /* Textos, do mais forte ao mais discreto */
-  --color-neve: #f2edf5;
-  --color-nevoa: #c3bccd;
-  --color-cinza: #8d8499;
-
-  /* Fonte "de voz": usada em títulos afetivos e citações */
-  --font-voz: 'Fraunces', Georgia, 'Times New Roman', serif;
-
-  /* Sombra padrão de cartões elevados sobre o fundo noite */
-  --shadow-cartao: 0 1px 2px rgb(0 0 0 / 0.35), 0 6px 20px rgb(0 0 0 / 0.25);
+  --blur-vidro: var(--desfoque-vidro);
 }
 
 /* Comportamento de app nativo: sem seleção acidental, sem elástico no scroll */
 html {
-  background-color: var(--color-noite);
+  /* Preto até o CSS do tema chegar (milissegundos no boot). */
+  background-color: var(--fundo, #000);
+  color-scheme: dark;
   overscroll-behavior-y: none;
 }
 
 body {
   margin: 0;
-  color: var(--color-neve);
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
+  color: var(--texto);
+  font-family: var(--fonte-corpo, system-ui, sans-serif);
   -webkit-font-smoothing: antialiased;
   touch-action: manipulation;
 }

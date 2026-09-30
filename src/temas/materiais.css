@@ -1,0 +1,63 @@
+/*
+ * Materiais agnósticos ao tema: receitas que combinam tokens. Cada tema
+ * muda o resultado mexendo só nos valores dos tokens.
+ */
+
+/* Cartão elevado padrão */
+@utility cartao {
+  border-radius: var(--raio-cartao);
+  border: 1px solid var(--borda);
+  background-color: var(--superficie);
+  box-shadow: var(--sombra-cartao);
+}
+
+/* Vidro fosco: fundo translúcido + borda fina + desfoque do que está atrás */
+@utility vidro {
+  border: 1px solid var(--vidro-borda);
+  background-color: var(--vidro);
+  backdrop-filter: blur(var(--desfoque-vidro)) saturate(var(--saturacao-vidro, 1));
+  -webkit-backdrop-filter: blur(var(--desfoque-vidro)) saturate(var(--saturacao-vidro, 1));
+  box-shadow: var(--brilho-especular, none);
+}
+
+/* Título na voz do tema (família e peso variam por tema) */
+@utility titulo {
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-titulo);
+}
+
+/* Rótulo de seção em caixa-alta */
+@utility rotulo-secao {
+  font-size: var(--rotulo-secao-tamanho);
+  font-weight: 500;
+  letter-spacing: var(--rotulo-secao-espacamento);
+  text-transform: uppercase;
+  color: var(--rotulo-secao-cor);
+}
+
+/* O ingresso de cinema (próxima sessão, código de convite) */
+@utility ingresso {
+  border-radius: var(--raio-cartao);
+  border: 1px solid var(--ingresso-borda);
+  background: var(--ingresso-fundo);
+  box-shadow: var(--sombra-cartao);
+}
+
+/*
+ * Camada de adereços do tema (montada pelo ProvedorTema): decorativa por
+ * construção — não recebe toque e para de animar para quem pediu menos
+ * movimento. Fica abaixo do grão de filme (z-index 9999).
+ */
+.camada-aderecos {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camada-aderecos * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

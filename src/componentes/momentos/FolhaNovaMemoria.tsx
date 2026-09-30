@@ -3,7 +3,7 @@ import { useCriarMomento } from '../../hooks/useMomentos'
 import { hojeParaCampoData } from '../../lib/datas'
 import { textos } from '../../lib/textos'
 import { Botao } from '../ui/Botao'
-import { AreaTexto } from '../ui/Campo'
+import { AreaTexto, Campo } from '../ui/Campo'
 import { FolhaBase } from '../ui/FolhaBase'
 import { IconeFoto } from '../ui/icones'
 
@@ -46,15 +46,15 @@ export function FolhaNovaMemoria({ aoFechar }: { aoFechar: () => void }) {
           className="mt-4 resize-none"
         />
 
-        <label className="mt-3 flex items-center gap-3 text-sm text-nevoa">
+        <label className="mt-3 flex items-center gap-3 text-sm text-texto-secundario">
           {textos.momentos.dataRotulo}
-          <input
+          <Campo
             type="date"
             required
             max={hojeParaCampoData()}
             value={data}
             onChange={(evento) => setData(evento.target.value)}
-            className="rounded-xl border border-linha bg-veu px-3 py-2 text-neve outline-none transition-colors focus:border-rosa"
+            className="min-w-0 flex-1"
           />
         </label>
 
@@ -81,7 +81,7 @@ export function FolhaNovaMemoria({ aoFechar }: { aoFechar: () => void }) {
           ))}
         </div>
 
-        {erro && <p className="mt-3 text-sm text-erro">{erro}</p>}
+        {erro && <p className="mt-3 text-sm text-perigo-texto">{erro}</p>}
 
         <Botao type="submit" carregando={criar.isPending} className="mt-4 w-full">
           {textos.momentos.salvar}

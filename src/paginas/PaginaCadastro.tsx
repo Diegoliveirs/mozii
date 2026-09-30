@@ -47,21 +47,21 @@ export function PaginaCadastro() {
     return (
       <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6 text-center">
         <div>
-          <IconeCoracao size={30} weight="fill" className="mx-auto text-rosa" aria-hidden />
-          <p className="mt-1 font-voz text-2xl font-semibold text-neve">{textos.app.nome}</p>
+          <IconeCoracao size={30} weight="fill" className="mx-auto text-afeto" aria-hidden />
+          <p className="mt-1 titulo text-2xl text-texto">{textos.app.nome}</p>
         </div>
 
-        <span className="mx-auto mt-9 flex h-18 w-18 items-center justify-center rounded-full border border-rosa/40 bg-rosa/15">
-          <IconeEmail size={32} className="text-rosa-suave" aria-hidden />
+        <span className="mx-auto mt-9 flex h-18 w-18 items-center justify-center rounded-full border border-afeto/40 bg-afeto/15">
+          <IconeEmail size={32} className="text-afeto-claro" aria-hidden />
         </span>
 
-        <h1 className="mt-5 font-voz text-2xl font-semibold tracking-tight text-neve">
+        <h1 className="mt-5 titulo text-2xl tracking-tight text-texto">
           {textos.confirmarEmail.titulo}
         </h1>
-        <p className="mt-3 text-sm text-nevoa">
+        <p className="mt-3 text-sm text-texto-secundario">
           {textos.confirmarEmail.explicacaoAntes}
           <br />
-          <span className="font-medium text-neve">{emailParaConfirmar}</span>
+          <span className="font-medium text-texto">{emailParaConfirmar}</span>
           <br />
           {textos.confirmarEmail.explicacaoDepois}
         </p>
@@ -80,7 +80,7 @@ export function PaginaCadastro() {
           {textos.confirmarEmail.reenviar}
         </Botao>
 
-        <Link to="/entrar" className="mt-5 text-sm text-rosa-suave underline">
+        <Link to="/entrar" className="mt-5 text-sm text-afeto-claro underline">
           {textos.confirmarEmail.jaConfirmei}
         </Link>
       </main>
@@ -90,17 +90,15 @@ export function PaginaCadastro() {
   return (
     <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
       <div className="text-center">
-        <IconeCoracao size={34} weight="fill" className="mx-auto text-rosa" aria-hidden />
-        <p className="mt-1 font-voz text-2xl font-semibold text-neve">{textos.app.nome}</p>
-        <p className="text-sm text-cinza">{textos.app.slogan}</p>
+        <IconeCoracao size={34} weight="fill" className="mx-auto text-afeto" aria-hidden />
+        <p className="mt-1 titulo text-2xl text-texto">{textos.app.nome}</p>
+        <p className="text-sm text-texto-discreto">{textos.app.slogan}</p>
       </div>
 
-      <h1 className="mt-9 font-voz text-2xl font-semibold tracking-tight text-neve">
-        {textos.cadastro.titulo}
-      </h1>
+      <h1 className="mt-9 titulo text-2xl tracking-tight text-texto">{textos.cadastro.titulo}</h1>
 
       <form onSubmit={aoEnviar} className="mt-5 flex flex-col gap-4">
-        <label className="flex flex-col gap-1.5 text-sm text-nevoa">
+        <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
           {textos.cadastro.nome}
           <Campo
             type="text"
@@ -112,7 +110,7 @@ export function PaginaCadastro() {
           />
         </label>
 
-        <label className="flex flex-col gap-1.5 text-sm text-nevoa">
+        <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
           {textos.cadastro.email}
           <Campo
             type="email"
@@ -123,7 +121,7 @@ export function PaginaCadastro() {
           />
         </label>
 
-        <label className="flex flex-col gap-1.5 text-sm text-nevoa">
+        <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
           {textos.cadastro.senha}
           <Campo
             type="password"
@@ -135,16 +133,16 @@ export function PaginaCadastro() {
           />
         </label>
 
-        {erro && <p className="text-sm text-erro">{erro}</p>}
+        {erro && <p className="text-sm text-perigo-texto">{erro}</p>}
 
         <Botao type="submit" carregando={cadastrar.isPending} className="mt-2">
           {textos.cadastro.botao}
         </Botao>
       </form>
 
-      <p className="mt-6 text-center text-sm text-cinza">
+      <p className="mt-6 text-center text-sm text-texto-discreto">
         {textos.cadastro.jaTemConta}{' '}
-        <Link to="/entrar" className="text-rosa-suave underline">
+        <Link to="/entrar" className="text-afeto-claro underline">
           {textos.cadastro.linkEntrar}
         </Link>
       </p>

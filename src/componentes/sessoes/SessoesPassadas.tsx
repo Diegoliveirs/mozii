@@ -30,7 +30,7 @@ export function SessoesPassadas() {
 
   return (
     <section className="mt-8">
-      <h2 className="text-xs font-medium tracking-wide text-cinza uppercase">
+      <h2 className="text-xs font-medium tracking-wide text-texto-discreto uppercase">
         {textos.sessao.passadasTitulo}
       </h2>
       <div className="mt-2 space-y-2">
@@ -46,8 +46,8 @@ export function SessoesPassadas() {
               className="w-8"
             />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm text-neve">{sessao.filme.titulo}</p>
-              <p className="text-xs text-cinza">
+              <p className="truncate text-sm text-texto">{sessao.filme.titulo}</p>
+              <p className="text-xs text-texto-discreto">
                 {formatarQuando(sessao.agendadaPara)} · {textos.sessao.concluida}
               </p>
             </div>
@@ -72,7 +72,7 @@ export function SessaoPendente({ sessao }: { sessao: SessaoCinema }) {
   const [confirmandoCancelamento, setConfirmandoCancelamento] = useState(false)
 
   return (
-    <div className="rounded-2xl border border-linha bg-cartao px-3 py-2.5">
+    <div className="rounded-cartao border border-borda bg-superficie px-3 py-2.5">
       <div className="flex items-center gap-3">
         <Poster
           caminho={sessao.filme.caminhoPoster}
@@ -81,14 +81,14 @@ export function SessaoPendente({ sessao }: { sessao: SessaoCinema }) {
           className="w-8"
         />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-neve">{sessao.filme.titulo}</p>
-          <p className="text-xs text-cinza">{formatarQuando(sessao.agendadaPara)}</p>
+          <p className="truncate text-sm font-medium text-texto">{sessao.filme.titulo}</p>
+          <p className="text-xs text-texto-discreto">{formatarQuando(sessao.agendadaPara)}</p>
         </div>
         <button
           type="button"
           aria-expanded={aberta}
           onClick={() => setAberta((estava) => !estava)}
-          className="shrink-0 rounded-full bg-rosa/25 px-3 py-1.5 text-xs font-medium text-rosa-suave"
+          className="shrink-0 rounded-full bg-afeto/25 px-3 py-1.5 text-xs font-medium text-afeto-claro"
         >
           {textos.sessao.comoFoiCurto}
         </button>
@@ -96,7 +96,7 @@ export function SessaoPendente({ sessao }: { sessao: SessaoCinema }) {
 
       {aberta && (
         <div className="entrada-folha mt-3 space-y-2">
-          <p className="text-sm text-nevoa">{textos.sessao.comoFoi}</p>
+          <p className="text-sm text-texto-secundario">{textos.sessao.comoFoi}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Botao
               onClick={() =>
@@ -117,7 +117,7 @@ export function SessaoPendente({ sessao }: { sessao: SessaoCinema }) {
             <button
               type="button"
               onClick={() => setConfirmandoCancelamento(true)}
-              className="px-1 text-xs text-cinza underline"
+              className="px-1 text-xs text-texto-discreto underline"
             >
               {textos.sessao.cancelar}
             </button>

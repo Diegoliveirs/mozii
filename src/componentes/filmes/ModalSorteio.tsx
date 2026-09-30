@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom'
 import type { ItemLista } from '../../dominio/tipos'
 import { ATRASOS_ROLAGEM, sequenciaDeRolagem, sortearIndice } from '../../lib/sorteio'
 import { textos } from '../../lib/textos'
+import { Botao } from '../ui/Botao'
+import { classesBotao } from '../ui/estiloBotao'
+import { ModalBase } from '../ui/ModalBase'
 import { Poster } from './Poster'
 
 /**
@@ -52,72 +55,51 @@ export function ModalSorteio({
   const item = naoAssistidos[indiceExibido]
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-abismo/90 px-6"
-      role="dialog"
-      aria-modal="true"
-      aria-label={textos.sorteio.titulo}
-      onClick={aoFechar}
-    >
-      <div
-        className="w-full max-w-xs rounded-2xl border border-linha bg-cartao p-6 text-center shadow-cartao"
-        onClick={(evento) => evento.stopPropagation()}
-      >
-        <h2 className="font-voz text-2xl font-semibold text-neve">{textos.sorteio.titulo}</h2>
+    <ModalBase rotulo={textos.sorteio.titulo} aoFechar={aoFechar} className="max-w-xs text-center">
+      <h2 className="titulo text-2xl text-texto">{textos.sorteio.titulo}</h2>
 
-        <div className="mx-auto mt-5 w-40">
-          {fase === 'rolando' ? (
-            <div aria-hidden className="opacity-70 blur-[1px]">
-              <Poster caminho={item.filme.caminhoPoster} titulo="" largura={342} />
-            </div>
-          ) : (
-            <div className="entrada-pop">
-              <Poster caminho={item.filme.caminhoPoster} titulo={item.filme.titulo} largura={342} />
-            </div>
-          )}
-        </div>
-
-        <p className="mt-4 min-h-12 font-medium text-neve">
-          {fase === 'rolando' ? (
-            <span className="text-cinza">{textos.sorteio.rolando}</span>
-          ) : (
-            <>
-              {item.filme.titulo}
-              {item.filme.anoLancamento && (
-                <span className="text-cinza"> ({item.filme.anoLancamento})</span>
-              )}
-            </>
-          )}
-        </p>
-
-        <div className="mt-4 flex flex-col gap-2">
-          <Link
-            to={`/filme/${item.filme.tmdbId}`}
-            aria-disabled={fase === 'rolando'}
-            className={`rounded-xl bg-rosa py-3 font-medium text-neve ${
-              fase === 'rolando' ? 'pointer-events-none opacity-40' : ''
-            }`}
-          >
-            {textos.sorteio.verFilme}
-          </Link>
-          <button
-            type="button"
-            onClick={() => aoAgendar(item)}
-            disabled={fase === 'rolando'}
-            className="rounded-xl border border-rosa py-3 font-medium text-rosa-suave transition-transform active:scale-[0.97] disabled:opacity-40"
-          >
-            {textos.sessao.agendarDoSorteio}
-          </button>
-          <button
-            type="button"
-            onClick={rolar}
-            disabled={fase === 'rolando'}
-            className="rounded-xl border border-linha-forte py-3 text-nevoa transition-transform active:scale-[0.97] disabled:opacity-40"
-          >
-            {textos.sorteio.sortearDeNovo}
-          </button>
-        </div>
+      <div className="mx-auto mt-5 w-40">
+        {fase === 'rolando' ? (
+          <div aria-hidden className="opacity-70 blur-[1px]">
+            <Poster caminho={item.filme.caminhoPoster} titulo="" largura={342} />
+          </div>
+        ) : (
+          <div className="entrada-pop">
+            <Poster caminho={item.filme.caminhoPoster} titulo={item.filme.titulo} largura={342} />
+          </div>
+        )}
       </div>
-    </div>
+
+      <p className="mt-4 min-h-12 font-medium text-texto">
+        {fase === 'rolando' ? (
+          <span className="text-texto-discreto">{textos.sorteio.rolando}</span>
+        ) : (
+          <>
+            {item.filme.titulo}
+            {item.filme.anoLancamento && (
+              <span className="text-texto-discreto"> ({item.filme.anoLancamento})</span>
+            )}
+          </>
+        )}
+      </p>
+
+      <div className="mt-4 flex flex-col gap-2">
+        <Link
+          to={`/filme/${item.filme.tmdbId}`}
+          aria-disabled={fase === 'rolando'}
+          className={`${classesBotao('primario')} ${
+            fase === 'rolando' ? 'pointer-events-none opacity-40' : ''
+          }`}
+        >
+          {textos.sorteio.verFilme}
+        </Link>
+        <Botao variante="secundario" onClick={() => aoAgendar(item)} disabled={fase === 'rolando'}>
+          {textos.sessao.agendarDoSorteio}
+        </Botao>
+        <Botao variante="fantasma" onClick={rolar} disabled={fase === 'rolando'}>
+          {textos.sorteio.sortearDeNovo}
+        </Botao>
+      </div>
+    </ModalBase>
   )
 }

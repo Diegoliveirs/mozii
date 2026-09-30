@@ -19,7 +19,7 @@ export function Poster({
     return (
       <div
         aria-label={titulo}
-        className={`flex aspect-[2/3] items-center justify-center rounded-lg bg-veu text-cinza ${className}`}
+        className={`flex aspect-[2/3] items-center justify-center rounded-poster bg-vidro text-texto-discreto ${className}`}
       >
         <IconeFilme size={22} aria-hidden />
       </div>
@@ -31,7 +31,7 @@ export function Poster({
       src={url}
       alt={titulo}
       loading="lazy"
-      className={`aspect-[2/3] rounded-lg object-cover ${className}`}
+      className={`aspect-[2/3] rounded-poster object-cover shadow-poster ${className}`}
     />
   )
 }

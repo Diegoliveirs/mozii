@@ -34,17 +34,15 @@ export function PaginaEntrar() {
   return (
     <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
       <div className="text-center">
-        <IconeCoracao size={34} weight="fill" className="mx-auto text-rosa" aria-hidden />
-        <p className="mt-1 font-voz text-2xl font-semibold text-neve">{textos.app.nome}</p>
-        <p className="text-sm text-cinza">{textos.app.slogan}</p>
+        <IconeCoracao size={34} weight="fill" className="mx-auto text-afeto" aria-hidden />
+        <p className="mt-1 titulo text-2xl text-texto">{textos.app.nome}</p>
+        <p className="text-sm text-texto-discreto">{textos.app.slogan}</p>
       </div>
 
-      <h1 className="mt-9 font-voz text-2xl font-semibold tracking-tight text-neve">
-        {textos.entrar.titulo}
-      </h1>
+      <h1 className="mt-9 titulo text-2xl tracking-tight text-texto">{textos.entrar.titulo}</h1>
 
       <form onSubmit={aoEnviar} className="mt-5 flex flex-col gap-4">
-        <label className="flex flex-col gap-1.5 text-sm text-nevoa">
+        <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
           {textos.entrar.email}
           <Campo
             type="email"
@@ -55,7 +53,7 @@ export function PaginaEntrar() {
           />
         </label>
 
-        <label className="flex flex-col gap-1.5 text-sm text-nevoa">
+        <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
           {textos.entrar.senha}
           <Campo
             type="password"
@@ -66,16 +64,16 @@ export function PaginaEntrar() {
           />
         </label>
 
-        {erro && <p className="text-sm text-erro">{erro}</p>}
+        {erro && <p className="text-sm text-perigo-texto">{erro}</p>}
 
         <Botao type="submit" carregando={entrar.isPending} className="mt-2">
           {textos.entrar.botao}
         </Botao>
       </form>
 
-      <p className="mt-6 text-center text-sm text-cinza">
+      <p className="mt-6 text-center text-sm text-texto-discreto">
         {textos.entrar.semConta}{' '}
-        <Link to="/cadastro" className="text-rosa-suave underline">
+        <Link to="/cadastro" className="text-afeto-claro underline">
           {textos.entrar.linkCadastro}
         </Link>
       </p>

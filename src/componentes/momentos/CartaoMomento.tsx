@@ -32,7 +32,7 @@ export function CartaoMomento({
   const autor = membros.find((membro) => membro.id === momento.autorId)
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-linha bg-cartao shadow-cartao">
+    <article className="cartao overflow-hidden">
       {momento.caminhosFotos.length > 0 && (
         <div
           className={`grid gap-0.5 ${momento.caminhosFotos.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}
@@ -51,12 +51,12 @@ export function CartaoMomento({
 
       <div className="px-4 pt-3 pb-3.5">
         {momento.legenda && (
-          <p className="font-voz text-[15px] whitespace-pre-wrap text-neve italic">
+          <p className="font-titulo text-[15px] whitespace-pre-wrap text-texto italic">
             {momento.legenda}
           </p>
         )}
 
-        <footer className="mt-3 flex items-center gap-2 text-xs text-cinza">
+        <footer className="mt-3 flex items-center gap-2 text-xs text-texto-discreto">
           {autor && (
             <>
               <AvatarPerfil
@@ -73,7 +73,7 @@ export function CartaoMomento({
               type="button"
               aria-label={textos.momentos.excluir}
               onClick={() => aoExcluir(momento)}
-              className="ml-auto p-1 text-erro transition-transform active:scale-90"
+              className="ml-auto p-1 text-perigo-texto transition-transform active:scale-90"
             >
               <IconeLixeira size={17} aria-hidden />
             </button>

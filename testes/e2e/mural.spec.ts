@@ -1,5 +1,12 @@
 import { expect, test, type Page } from '@playwright/test'
-import { formarCasal, prepararUsuario, tabelaExiste, USUARIO_DOIS, USUARIO_UM } from './apoio'
+import {
+  formarCasal,
+  prepararUsuario,
+  tabelaExiste,
+  USUARIO_DOIS,
+  USUARIO_UM,
+  irPara,
+} from './apoio'
 
 /**
  * Fase 3 de ponta a ponta: publicar, curtir (like de coração), comentar
@@ -19,7 +26,7 @@ test.beforeAll(async () => {
 })
 
 async function entrar(pagina: Page, usuario: typeof USUARIO_UM) {
-  await pagina.goto('/entrar')
+  await irPara(pagina, '/entrar')
   await pagina.getByLabel('E-mail').fill(usuario.email)
   await pagina.getByLabel('Senha', { exact: true }).fill(usuario.senha)
   await pagina.getByRole('button', { name: 'Entrar', exact: true }).click()
@@ -110,7 +117,7 @@ test('avaliar na página do filme mostra as duas avaliações e bloqueia repeti�
   await entrar(paginaUm, USUARIO_UM)
 
   // Pessoa Um avalia a partir do detalhe de Matrix (TMDB 603).
-  await paginaUm.goto('/filme/603')
+  await irPara(paginaUm, '/filme/603')
   await expect(paginaUm.getByRole('heading', { name: 'Matrix' })).toBeVisible({ timeout: 15_000 })
   await paginaUm.getByRole('button', { name: 'Avaliar filme' }).click()
   await paginaUm.getByRole('button', { name: '4 estrelas' }).click()
@@ -135,7 +142,7 @@ test('avaliar na página do filme mostra as duas avaliações e bloqueia repeti�
   const contextoDois = await browser.newContext()
   const paginaDois = await contextoDois.newPage()
   await entrar(paginaDois, USUARIO_DOIS)
-  await paginaDois.goto('/filme/603')
+  await irPara(paginaDois, '/filme/603')
   await expect(paginaDois.getByRole('heading', { name: 'Matrix' })).toBeVisible({ timeout: 15_000 })
   await paginaDois.getByRole('button', { name: 'Avaliar filme' }).click()
   await paginaDois.getByRole('button', { name: '3.5 estrelas' }).click()

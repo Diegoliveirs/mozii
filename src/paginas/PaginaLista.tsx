@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
+import { classesBotao } from '../componentes/ui/estiloBotao'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
 import { ModalSorteio } from '../componentes/filmes/ModalSorteio'
 import { Poster } from '../componentes/filmes/Poster'
@@ -60,10 +61,10 @@ export function PaginaLista() {
       <div className="px-5">
         {lista && (
           <div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-veu">
-              <div className="h-full bg-rosa transition-all" style={{ width: `${progresso}%` }} />
+            <div className="h-1.5 overflow-hidden rounded-full bg-vidro">
+              <div className="h-full bg-afeto transition-all" style={{ width: `${progresso}%` }} />
             </div>
-            <p className="mt-1.5 text-xs text-cinza">
+            <p className="mt-1.5 text-xs text-texto-discreto">
               {textos.lista.progresso(lista.qtdAssistidos, lista.qtdItens)}
             </p>
           </div>
@@ -73,13 +74,13 @@ export function PaginaLista() {
           type="button"
           onClick={() => setSorteioAberto(true)}
           disabled={naoAssistidos.length === 0}
-          className="mt-3 flex w-full items-center gap-3 rounded-2xl border border-rosa/40 bg-cartao px-4 py-3 text-left shadow-cartao transition-transform active:scale-[0.98] disabled:opacity-50"
+          className="mt-3 flex w-full items-center gap-3 rounded-cartao border border-afeto/40 bg-superficie px-4 py-3 text-left shadow-cartao transition-transform active:scale-[0.98] disabled:opacity-50"
         >
-          <IconeSorteio size={24} className="shrink-0 text-rosa-suave" aria-hidden />
+          <IconeSorteio size={24} className="shrink-0 text-afeto-claro" aria-hidden />
           <span className="min-w-0 flex-1">
-            <span className="block text-sm font-medium text-neve">{textos.sorteio.botao}</span>
+            <span className="block text-sm font-medium text-texto">{textos.sorteio.botao}</span>
           </span>
-          <IconeAvancar size={16} className="shrink-0 text-cinza" aria-hidden />
+          <IconeAvancar size={16} className="shrink-0 text-texto-discreto" aria-hidden />
         </button>
 
         {itens.data?.length === 0 && (
@@ -88,10 +89,7 @@ export function PaginaLista() {
               icone={<IconeFilme size={26} aria-hidden />}
               titulo={textos.lista.vazia}
               acao={
-                <Link
-                  to="/cinema"
-                  className="rounded-full bg-rosa px-5 py-2 text-sm font-medium text-neve"
-                >
+                <Link to="/cinema" className={classesBotao()}>
                   {textos.lista.adicionarFilme}
                 </Link>
               }
@@ -100,7 +98,7 @@ export function PaginaLista() {
         )}
 
         {(itens.data?.length ?? 0) > 0 && naoAssistidos.length === 0 && (
-          <p className="mt-4 rounded-xl border border-linha bg-cartao p-3 text-center text-sm text-rosa-suave">
+          <p className="mt-4 rounded-xl border border-borda bg-superficie p-3 text-center text-sm text-afeto-claro">
             {textos.sorteio.todosAssistidos}
           </p>
         )}
@@ -109,7 +107,7 @@ export function PaginaLista() {
           {itens.data?.map((item) => (
             <li
               key={item.id}
-              className={`flex items-center gap-3 border-b border-linha py-2.5 last:border-b-0 ${
+              className={`flex items-center gap-3 border-b border-borda py-2.5 last:border-b-0 ${
                 item.assistido ? 'opacity-55' : ''
               }`}
             >
@@ -126,12 +124,12 @@ export function PaginaLista() {
                 <Link
                   to={`/filme/${item.filme.tmdbId}`}
                   className={`block truncate text-sm font-medium ${
-                    item.assistido ? 'text-cinza line-through' : 'text-neve'
+                    item.assistido ? 'text-texto-discreto line-through' : 'text-texto'
                   }`}
                 >
                   {item.filme.titulo}
                 </Link>
-                <p className="text-xs text-cinza">
+                <p className="text-xs text-texto-discreto">
                   {item.filme.anoLancamento && `${item.filme.anoLancamento} · `}
                   {textos.lista.adicionadoPor(nomeDe(item.adicionadoPor))}
                 </p>
@@ -142,7 +140,7 @@ export function PaginaLista() {
                   type="button"
                   aria-label={`${textos.sessao.modalTitulo}: ${item.filme.titulo}`}
                   onClick={() => setAgendandoItem(item)}
-                  className="p-1 text-rosa-suave transition-transform active:scale-90"
+                  className="p-1 text-afeto-claro transition-transform active:scale-90"
                 >
                   <IconeSessao size={20} aria-hidden />
                 </button>
@@ -163,7 +161,7 @@ export function PaginaLista() {
                   })
                 }
                 className={`p-1 transition-transform active:scale-90 ${
-                  item.assistido ? 'text-sucesso' : 'text-cinza'
+                  item.assistido ? 'text-sucesso' : 'text-texto-discreto'
                 }`}
               >
                 <IconeConfirmado
@@ -177,7 +175,7 @@ export function PaginaLista() {
                 type="button"
                 aria-label={textos.lista.removerItem}
                 onClick={() => remover.mutate({ itemId: item.id, listaId: item.listaId })}
-                className="p-1 text-cinza transition-transform active:scale-90"
+                className="p-1 text-texto-discreto transition-transform active:scale-90"
               >
                 <IconeFechar size={17} aria-hidden />
               </button>
@@ -187,7 +185,7 @@ export function PaginaLista() {
 
         <Link
           to="/cinema"
-          className="mb-2 flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-linha-forte py-3 text-sm text-nevoa"
+          className="mb-2 flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-borda-forte py-3 text-sm text-texto-secundario"
         >
           <IconeMais size={16} aria-hidden />
           {textos.lista.adicionarFilme}
@@ -196,7 +194,7 @@ export function PaginaLista() {
         <button
           type="button"
           onClick={() => setConfirmandoExclusao(true)}
-          className="mb-8 text-sm text-erro underline"
+          className="mb-8 text-sm text-perigo-texto underline"
         >
           {textos.lista.excluir}
         </button>

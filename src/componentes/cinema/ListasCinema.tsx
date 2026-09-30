@@ -55,9 +55,9 @@ export function ListasCinema() {
           <li key={lista.id}>
             <Link
               to={`/listas/${lista.id}`}
-              className="block rounded-2xl border border-linha bg-cartao p-3 shadow-cartao transition-transform active:scale-[0.98]"
+              className="cartao block p-3 transition-transform active:scale-[0.98]"
             >
-              <div className="flex h-24 items-center justify-center gap-1 overflow-hidden rounded-lg bg-veu">
+              <div className="flex h-24 items-center justify-center gap-1 overflow-hidden rounded-lg bg-vidro">
                 {lista.postersCapa.length > 0 ? (
                   lista.postersCapa.map((caminho) => (
                     <img
@@ -68,11 +68,11 @@ export function ListasCinema() {
                     />
                   ))
                 ) : (
-                  <IconeSessao size={26} className="text-cinza" aria-hidden />
+                  <IconeSessao size={26} className="text-texto-discreto" aria-hidden />
                 )}
               </div>
-              <p className="mt-2 truncate font-medium text-neve">{lista.nome}</p>
-              <p className="text-xs text-cinza">
+              <p className="mt-2 truncate font-medium text-texto">{lista.nome}</p>
+              <p className="text-xs text-texto-discreto">
                 {textos.lista.progresso(lista.qtdAssistidos, lista.qtdItens)}
               </p>
             </Link>

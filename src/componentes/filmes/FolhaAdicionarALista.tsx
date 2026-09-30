@@ -57,11 +57,11 @@ export function FolhaAdicionarALista({
                 type="button"
                 onClick={() => aoEscolher(lista.id, lista.nome)}
                 disabled={jaEsta || adicionar.isPending}
-                className="flex w-full items-center justify-between rounded-xl bg-veu px-4 py-3 text-left text-neve transition-transform active:scale-[0.98] disabled:opacity-60"
+                className="flex w-full items-center justify-between rounded-xl bg-vidro px-4 py-3 text-left text-texto transition-transform active:scale-[0.98] disabled:opacity-60"
               >
                 {lista.nome}
                 {jaEsta && (
-                  <span className="flex items-center gap-1 text-sm text-rosa-suave">
+                  <span className="flex items-center gap-1 text-sm text-afeto-claro">
                     <IconeConfirmado size={15} weight="fill" aria-hidden />
                     {textos.folhaLista.jaEsta}
                   </span>

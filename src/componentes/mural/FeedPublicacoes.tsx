@@ -44,8 +44,8 @@ export function FeedPublicacoes({
     <>
       {feed.isLoading && (
         <div className="mt-5 space-y-4">
-          <Esqueleto className="h-40 rounded-2xl" />
-          <Esqueleto className="h-24 rounded-2xl" />
+          <Esqueleto className="h-40 rounded-cartao" />
+          <Esqueleto className="h-24 rounded-cartao" />
         </div>
       )}
 
@@ -80,7 +80,7 @@ export function FeedPublicacoes({
           type="button"
           onClick={() => feed.fetchNextPage()}
           disabled={feed.isFetchingNextPage}
-          className="mt-4 w-full rounded-xl border border-linha-forte py-3 text-sm text-nevoa disabled:opacity-50"
+          className="mt-4 w-full rounded-xl border border-borda-forte py-3 text-sm text-texto-secundario disabled:opacity-50"
         >
           {feed.isFetchingNextPage ? textos.comuns.carregando : textos.mural.carregarMais}
         </button>

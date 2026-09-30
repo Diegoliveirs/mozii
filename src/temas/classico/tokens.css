@@ -1,0 +1,74 @@
+/*
+ * Tema Clássico — o visual roxo-noite + rosa do redesign de 02/08/2026,
+ * preservado como tema. Fundo escuro quente, rosa como cor de ação e de
+ * afeto, dourado nas estrelas.
+ */
+[data-tema~='classico'] {
+  /* Fundos, do mais raso ao mais profundo */
+  --fundo: #16131c;
+  --fundo-profundo: #0e0b12;
+  --superficie: #221d2b;
+  --vidro: #2e2839;
+  --vidro-borda: #3a3346;
+
+  /* Traços */
+  --borda: #2a2533;
+  --borda-forte: #3a3346;
+
+  /* Textos, do mais forte ao mais discreto */
+  --texto: #f2edf5;
+  --texto-secundario: #c3bccd;
+  --texto-discreto: #8d8499;
+  --texto-apagado: #4a4356;
+
+  /* Ação, afeto e metal (estrelas) */
+  --primario: #d4537e;
+  --primario-texto: #f2edf5;
+  --afeto: #d4537e;
+  --afeto-claro: #ed93b1;
+  --metal: #efb927;
+  --metal-apagado: #4a4356;
+
+  /* Estados — erro nunca usa rosa, que é a cor do afeto */
+  --perigo: #e56b6b;
+  --perigo-texto: #e56b6b;
+  --sucesso: #6bbf8e;
+
+  /* Avatares (cor pelo índice da pessoa no casal) */
+  --avatar-1: #d4537e;
+  --avatar-1-texto: #f2edf5;
+  --avatar-2: #efb927;
+  --avatar-2-texto: #0e0b12;
+
+  /* Botão secundário: contorno rosa */
+  --botao-secundario-fundo: transparent;
+  --botao-secundario-borda: #d4537e;
+  --botao-secundario-texto: #ed93b1;
+
+  /* Tipografia */
+  --fonte-titulo: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --fonte-corpo: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --peso-titulo: 600;
+
+  /* Rótulo de seção: caixa-alta rosa */
+  --rotulo-secao-cor: var(--afeto-claro);
+  --rotulo-secao-tamanho: 0.75rem;
+  --rotulo-secao-espacamento: 0.025em;
+
+  /* Ingresso: cartão com contorno rosa */
+  --ingresso-fundo: var(--superficie);
+  --ingresso-borda: rgb(212 83 126 / 0.4);
+
+  /* Formas, sombras e material */
+  --raio-botao: 0.75rem;
+  --raio-campo: 0.75rem;
+  --raio-cartao: 1rem;
+  --raio-poster: 0.5rem;
+  --sombra-cartao: 0 1px 2px rgb(0 0 0 / 0.35), 0 6px 20px rgb(0 0 0 / 0.25);
+  --sombra-poster: none;
+  --desfoque-vidro: 8px;
+  --saturacao-vidro: 1;
+
+  /* Respiro no rodapé para a barra fixa */
+  --respiro-navegacao: 5rem;
+}

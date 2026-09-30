@@ -32,12 +32,14 @@ export function ConviteNotificacoes({ casalCompleto }: { casalCompleto: boolean 
   }
 
   return (
-    <div className="mt-4 rounded-2xl border border-rosa/40 bg-cartao p-4 shadow-cartao">
+    <div className="mt-4 rounded-cartao border border-afeto/40 bg-superficie p-4 shadow-cartao">
       <div className="flex items-center gap-3">
-        <IconeSinoTocando size={22} className="shrink-0 text-rosa-suave" aria-hidden />
+        <IconeSinoTocando size={22} className="shrink-0 text-afeto-claro" aria-hidden />
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-neve">{textos.notificacoes.conviteTitulo}</p>
-          <p className="mt-0.5 text-xs text-cinza">{textos.notificacoes.conviteDescricao}</p>
+          <p className="text-sm font-medium text-texto">{textos.notificacoes.conviteTitulo}</p>
+          <p className="mt-0.5 text-xs text-texto-discreto">
+            {textos.notificacoes.conviteDescricao}
+          </p>
         </div>
       </div>
       <div className="mt-3 flex gap-2">

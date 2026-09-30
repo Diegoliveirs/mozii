@@ -1,9 +1,9 @@
 import type { InputHTMLAttributes, TextareaHTMLAttributes } from 'react'
 
 const base =
-  'w-full rounded-xl border border-linha bg-veu px-4 py-3 text-neve outline-none transition-colors placeholder:text-cinza focus:border-rosa focus:ring-2 focus:ring-rosa/25'
+  'w-full rounded-campo border border-borda bg-vidro px-4 py-3 text-texto outline-none transition-colors placeholder:text-texto-discreto focus:border-primario focus:ring-2 focus:ring-primario/25'
 
-/** Campo de texto canônico — borda rosa + anel suave no foco. */
+/** Campo de texto canônico — borda + anel suave na cor de ação ao focar. */
 export function Campo({ className = '', ...resto }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={`${base} ${className}`} {...resto} />
 }

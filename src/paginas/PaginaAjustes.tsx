@@ -66,10 +66,7 @@ export function PaginaAjustes() {
       <CabecalhoPagina titulo={textos.ajustes.titulo} fallback="/perfil" />
       <div className="px-5">
         {/* Foto e nome de exibição */}
-        <form
-          onSubmit={aoSalvarNome}
-          className="mt-6 rounded-2xl border border-linha bg-cartao p-5 shadow-cartao"
-        >
+        <form onSubmit={aoSalvarNome} className="cartao mt-6 p-5">
           <div className="mb-4 flex items-center gap-4">
             <AvatarPerfil
               nome={perfil.data?.nomeExibicao ?? ''}
@@ -100,7 +97,7 @@ export function PaginaAjustes() {
               }}
             />
           </div>
-          <label className="flex flex-col gap-1.5 text-sm text-nevoa">
+          <label className="flex flex-col gap-1.5 text-sm text-texto-secundario">
             {textos.ajustes.nomeRotulo}
             <Campo
               type="text"
@@ -122,26 +119,28 @@ export function PaginaAjustes() {
 
         {/* Nosso espaço */}
         {casal.data && (
-          <section className="mt-4 rounded-2xl border border-linha bg-cartao p-5 shadow-cartao">
-            <h2 className="font-medium text-neve">{textos.ajustes.casalTitulo}</h2>
+          <section className="cartao mt-4 p-5">
+            <h2 className="font-medium text-texto">{textos.ajustes.casalTitulo}</h2>
 
-            <p className="mt-3 text-sm text-nevoa">{textos.ajustes.membros}</p>
+            <p className="mt-3 text-sm text-texto-secundario">{textos.ajustes.membros}</p>
             <ul className="mt-1 space-y-1">
               {casal.data.membros.map((membro) => (
-                <li key={membro.id} className="text-neve">
+                <li key={membro.id} className="text-texto">
                   {membro.nomeExibicao}
-                  {membro.id === perfil.data?.id && <span className="text-cinza"> (você)</span>}
+                  {membro.id === perfil.data?.id && (
+                    <span className="text-texto-discreto"> (você)</span>
+                  )}
                 </li>
               ))}
             </ul>
 
             {casal.data.membros.length < 2 && (
               <div className="mt-4">
-                <p className="text-sm text-nevoa">{textos.ajustes.codigoConvite}</p>
-                <p className="mt-1 w-fit rounded-xl border border-dashed border-linha-forte bg-veu px-4 py-2 font-mono text-2xl tracking-[0.3em] text-rosa-suave">
+                <p className="text-sm text-texto-secundario">{textos.ajustes.codigoConvite}</p>
+                <p className="mt-1 w-fit rounded-xl border border-dashed border-borda-forte bg-vidro px-4 py-2 font-mono text-2xl tracking-[0.3em] text-afeto-claro">
                   {casal.data.casal.codigoConvite}
                 </p>
-                <p className="mt-1 text-xs text-cinza">{textos.ajustes.codigoDica}</p>
+                <p className="mt-1 text-xs text-texto-discreto">{textos.ajustes.codigoDica}</p>
               </div>
             )}
           </section>
@@ -158,8 +157,8 @@ export function PaginaAjustes() {
         </Botao>
 
         {/* Zona de perigo */}
-        <section className="mt-8 rounded-2xl border border-erro/40 p-5">
-          <h2 className="text-sm font-medium tracking-wide text-erro uppercase">
+        <section className="mt-8 rounded-cartao border border-perigo/40 p-5">
+          <h2 className="text-sm font-medium tracking-wide text-perigo-texto uppercase">
             {textos.ajustes.zonaPerigo}
           </h2>
 
@@ -167,22 +166,24 @@ export function PaginaAjustes() {
             <button
               type="button"
               onClick={() => setConfirmando('sair-casal')}
-              className="text-erro underline"
+              className="text-perigo-texto underline"
             >
               {textos.ajustes.sairCasal}
             </button>
-            <p className="mt-1 text-xs text-cinza">{textos.ajustes.sairCasalExplicacao}</p>
+            <p className="mt-1 text-xs text-texto-discreto">{textos.ajustes.sairCasalExplicacao}</p>
           </div>
 
           <div className="mt-4">
             <button
               type="button"
               onClick={() => setConfirmando('excluir-conta')}
-              className="text-erro underline"
+              className="text-perigo-texto underline"
             >
               {textos.ajustes.excluirConta}
             </button>
-            <p className="mt-1 text-xs text-cinza">{textos.ajustes.excluirContaExplicacao}</p>
+            <p className="mt-1 text-xs text-texto-discreto">
+              {textos.ajustes.excluirContaExplicacao}
+            </p>
           </div>
         </section>
 

@@ -41,7 +41,7 @@ export function AcoesPublicacao({
         aria-label={curti ? textos.reacoes.descurtir : textos.reacoes.curtir}
         onClick={tocarCoracao}
         className={`flex items-center gap-1.5 text-sm transition-colors ${
-          curti ? 'text-rosa' : 'text-cinza'
+          curti ? 'text-afeto' : 'text-texto-discreto'
         }`}
       >
         <span
@@ -57,7 +57,7 @@ export function AcoesPublicacao({
         type="button"
         aria-label={textos.reacoes.comentar}
         onClick={tocarBalao}
-        className="flex items-center gap-1.5 text-sm text-cinza"
+        className="flex items-center gap-1.5 text-sm text-texto-discreto"
       >
         <IconeComentario size={22} aria-hidden />
         {qtdComentarios > 0 && qtdComentarios}

@@ -9,6 +9,7 @@ import { textos } from '../lib/textos'
 import { CabecalhoPagina } from '../componentes/layout/CabecalhoPagina'
 import { AcoesSessaoAgendada } from '../componentes/sessoes/AcoesSessaoAgendada'
 import { SessaoPendente } from '../componentes/sessoes/SessoesPassadas'
+import { classesBotao } from '../componentes/ui/estiloBotao'
 import { EstadoVazio } from '../componentes/ui/EstadoVazio'
 import { IconeAlerta, IconeSessao } from '../componentes/ui/icones'
 
@@ -24,7 +25,9 @@ export function PaginaSessoes() {
 
       <div className="px-5 pt-4">
         {sessoes.isPending && (
-          <p className="py-10 text-center text-sm text-cinza">{textos.comuns.carregando}</p>
+          <p className="py-10 text-center text-sm text-texto-discreto">
+            {textos.comuns.carregando}
+          </p>
         )}
 
         {sessoes.isError && (
@@ -41,10 +44,7 @@ export function PaginaSessoes() {
             titulo={textos.sessao.vazioTitulo}
             descricao={textos.sessao.vazioDescricao}
             acao={
-              <Link
-                to="/cinema?aba=buscar"
-                className="rounded-xl bg-rosa px-4 py-2 text-sm font-medium text-neve"
-              >
+              <Link to="/cinema?aba=buscar" className={classesBotao()}>
                 {textos.sessao.buscarFilme}
               </Link>
             }
@@ -52,20 +52,20 @@ export function PaginaSessoes() {
         )}
 
         {total > 0 && (
-          <div className="mb-5 flex items-end justify-between border-b border-linha pb-3">
+          <div className="mb-5 flex items-end justify-between border-b border-borda pb-3">
             <div>
-              <p className="text-[11px] font-medium tracking-[0.18em] text-rosa-suave uppercase">
-                {textos.sessao.programacao}
+              <p className="rotulo-secao">{textos.sessao.programacao}</p>
+              <p className="mt-1 text-sm text-texto-secundario">
+                {textos.sessao.gestaoResumo(total)}
               </p>
-              <p className="mt-1 text-sm text-nevoa">{textos.sessao.gestaoResumo(total)}</p>
             </div>
-            <IconeSessao size={24} weight="fill" className="text-rosa" aria-hidden />
+            <IconeSessao size={24} weight="fill" className="text-afeto" aria-hidden />
           </div>
         )}
 
         {organizadas.futuras.length > 0 && (
           <section>
-            <h2 className="text-xs font-medium tracking-wide text-cinza uppercase">
+            <h2 className="text-xs font-medium tracking-wide text-texto-discreto uppercase">
               {textos.sessao.proximasTitulo}
             </h2>
             <div className="mt-2 space-y-3">
@@ -78,10 +78,10 @@ export function PaginaSessoes() {
 
         {organizadas.passadas.length > 0 && (
           <section className={organizadas.futuras.length > 0 ? 'mt-8' : ''}>
-            <h2 className="text-xs font-medium tracking-wide text-cinza uppercase">
+            <h2 className="text-xs font-medium tracking-wide text-texto-discreto uppercase">
               {textos.sessao.aguardandoTitulo}
             </h2>
-            <p className="mt-1 text-xs text-cinza">{textos.sessao.aguardandoDescricao}</p>
+            <p className="mt-1 text-xs text-texto-discreto">{textos.sessao.aguardandoDescricao}</p>
             <div className="mt-2 space-y-2">
               {organizadas.passadas.map((sessao) => (
                 <SessaoPendente key={sessao.id} sessao={sessao} />
@@ -98,26 +98,24 @@ function BilheteSessao({ sessao }: { sessao: SessaoCinema }) {
   const quando = new Date(sessao.agendadaPara)
 
   return (
-    <article className="relative flex overflow-hidden rounded-2xl border border-linha bg-cartao shadow-cartao">
-      <div className="w-[76px] shrink-0 border-r-2 border-dashed border-linha-forte px-2 py-3 text-center">
-        <p className="text-[10px] tracking-widest text-cinza uppercase">
+    <article className="relative flex overflow-hidden ingresso">
+      <div className="w-[76px] shrink-0 border-r-2 border-dashed border-borda-forte px-2 py-3 text-center">
+        <p className="text-[10px] tracking-widest text-texto-discreto uppercase">
           {format(quando, 'EEEEEE', { locale: ptBR })}
         </p>
-        <p className="font-voz text-2xl leading-tight font-semibold text-neve">
-          {format(quando, 'dd')}
-        </p>
-        <p className="text-[10px] text-cinza">
+        <p className="titulo text-2xl leading-tight text-texto">{format(quando, 'dd')}</p>
+        <p className="text-[10px] text-texto-discreto">
           {format(quando, 'MMM', { locale: ptBR })} · {format(quando, 'HH:mm')}
         </p>
       </div>
 
       <span
         aria-hidden
-        className="absolute -top-2 left-[68px] h-4 w-4 rounded-full border border-linha bg-noite"
+        className="absolute -top-2 left-[68px] h-4 w-4 rounded-full border border-borda bg-fundo"
       />
       <span
         aria-hidden
-        className="absolute -bottom-2 left-[68px] h-4 w-4 rounded-full border border-linha bg-noite"
+        className="absolute -bottom-2 left-[68px] h-4 w-4 rounded-full border border-borda bg-fundo"
       />
 
       <div className="min-w-0 flex-1 px-4 py-3">
@@ -125,15 +123,15 @@ function BilheteSessao({ sessao }: { sessao: SessaoCinema }) {
           <div className="min-w-0">
             <Link
               to={`/filme/${sessao.filme.tmdbId}`}
-              className="block truncate font-voz text-base font-semibold text-neve"
+              className="block truncate titulo text-base text-texto"
             >
               {sessao.filme.titulo}
             </Link>
             {sessao.observacao && (
-              <p className="mt-0.5 line-clamp-2 text-xs text-cinza">{sessao.observacao}</p>
+              <p className="mt-0.5 line-clamp-2 text-xs text-texto-discreto">{sessao.observacao}</p>
             )}
           </div>
-          <span className="shrink-0 rounded-full bg-rosa/20 px-2 py-0.5 text-[10px] text-rosa-suave">
+          <span className="shrink-0 rounded-full bg-afeto/20 px-2 py-0.5 text-[10px] text-afeto-claro">
             {contagemRegressiva(sessao.agendadaPara)}
           </span>
         </div>

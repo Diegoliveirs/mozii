@@ -31,7 +31,7 @@ export function PaginaFilme() {
       <main>
         <CabecalhoPagina titulo={textos.comuns.carregando} fallback="/cinema" />
         <div className="mt-4 space-y-4 px-5">
-          <Esqueleto className="h-44 rounded-2xl" />
+          <Esqueleto className="h-44 rounded-cartao" />
           <Esqueleto className="h-24" />
         </div>
       </main>
@@ -58,7 +58,7 @@ export function PaginaFilme() {
   return (
     <main>
       <CabecalhoPagina titulo={dados.titulo} fallback="/cinema" />
-      <section className={`relative ${fundo ? 'overflow-hidden bg-noite' : 'px-5 pt-8'}`}>
+      <section className={`relative ${fundo ? 'overflow-hidden bg-fundo' : 'px-5 pt-8'}`}>
         {fundo && (
           <>
             <img
@@ -66,7 +66,7 @@ export function PaginaFilme() {
               alt=""
               className="absolute inset-0 h-full w-full object-cover opacity-55"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-noite/10 via-noite/55 to-noite" />
+            <div className="absolute inset-0 bg-gradient-to-b from-fundo/10 via-fundo/55 to-fundo" />
           </>
         )}
 
@@ -76,13 +76,11 @@ export function PaginaFilme() {
               caminho={dados.caminhoPoster}
               titulo={dados.titulo}
               largura={342}
-              className="w-28 rounded-lg border border-linha-forte shadow-cartao"
+              className="w-28 rounded-lg border border-borda-forte shadow-cartao"
             />
             <div className="pb-1">
               {/* O h1 é o do cabeçalho; aqui é só o destaque visual do herói */}
-              <p className="font-voz text-2xl leading-tight font-semibold text-neve">
-                {dados.titulo}
-              </p>
+              <p className="titulo text-2xl leading-tight text-texto">{dados.titulo}</p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {[
                   dados.anoLancamento ? String(dados.anoLancamento) : null,
@@ -92,7 +90,7 @@ export function PaginaFilme() {
                   .map((pedaco) => (
                     <span
                       key={pedaco}
-                      className="rounded-full bg-veu px-2.5 py-0.5 text-xs text-nevoa"
+                      className="rounded-full bg-vidro px-2.5 py-0.5 text-xs text-texto-secundario"
                     >
                       {pedaco}
                     </span>
@@ -107,7 +105,10 @@ export function PaginaFilme() {
         {dados.generos.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {dados.generos.map((genero) => (
-              <span key={genero} className="rounded-full bg-veu px-2.5 py-0.5 text-xs text-nevoa">
+              <span
+                key={genero}
+                className="rounded-full bg-vidro px-2.5 py-0.5 text-xs text-texto-secundario"
+              >
                 {genero}
               </span>
             ))}
@@ -115,7 +116,7 @@ export function PaginaFilme() {
         )}
 
         {dados.sinopse && (
-          <p className="mt-4 text-sm leading-relaxed text-nevoa">{dados.sinopse}</p>
+          <p className="mt-4 text-sm leading-relaxed text-texto-secundario">{dados.sinopse}</p>
         )}
 
         <div className="mt-5 flex gap-2">
@@ -158,16 +159,14 @@ export function PaginaFilme() {
 
         {/* Onde assistir (região BR) — atribuição JustWatch exigida pelo TMDB */}
         <section className="mt-7 pb-8">
-          <h2 className="text-xs font-medium tracking-wide text-rosa-suave uppercase">
-            {textos.filme.ondeAssistir}
-          </h2>
+          <h2 className="rotulo-secao">{textos.filme.ondeAssistir}</h2>
           {provedores ? (
             <>
               <ul className="mt-3 flex flex-wrap gap-3">
                 {provedores.lista.map((provedor) => (
                   <li
                     key={provedor.nome}
-                    className="flex items-center gap-2 rounded-xl border border-linha bg-cartao px-3 py-2"
+                    className="flex items-center gap-2 rounded-xl border border-borda bg-superficie px-3 py-2"
                   >
                     {urlLogoProvedor(provedor.caminhoLogo) && (
                       <img
@@ -176,7 +175,7 @@ export function PaginaFilme() {
                         className="h-6 w-6 rounded"
                       />
                     )}
-                    <span className="text-sm text-nevoa">{provedor.nome}</span>
+                    <span className="text-sm text-texto-secundario">{provedor.nome}</span>
                   </li>
                 ))}
               </ul>
@@ -185,14 +184,14 @@ export function PaginaFilme() {
                   href={ondeAssistir.data.linkJustWatch}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 inline-block text-sm text-rosa-suave underline"
+                  className="mt-3 inline-block text-sm text-afeto-claro underline"
                 >
                   {textos.filme.verNoJustWatch}
                 </a>
               )}
             </>
           ) : (
-            <p className="mt-2 text-sm text-cinza">{textos.filme.semProvedores}</p>
+            <p className="mt-2 text-sm text-texto-discreto">{textos.filme.semProvedores}</p>
           )}
         </section>
 

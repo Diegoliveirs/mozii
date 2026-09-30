@@ -16,6 +16,13 @@ import {
  * volta ao primeiro plano — quem mudou nos ajustes do celular vê o estado
  * novo sem recarregar.
  */
+/** Cor do ícone de estado — a decisão é pelo tom, nunca pelo nome da classe. */
+const COR_DO_TOM = {
+  neutro: 'text-texto-discreto',
+  ok: 'text-sucesso',
+  perigo: 'text-perigo-texto',
+} as const
+
 export function SecaoPermissoes() {
   const [permissaoNotificacoes, setPermissaoNotificacoes] = useState(estadoPermissao())
   const precisaInstalar = suporteDePush() === 'precisa-instalar'
@@ -32,51 +39,49 @@ export function SecaoPermissoes() {
     ? {
         texto: textos.notificacoes.precisaInstalarIos,
         Icone: IconeNeutro,
-        cor: 'text-cinza',
+        tom: 'neutro' as const,
       }
     : permissaoNotificacoes === 'granted'
-      ? { texto: textos.notificacoes.estadoConcedida, Icone: IconeConfirmado, cor: 'text-sucesso' }
+      ? { texto: textos.notificacoes.estadoConcedida, Icone: IconeConfirmado, tom: 'ok' as const }
       : permissaoNotificacoes === 'denied'
-        ? { texto: textos.notificacoes.estadoNegada, Icone: IconeAlerta, cor: 'text-erro' }
-        : { texto: textos.notificacoes.estadoNaoPedida, Icone: IconeNeutro, cor: 'text-cinza' }
+        ? { texto: textos.notificacoes.estadoNegada, Icone: IconeAlerta, tom: 'perigo' as const }
+        : { texto: textos.notificacoes.estadoNaoPedida, Icone: IconeNeutro, tom: 'neutro' as const }
 
   return (
-    <section className="mt-4 rounded-2xl border border-linha bg-cartao p-5 shadow-cartao">
-      <h2 className="text-xs font-medium tracking-wide text-rosa-suave uppercase">
-        {textos.notificacoes.permissoesTitulo}
-      </h2>
+    <section className="cartao mt-4 p-5">
+      <h2 className="rotulo-secao">{textos.notificacoes.permissoesTitulo}</h2>
 
       <ul className="mt-2">
-        <li className="flex items-center gap-3 border-b border-linha py-2.5">
-          <IconeSino size={17} className="shrink-0 text-nevoa" aria-hidden />
+        <li className="flex items-center gap-3 border-b border-borda py-2.5">
+          <IconeSino size={17} className="shrink-0 text-texto-secundario" aria-hidden />
           <span className="min-w-0 flex-1">
-            <span className="block text-sm text-neve">
+            <span className="block text-sm text-texto">
               {textos.notificacoes.permissaoNotificacoes}
             </span>
-            <span className="block text-xs text-cinza">{notificacoes.texto}</span>
+            <span className="block text-xs text-texto-discreto">{notificacoes.texto}</span>
           </span>
           <notificacoes.Icone
             size={17}
-            weight={notificacoes.cor === 'text-cinza' ? 'regular' : 'fill'}
-            className={`shrink-0 ${notificacoes.cor}`}
+            weight={notificacoes.tom === 'neutro' ? 'regular' : 'fill'}
+            className={`shrink-0 ${COR_DO_TOM[notificacoes.tom]}`}
             aria-hidden
           />
         </li>
         <li className="flex items-center gap-3 py-2.5">
-          <IconeFoto size={17} className="shrink-0 text-nevoa" aria-hidden />
+          <IconeFoto size={17} className="shrink-0 text-texto-secundario" aria-hidden />
           <span className="min-w-0 flex-1">
-            <span className="block text-sm text-neve">
+            <span className="block text-sm text-texto">
               {textos.notificacoes.permissaoCameraFotos}
             </span>
-            <span className="block text-xs text-cinza">
+            <span className="block text-xs text-texto-discreto">
               {textos.notificacoes.cameraGerenciadaPeloSistema}
             </span>
           </span>
-          <IconeNeutro size={17} className="shrink-0 text-cinza" aria-hidden />
+          <IconeNeutro size={17} className="shrink-0 text-texto-discreto" aria-hidden />
         </li>
       </ul>
 
-      <p className="mt-2 flex items-start gap-1.5 rounded-xl bg-veu px-3 py-2.5 text-xs text-cinza">
+      <p className="mt-2 flex items-start gap-1.5 rounded-xl bg-vidro px-3 py-2.5 text-xs text-texto-discreto">
         <IconeInfo size={14} className="mt-0.5 shrink-0" aria-hidden />
         {textos.notificacoes.dicaReativar}
       </p>

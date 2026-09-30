@@ -6,6 +6,7 @@ import {
   tabelaExiste,
   USUARIO_DOIS,
   USUARIO_UM,
+  irPara,
 } from './apoio'
 
 /**
@@ -37,7 +38,7 @@ test.beforeAll(async () => {
 })
 
 async function entrar(pagina: Page, usuario: typeof USUARIO_UM) {
-  await pagina.goto('/entrar')
+  await irPara(pagina, '/entrar')
   await pagina.getByLabel('E-mail').fill(usuario.email)
   await pagina.getByLabel('Senha', { exact: true }).fill(usuario.senha)
   await pagina.getByRole('button', { name: 'Entrar', exact: true }).click()

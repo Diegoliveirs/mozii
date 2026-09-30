@@ -7,6 +7,7 @@ export const textos = {
   app: {
     nome: 'Mozii',
     slogan: 'vocês, em um só lugar',
+    assinatura: 'mozii 💜',
   },
 
   comuns: {
@@ -14,6 +15,8 @@ export const textos = {
     cancelar: 'Cancelar',
     confirmar: 'Confirmar',
     carregando: 'Carregando…',
+    voltar: 'Voltar',
+    fechar: 'Fechar',
     erroInesperado: 'Algo deu errado. Tenta de novo?',
   },
 
@@ -74,7 +77,6 @@ export const textos = {
 
   mural: {
     titulo: 'Mural',
-    juntos: (nomes: string[]) => nomes.join(' ♥ '),
     esperandoPar: 'Seu par ainda não entrou — o código de convite está nos Ajustes.',
     vazio: 'O Mural de vocês começa aqui 💜',
     vazioDica: 'Publiquem a primeira memória de cinema.',
@@ -159,11 +161,22 @@ export const textos = {
   compartilhar: {
     titulo: 'Compartilhar nos Stories',
     botaoAbrir: 'Compartilhar',
-    tema: 'Tema',
+    estilo: 'Estilo',
+    estilos: {
+      meianoite: 'Meia-noite',
+      vinho: 'Vinho',
+      oceano: 'Oceano',
+    },
     compartilhar: 'Compartilhar',
     baixar: 'Baixar imagem',
     gerando: 'Gerando o cartão…',
     erro: 'Não consegui gerar a imagem. Tenta de novo?',
+  },
+
+  lightbox: {
+    rotulo: 'Foto ampliada',
+    anterior: 'Foto anterior',
+    proxima: 'Próxima foto',
   },
 
   reacoes: {
@@ -328,6 +341,16 @@ export const textos = {
   atualizacao: {
     disponivel: 'Nova versão do Mozii disponível!',
     atualizar: 'Atualizar',
+  },
+
+  // Microcopy que varia por tema (contrato em src/temas/contrato.ts).
+  temas: {
+    classico: {
+      saudacao: (nomes: string[]) => nomes.join(' ♥ '),
+    },
+    noir: {
+      saudacao: (nomes: string[]) => nomes.join(' & '),
+    },
   },
 
   configuracao: {

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { prepararUsuario, USUARIO_DOIS, USUARIO_TRES, USUARIO_UM } from './apoio'
+import { prepararUsuario, USUARIO_DOIS, USUARIO_TRES, USUARIO_UM, irPara } from './apoio'
 
 /**
  * O teste mais importante da Fase 1: a jornada completa do casal.
@@ -13,7 +13,7 @@ test.beforeAll(async () => {
 })
 
 async function entrarPelaTela(pagina: Page, usuario: typeof USUARIO_UM) {
-  await pagina.goto('/entrar')
+  await irPara(pagina, '/entrar')
   await pagina.getByLabel('E-mail').fill(usuario.email)
   await pagina.getByLabel('Senha', { exact: true }).fill(usuario.senha)
   await pagina.getByRole('button', { name: 'Entrar', exact: true }).click()
@@ -86,7 +86,7 @@ test('cadastro pela tela leva ao pareamento', async ({ browser }) => {
   const contexto = await browser.newContext()
   const pagina = await contexto.newPage()
 
-  await pagina.goto('/cadastro')
+  await irPara(pagina, '/cadastro')
   await pagina.getByLabel('Seu nome').fill(USUARIO_UM.nome)
   await pagina.getByLabel('E-mail').fill(USUARIO_UM.email)
   await pagina.getByLabel('Senha', { exact: false }).fill('senha-diferente-123')

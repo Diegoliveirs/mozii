@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -159,3 +160,14 @@ export async function tabelaExiste(token: string, tabela: string): Promise<boole
   })
   return resposta.ok
 }
+
+/**
+ * Navega fixando o tema: os testes nunca mudam de cara quando um tema de
+ * evento entra na janela de datas (ex.: Natal em dezembro).
+ */
+export function irPara(pagina: Page, rota: string) {
+  const separador = rota.includes('?') ? '&' : '?'
+  return pagina.goto(`${rota}${separador}tema=${TEMA_DOS_TESTES}`)
+}
+
+export const TEMA_DOS_TESTES = 'noir'

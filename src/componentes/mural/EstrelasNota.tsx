@@ -6,10 +6,10 @@
 function Estrela({ fracao }: { fracao: 0 | 0.5 | 1 }) {
   return (
     <span className="relative inline-block text-xl leading-none">
-      <span className="text-estrela-apagada">★</span>
+      <span className="text-metal-apagado">★</span>
       {fracao > 0 && (
         <span
-          className="absolute inset-0 overflow-hidden text-estrela"
+          className="absolute inset-0 overflow-hidden text-metal"
           style={{ width: fracao === 1 ? '100%' : '50%' }}
         >
           ★
