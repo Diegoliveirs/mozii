@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { prepararUsuario, USUARIO_DOIS, USUARIO_TRES, USUARIO_UM } from './apoio'
+import { prepararUsuario, USUARIO_DOIS, USUARIO_TRES, USUARIO_UM, irPara } from './apoio'
 
 /**
  * O teste mais importante da Fase 1: a jornada completa do casal.
@@ -9,11 +9,11 @@ import { prepararUsuario, USUARIO_DOIS, USUARIO_TRES, USUARIO_UM } from './apoio
 test.beforeAll(async () => {
   await prepararUsuario(USUARIO_UM)
   await prepararUsuario(USUARIO_DOIS)
-  await prepararUsuario(USUARIO_TRES)
+  if (USUARIO_TRES) await prepararUsuario(USUARIO_TRES)
 })
 
 async function entrarPelaTela(pagina: Page, usuario: typeof USUARIO_UM) {
-  await pagina.goto('/entrar')
+  await irPara(pagina, '/entrar')
   await pagina.getByLabel('E-mail').fill(usuario.email)
   await pagina.getByLabel('Senha', { exact: true }).fill(usuario.senha)
   await pagina.getByRole('button', { name: 'Entrar', exact: true }).click()
@@ -52,7 +52,7 @@ test('o casal se forma: um cria o espaço, o outro entra com o código', async (
 
   // Entrou: Mural com os dois nomes unidos pelo coração.
   await expect(paginaDois.getByRole('link', { name: 'Momentos' })).toBeVisible()
-  await expect(paginaDois.getByText('Pessoa Um ♥ Pessoa Dois')).toBeVisible()
+  await expect(paginaDois.getByText('Pessoa Um & Pessoa Dois')).toBeVisible()
 
   // ── Ajustes (via engrenagem do Perfil): sem código com o casal completo ──
   await paginaDois.getByRole('link', { name: 'Perfil', exact: true }).click()
@@ -65,10 +65,11 @@ test('o casal se forma: um cria o espaço, o outro entra com o código', async (
 })
 
 test('código de convite inválido é recusado', async ({ browser }) => {
+  test.skip(!USUARIO_TRES, 'precisa de uma terceira conta — só roda no Supabase local')
   const contexto = await browser.newContext()
   const pagina = await contexto.newPage()
 
-  await entrarPelaTela(pagina, USUARIO_TRES)
+  await entrarPelaTela(pagina, USUARIO_TRES!)
   await expect(pagina.getByRole('heading', { name: 'Falta uma pessoa' })).toBeVisible()
 
   await pagina.getByLabel('Código de convite').fill('ZZZZZ9')
@@ -86,7 +87,7 @@ test('cadastro pela tela leva ao pareamento', async ({ browser }) => {
   const contexto = await browser.newContext()
   const pagina = await contexto.newPage()
 
-  await pagina.goto('/cadastro')
+  await irPara(pagina, '/cadastro')
   await pagina.getByLabel('Seu nome').fill(USUARIO_UM.nome)
   await pagina.getByLabel('E-mail').fill(USUARIO_UM.email)
   await pagina.getByLabel('Senha', { exact: false }).fill('senha-diferente-123')

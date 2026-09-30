@@ -1,3 +1,4 @@
+import { irPara } from './apoio'
 import { expect, test } from '@playwright/test'
 
 /**
@@ -10,11 +11,10 @@ test('sem sessão, a raiz leva para a tela de entrar, sem erros', async ({ page 
     if (mensagem.type() === 'error') errosDeConsole.push(mensagem.text())
   })
 
-  await page.goto('/')
+  await irPara(page, '/')
 
   await expect(page).toHaveURL(/\/entrar$/)
   await expect(page.getByRole('heading', { name: 'Que bom te ver' })).toBeVisible()
-  await expect(page.getByText('vocês, em um só lugar')).toBeVisible()
 
   expect(errosDeConsole).toEqual([])
 })

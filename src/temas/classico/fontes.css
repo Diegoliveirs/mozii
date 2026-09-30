@@ -1,0 +1,19 @@
+/*
+ * Fraunces variável — a "voz" do Mozii nos títulos afetivos.
+ * Self-hosted em public/fontes/ porque a CSP só permite font-src 'self'.
+ */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fontes/fraunces-variavel.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fontes/fraunces-italico-variavel.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
+}

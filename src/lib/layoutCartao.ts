@@ -1,6 +1,6 @@
 /**
  * Fonte ÚNICA do layout do cartão de compartilhar (Stories, 1080×1920).
- * Constantes e temas moram aqui; o desenho em canvas fica em
+ * Constantes e estilos moram aqui; o desenho em canvas fica em
  * `desenharCartao.ts`. Mudou o visual? Muda aqui, os dois acompanham.
  */
 
@@ -12,8 +12,7 @@ export const CARTAO = {
   estrela: { tamanho: 64, espaco: 12 },
 } as const
 
-export interface TemaCartao {
-  nome: string
+export interface EstiloCartao {
   fundoTopo: string
   fundoBase: string
   destaque: string
@@ -21,17 +20,17 @@ export interface TemaCartao {
   textoSuave: string
 }
 
-export const TEMAS = {
+/** Estilos que o usuário escolhe ao compartilhar — independem do tema do app. */
+export const ESTILOS_CARTAO = {
+  // Meia-noite acompanha a paleta do tema Noir.
   meianoite: {
-    nome: 'Meia-noite',
-    fundoTopo: '#221d2b',
-    fundoBase: '#0e0b12',
-    destaque: '#d4537e',
-    texto: '#f2edf5',
-    textoSuave: '#c3bccd',
+    fundoTopo: '#16131b',
+    fundoBase: '#0c0a0f',
+    destaque: '#e48aa6',
+    texto: '#f5efe8',
+    textoSuave: '#b3abbb',
   },
   vinho: {
-    nome: 'Vinho',
     fundoTopo: '#3b0f1f',
     fundoBase: '#160309',
     destaque: '#ed93b1',
@@ -39,16 +38,15 @@ export const TEMAS = {
     textoSuave: '#d9aebc',
   },
   oceano: {
-    nome: 'Oceano',
     fundoTopo: '#0c2a3d',
     fundoBase: '#04101a',
     destaque: '#7fc8e8',
     texto: '#eef7fc',
     textoSuave: '#a9c8d8',
   },
-} as const satisfies Record<string, TemaCartao>
+} as const satisfies Record<string, EstiloCartao>
 
-export type NomeTema = keyof typeof TEMAS
+export type NomeEstiloCartao = keyof typeof ESTILOS_CARTAO
 
 /**
  * Quebra de texto gulosa por palavra, com limite de linhas — a última

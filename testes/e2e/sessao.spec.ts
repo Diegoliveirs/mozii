@@ -1,5 +1,12 @@
 import { expect, test, type Page } from '@playwright/test'
-import { formarCasal, prepararUsuario, tabelaExiste, USUARIO_DOIS, USUARIO_UM } from './apoio'
+import {
+  formarCasal,
+  prepararUsuario,
+  tabelaExiste,
+  USUARIO_DOIS,
+  USUARIO_UM,
+  irPara,
+} from './apoio'
 
 /**
  * Fase 5 de ponta a ponta — sessões, agora morando no Cinema:
@@ -21,7 +28,7 @@ test.beforeAll(async () => {
 })
 
 async function entrar(pagina: Page, usuario: typeof USUARIO_UM) {
-  await pagina.goto('/entrar')
+  await irPara(pagina, '/entrar')
   await pagina.getByLabel('E-mail').fill(usuario.email)
   await pagina.getByLabel('Senha', { exact: true }).fill(usuario.senha)
   await pagina.getByRole('button', { name: 'Entrar', exact: true }).click()
@@ -36,7 +43,7 @@ function paraCampoDataHora(data: Date): string {
 
 async function agendarPelaPaginaDoFilme(page: Page, quando: Date, observacao?: string) {
   // Cidade de Deus (tmdb 598): título estável para o teste.
-  await page.goto('/filme/598')
+  await irPara(page, '/filme/598')
   await page.getByRole('button', { name: 'Agendar sessão' }).click()
   await page.locator('input[type=datetime-local]').fill(paraCampoDataHora(quando))
   if (observacao) {

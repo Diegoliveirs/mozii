@@ -12,6 +12,7 @@ import { PaginaLista } from './paginas/PaginaLista'
 import { PaginaMomentos } from './paginas/PaginaMomentos'
 import { PaginaMural } from './paginas/PaginaMural'
 import { PaginaNovaPublicacao } from './paginas/PaginaNovaPublicacao'
+import { PaginaNovidades } from './paginas/PaginaNovidades'
 import { PaginaPerfil } from './paginas/PaginaPerfil'
 import { PaginaParear } from './paginas/PaginaParear'
 import { PaginaPublicacao } from './paginas/PaginaPublicacao'
@@ -44,6 +45,7 @@ export function App() {
             <Route path="/perfil" element={<PaginaPerfil />} />
             <Route path="/perfil/:membroId" element={<PaginaPerfil />} />
             <Route path="/ajustes" element={<PaginaAjustes />} />
+            <Route path="/novidades" element={<PaginaNovidades />} />
           </Route>
         </Route>
       </Route>

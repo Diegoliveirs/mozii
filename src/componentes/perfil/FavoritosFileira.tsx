@@ -17,9 +17,7 @@ export function FavoritosFileira({ perfilId, editavel }: { perfilId: string; edi
 
   return (
     <section className="mt-6">
-      <h2 className="text-xs font-medium tracking-wide text-rosa-suave uppercase">
-        {textos.perfil.favoritos}
-      </h2>
+      <h2 className="rotulo-secao">{textos.perfil.favoritos}</h2>
       <div className="mt-3 grid grid-cols-5 gap-2">
         {POSICOES.map((posicao) => {
           const favorito = favoritos.data?.find((cada) => cada.posicao === posicao)
@@ -39,7 +37,7 @@ export function FavoritosFileira({ perfilId, editavel }: { perfilId: string; edi
                     type="button"
                     aria-label={textos.perfil.removerFavorito}
                     onClick={() => remover.mutate(favorito.id)}
-                    className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-abismo text-nevoa"
+                    className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-fundo-profundo text-texto-secundario"
                   >
                     <IconeFechar size={11} aria-hidden />
                   </button>
@@ -55,7 +53,7 @@ export function FavoritosFileira({ perfilId, editavel }: { perfilId: string; edi
               disabled={!editavel}
               aria-label={`${textos.perfil.favoritos} ${posicao}`}
               onClick={() => setEscolhendoPosicao(posicao)}
-              className="flex aspect-[2/3] items-center justify-center rounded-lg border border-dashed border-linha-forte text-cinza disabled:opacity-40"
+              className="flex aspect-[2/3] items-center justify-center rounded-poster border border-dashed border-borda-forte text-texto-discreto disabled:opacity-40"
             >
               <IconeMais size={16} aria-hidden />
             </button>
@@ -63,7 +61,7 @@ export function FavoritosFileira({ perfilId, editavel }: { perfilId: string; edi
         })}
       </div>
       {editavel && favoritos.data?.length === 0 && (
-        <p className="mt-2 text-xs text-cinza">{textos.perfil.favoritosDica}</p>
+        <p className="mt-2 text-xs text-texto-discreto">{textos.perfil.favoritosDica}</p>
       )}
 
       {escolhendoPosicao !== null && (

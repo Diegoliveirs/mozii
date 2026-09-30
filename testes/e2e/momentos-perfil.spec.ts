@@ -6,6 +6,7 @@ import {
   tabelaExiste,
   USUARIO_DOIS,
   USUARIO_UM,
+  irPara,
 } from './apoio'
 
 /**
@@ -37,7 +38,7 @@ test.beforeAll(async () => {
 })
 
 async function entrar(pagina: Page, usuario: typeof USUARIO_UM) {
-  await pagina.goto('/entrar')
+  await irPara(pagina, '/entrar')
   await pagina.getByLabel('E-mail').fill(usuario.email)
   await pagina.getByLabel('Senha', { exact: true }).fill(usuario.senha)
   await pagina.getByRole('button', { name: 'Entrar', exact: true }).click()
@@ -99,7 +100,7 @@ test('perfil: estatísticas, favorito, cartão de compartilhar e avatar', async 
   await page.getByRole('button', { name: '5 estrelas', exact: true }).click()
   await page.getByPlaceholder('Escreve algo para vocês…').fill('Épico do começo ao fim.')
   await page.getByRole('button', { name: 'Publicar' }).click()
-  await expect(page.getByText('vocês, em um só lugar')).toBeVisible()
+  await expect(page).toHaveURL(/\/$/)
 
   // Perfil: estatísticas e histograma (só aparece com avaliações)
   await page.getByRole('link', { name: 'Perfil' }).click()
@@ -123,8 +124,9 @@ test('perfil: estatísticas, favorito, cartão de compartilhar e avatar', async 
   // Trocar o tema regenera o cartão
   await modal.getByRole('button', { name: 'Vinho' }).click()
   await expect(modal.locator('img')).toBeVisible({ timeout: 20_000 })
+  // Esc fecha o modal (ModalBase)
   await page.keyboard.press('Escape')
-  await modal.click({ position: { x: 5, y: 5 } }).catch(() => {})
+  await expect(modal).toBeHidden()
 
   // Avatar nos Ajustes
   await page.getByRole('link', { name: 'Perfil' }).click()

@@ -559,3 +559,109 @@ group by 1, 2 order by 1, 2;
    Tudo deve funcionar como antes.
 
 - [ ] Avisar no chat que as 011–016 foram aplicadas, a função foi redeployada e as conferências bateram.
+
+## Roteiro da 017_avaliacao_unica_por_casal.sql (2026-09-30)
+
+### Por que existe
+
+O índice único da 010 (`autor_id, tmdb_id`) valia para o banco inteiro, mas o app só enxerga o casal atual. Quem troca de casal (e os usuários do e2e, a cada execução) não vê a avaliação antiga, tenta avaliar de novo e recebe 23505. Na tela aparece só "Algo deu errado". A regra passa a ser por casal: `casal_id, autor_id, tmdb_id`.
+
+### Como aplicar
+
+No SQL Editor, rodar o conteúdo de `supabase/migrations/017_avaliacao_unica_por_casal.sql`. O índice novo é mais permissivo que o antigo, então a criação não falha com os dados atuais.
+
+### Queries de conferência
+
+```sql
+-- Esperado: só o índice novo, com casal_id na frente.
+select indexname, indexdef
+from pg_indexes
+where schemaname = 'public'
+  and tablename = 'publicacoes'
+  and indexname like 'publicacoes_uma_avaliacao%';
+```
+
+### Depois de aplicar
+
+Rodar `npm run testes:e2e`. O spec "sessão passada vira Como foi?" deve passar mesmo com avaliações antigas das contas de teste em casais anteriores.
+
+## Roteiro da 018_publicacao_com_varias_fotos.sql (2026-09-30)
+
+### Por que existe
+
+A publicação de texto só aceitava uma foto (`caminho_foto text`). O pedido foi anexar quantas quiser. A coluna vira `caminhos_fotos text[]`, no mesmo formato de `momentos.caminhos_fotos`. As fotos que já existem viram um array de um item antes de a coluna velha sair. Os CHECKs que citavam `caminho_foto` (`texto_valido`, `atividade_valida` e o teto da 015) são recriados sobre o array. O teto contra abuso segue o dos momentos (50 fotos); o app não limita.
+
+### Como aplicar
+
+**Junto com o deploy desta branch**: o app que está no ar hoje lê `caminho_foto` e o Mural dele para de carregar depois da 018. E o app novo (inclusive o `npm run dev`) só carrega o Mural com ela aplicada.
+
+No SQL Editor, rodar o conteúdo de `supabase/migrations/018_publicacao_com_varias_fotos.sql`.
+
+### Queries de conferência
+
+```sql
+-- Esperado: caminhos_fotos (ARRAY) presente e caminho_foto ausente.
+select column_name, data_type
+from information_schema.columns
+where table_schema = 'public' and table_name = 'publicacoes'
+  and column_name in ('caminho_foto', 'caminhos_fotos');
+
+-- Esperado: os três CHECKs recriados.
+select conname from pg_constraint
+where conrelid = 'public.publicacoes'::regclass
+  and conname in ('texto_valido', 'atividade_valida', 'publicacoes_caminhos_fotos_tamanho');
+
+-- Esperado: nenhuma publicação de texto sem corpo e sem foto (as antigas migraram).
+select count(*) from public.publicacoes
+where tipo = 'texto' and corpo is null and cardinality(caminhos_fotos) = 0;
+```
+
+### Depois de aplicar
+
+Rodar `npm run testes:e2e`. O teste "publicação com várias fotos" do `mural.spec.ts` deixa de pular.
+
+## Roteiro da 019_notificacao_de_novidades.sql (+ push de versão nova) (2026-09-30)
+
+### Por que existe
+
+Avisar por push quem ativou as notificações quando sai uma versão com nota de atualização. Quem dispara é o GitHub, depois do deploy de produção da Vercel (`.github/workflows/avisar-novidades.yml`), chamando a `enviar-push` com o tipo `novidades`. A 019 cria a preferência `novidades` (ligada por padrão, com toggle nos Ajustes) e deixa a Edge Function ler as preferências para pular quem desligou.
+
+### Como aplicar
+
+**Junto com o deploy desta branch** (o app novo lê a coluna `novidades` nos Ajustes), na mesma leva da 018:
+
+1. No SQL Editor, rodar o conteúdo de `supabase/migrations/019_notificacao_de_novidades.sql`.
+2. **Redeployar a Edge Function** pelo painel (sem CLI), porque ela ganhou o tipo `novidades`: _Edge Functions → enviar-push → Code_, substituir todo o conteúdo pelo de `supabase/functions/enviar-push/index.ts` e clicar em **Deploy**. Em _Details_, **Verify JWT** continua **desligado** (é o `--no-verify-jwt`). Com CLI, o equivalente é `supabase functions deploy enviar-push --no-verify-jwt`.
+
+3. **GitHub → Settings → Secrets and variables → Actions → New repository secret:** `SEGREDO_GATILHO`, com o **mesmo valor** do secret `SEGREDO_GATILHO` da Edge Function. O painel do Supabase só mostra o hash dos secrets, mas o valor também está no Vault desde a 008 — ler no SQL Editor e copiar direto para o GitHub:
+
+   ```sql
+   select decrypted_secret from vault.decrypted_secrets where name = 'push_segredo_gatilho';
+   ```
+
+   `SUPABASE_URL` e `SUPABASE_ANON_KEY` já existem por causa do `manter-ativo.yml`.
+
+### Queries de conferência
+
+```sql
+-- Esperado: novidades | boolean | true
+select column_name, data_type, column_default
+from information_schema.columns
+where table_schema = 'public' and table_name = 'preferencias_notificacao'
+  and column_name = 'novidades';
+
+-- Esperado: SELECT para service_role.
+select grantee, privilege_type
+from information_schema.role_table_grants
+where table_schema = 'public' and table_name = 'preferencias_notificacao'
+  and grantee = 'service_role';
+```
+
+### Depois de aplicar
+
+1. No primeiro deploy de produção depois do merge, abrir **Actions → Avisar novidades**. O job deve mostrar a resposta da função (`{"enviadas":N,"removidas":M}`) e criar a tag `novidades-v2.1`.
+   - Se o job nem aparecer, conferir se a Vercel está publicando os deploys no GitHub (a aba **Deployments** do repositório deve listar "Production").
+   - Um redeploy da mesma versão deve terminar com "já foi avisada — nada a fazer".
+2. No iPhone com o Mozii instalado e as notificações ligadas: chega "Mozii 2.1 chegou ✨"; tocar abre o app, aparece o Atualizar e, depois dele, a nota.
+
+- [ ] Avisar no chat que a 019 foi aplicada, a função foi redeployada e o secret está cadastrado.

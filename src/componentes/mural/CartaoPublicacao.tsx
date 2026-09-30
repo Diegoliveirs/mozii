@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom'
 import type { Perfil, Publicacao, Reacao } from '../../dominio/tipos'
-import { useUrlFoto } from '../../hooks/useMural'
 import { tempoAtras } from '../../lib/datas'
 import { textos } from '../../lib/textos'
 import { Poster } from '../filmes/Poster'
-import { Esqueleto } from '../ui/Esqueleto'
+import { GradeFotos } from '../ui/GradeFotos'
 import { IconeConfirmado, IconeFilme, IconeSessao } from '../ui/icones'
 import { AcoesPublicacao } from './AcoesPublicacao'
 import { AvatarPerfil } from './AvatarPerfil'
@@ -13,17 +12,11 @@ import { EstrelasNota } from './EstrelasNota'
 /** O emoji que representa o like — único valor gravado nas reações. */
 export const EMOJI_CURTIDA = '❤️'
 
-function FotoDaPublicacao({ caminho }: { caminho: string }) {
-  const url = useUrlFoto(caminho)
-  if (!url.data) return <Esqueleto className="mt-3 h-64 w-full rounded-none" />
-  // A foto é o foco: sangra de borda a borda do cartão.
-  return <img src={url.data} alt="" className="mt-3 max-h-[420px] w-full object-cover" />
-}
-
 /**
- * Um cartão do Mural. Os 4 tipos moram aqui:
- * texto (corpo/foto), avaliação (pôster + estrelas), atividade (linha
- * compacta) e momento. Tocar no cartão abre a visão detalhada.
+ * Uma publicação do Mural, sem caixa: o respiro e os divisores do feed
+ * separam uma da outra. Os 4 tipos moram aqui: texto (corpo/foto),
+ * avaliação (pôster + estrelas + citação), atividade (pílula compacta) e
+ * momento. Tocar abre a visão detalhada.
  */
 export function CartaoPublicacao({
   publicacao,
@@ -69,33 +62,37 @@ export function CartaoPublicacao({
           ? IconeFilme
           : IconeConfirmado
     return (
-      <div className="flex items-center gap-2 px-1 text-sm text-cinza">
-        <Icone size={16} aria-hidden className="shrink-0" />
+      <div className="flex items-center gap-2 rounded-full bg-vidro px-3.5 py-2.5 text-sm text-texto-secundario">
+        <Icone size={16} aria-hidden className="shrink-0 text-texto-discreto" />
         <Link to={`/filme/${meta.tmdbId}`} className="min-w-0 truncate">
           {frase}
         </Link>
-        <span className="ml-auto shrink-0 text-xs">{tempoAtras(publicacao.criadoEm)}</span>
+        <span className="ml-auto shrink-0 text-xs text-texto-discreto">
+          {tempoAtras(publicacao.criadoEm)}
+        </span>
       </div>
     )
   }
 
+  const ehAvaliacao = publicacao.tipo === 'avaliacao'
+
   return (
-    <article
-      onClick={aoAbrir}
-      className={`overflow-hidden rounded-2xl border border-linha bg-cartao shadow-cartao ${
-        aoAbrir ? 'cursor-pointer' : ''
-      }`}
-    >
-      <header className="flex items-center gap-2 px-4 pt-3.5">
-        <AvatarPerfil nome={nomeAutor} indice={indiceAutor} caminhoAvatar={autor?.urlAvatar} />
-        <span className="font-medium text-neve">{nomeAutor}</span>
-        <span className="ml-auto text-xs text-cinza">{tempoAtras(publicacao.criadoEm)}</span>
+    <article onClick={aoAbrir} className={aoAbrir ? 'cursor-pointer' : ''}>
+      <header className="flex items-center gap-2.5">
+        <AvatarPerfil
+          nome={nomeAutor}
+          indice={indiceAutor}
+          caminhoAvatar={autor?.urlAvatar}
+          tamanho="pequeno"
+        />
+        <span className="text-sm font-medium text-texto">{nomeAutor}</span>
+        <span className="text-sm text-texto-discreto">· {tempoAtras(publicacao.criadoEm)}</span>
       </header>
 
-      {publicacao.caminhoFoto && <FotoDaPublicacao caminho={publicacao.caminhoFoto} />}
+      <GradeFotos caminhos={publicacao.caminhosFotos} className="mt-3" />
 
-      {publicacao.tipo === 'avaliacao' && publicacao.filme && (
-        <div className="mt-3 flex gap-3 px-4">
+      {ehAvaliacao && publicacao.filme && (
+        <div className="mt-4 flex items-end gap-4">
           <Link
             to={`/filme/${publicacao.filme.tmdbId}`}
             onClick={(evento) => evento.stopPropagation()}
@@ -105,25 +102,25 @@ export function CartaoPublicacao({
               caminho={publicacao.filme.caminhoPoster}
               titulo={publicacao.filme.titulo}
               largura={185}
-              className="w-16"
+              className="w-24"
             />
           </Link>
-          <div className="min-w-0">
+          <div className="min-w-0 pb-1">
             <Link
               to={`/filme/${publicacao.filme.tmdbId}`}
               onClick={(evento) => evento.stopPropagation()}
-              className="font-voz text-lg font-semibold text-neve"
+              className="titulo text-2xl leading-tight text-texto"
             >
               {publicacao.filme.titulo}
               {publicacao.filme.anoLancamento && (
-                <span className="font-sans text-sm font-normal text-cinza">
+                <span className="font-sans text-sm font-normal text-texto-discreto">
                   {' '}
                   ({publicacao.filme.anoLancamento})
                 </span>
               )}
             </Link>
             {publicacao.nota !== null && (
-              <div className="mt-1">
+              <div className="mt-2">
                 <EstrelasNota valor={publicacao.nota} />
               </div>
             )}
@@ -131,11 +128,18 @@ export function CartaoPublicacao({
         </div>
       )}
 
-      {publicacao.corpo && (
-        <p className="mt-2.5 px-4 whitespace-pre-wrap text-nevoa">{publicacao.corpo}</p>
-      )}
+      {publicacao.corpo &&
+        (ehAvaliacao ? (
+          <p className="mt-4 border-l border-metal/50 pl-4 font-titulo text-lg leading-relaxed font-light whitespace-pre-wrap text-texto-secundario italic">
+            {publicacao.corpo}
+          </p>
+        ) : (
+          <p className="mt-3 font-titulo text-lg leading-relaxed whitespace-pre-wrap text-texto">
+            {publicacao.corpo}
+          </p>
+        ))}
 
-      <div className="px-4 pt-3 pb-3.5">
+      <div className="mt-3">
         <AcoesPublicacao
           curtidas={curtidasDeCoracao.length}
           curti={curti}

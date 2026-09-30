@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -6,16 +7,22 @@ import { join } from 'node:path'
  * anon do app (nenhum privilégio extra — o que o teste consegue fazer,
  * qualquer navegador consegue).
  *
- * Os dois usuários de teste são fixos e reaproveitados entre execuções;
- * o preparo (`prepararUsuario`) os deixa sempre no mesmo estado inicial:
- * conta existente, sem casal, sem exclusão pendente.
+ * Os usuários de teste são reaproveitados entre execuções; o preparo
+ * (`prepararUsuario`) os deixa sempre no mesmo estado inicial: conta
+ * existente, sem casal, sem exclusão pendente e com o nome esperado.
+ *
+ * Duas origens de contas:
+ * - Supabase local: contas fixas `@mozii.test`, cadastradas na primeira vez;
+ * - projeto remoto: as contas de `USER_TESTE_E2E_1/2` (+ `_SENHA`) do
+ *   .env.local — já existentes e confirmadas; nunca se cadastra lá (o
+ *   remoto recusa `.test` e limita e-mails de confirmação).
  */
 
 function lerEnvLocal(): Record<string, string> {
   const conteudo = readFileSync(join(import.meta.dirname, '..', '..', '.env.local'), 'utf8')
   const valores: Record<string, string> = {}
   for (const linha of conteudo.split('\n')) {
-    const combinacao = linha.match(/^([A-Z_]+)=(.*)$/)
+    const combinacao = linha.match(/^([A-Z0-9_]+)=(.*)$/)
     if (combinacao) valores[combinacao[1]] = combinacao[2].trim()
   }
   return valores
@@ -25,26 +32,30 @@ const env = lerEnvLocal()
 export const URL_SUPABASE = env.VITE_SUPABASE_URL
 export const CHAVE_ANON = env.VITE_SUPABASE_ANON_KEY
 
-export const USUARIO_UM = {
-  email: 'e2e.um@mozii.test',
-  senha: 'senha-e2e-mozii-1',
-  nome: 'Pessoa Um',
+export interface UsuarioTeste {
+  email: string
+  senha: string
+  nome: string
 }
-export const USUARIO_DOIS = {
-  email: 'e2e.dois@mozii.test',
-  senha: 'senha-e2e-mozii-2',
-  nome: 'Pessoa Dois',
-}
+
+/** Há contas de teste no .env.local? Então é o projeto remoto. */
+export const CONTAS_DO_AMBIENTE = Boolean(env.USER_TESTE_E2E_1 && env.USER_TESTE_E2E_2)
+
+export const USUARIO_UM: UsuarioTeste = CONTAS_DO_AMBIENTE
+  ? { email: env.USER_TESTE_E2E_1, senha: env.USER_TESTE_E2E_1_SENHA, nome: 'Pessoa Um' }
+  : { email: 'e2e.um@mozii.test', senha: 'senha-e2e-mozii-1', nome: 'Pessoa Um' }
+export const USUARIO_DOIS: UsuarioTeste = CONTAS_DO_AMBIENTE
+  ? { email: env.USER_TESTE_E2E_2, senha: env.USER_TESTE_E2E_2_SENHA, nome: 'Pessoa Dois' }
+  : { email: 'e2e.dois@mozii.test', senha: 'senha-e2e-mozii-2', nome: 'Pessoa Dois' }
 /**
  * Usuário SÓ para errar código de convite: o rate-limit é por usuário, e
  * cada tentativa inválida gasta o orçamento (5/15min). Isolando as falhas
  * aqui, os usuários Um e Dois nunca são bloqueados nos outros specs.
+ * No remoto não há terceira conta: o spec que precisa dela é pulado.
  */
-export const USUARIO_TRES = {
-  email: 'e2e.tres@mozii.test',
-  senha: 'senha-e2e-mozii-3',
-  nome: 'Pessoa Três',
-}
+export const USUARIO_TRES: UsuarioTeste | null = CONTAS_DO_AMBIENTE
+  ? null
+  : { email: 'e2e.tres@mozii.test', senha: 'senha-e2e-mozii-3', nome: 'Pessoa Três' }
 
 async function chamarAuth(caminho: string, corpo: unknown): Promise<Response> {
   return fetch(`${URL_SUPABASE}/auth/v1/${caminho}`, {
@@ -55,7 +66,7 @@ async function chamarAuth(caminho: string, corpo: unknown): Promise<Response> {
 }
 
 /** Entra com o usuário; se ainda não existir, cadastra antes. Retorna o JWT. */
-export async function entrarOuCadastrar(usuario: typeof USUARIO_UM): Promise<string> {
+export async function entrarOuCadastrar(usuario: UsuarioTeste): Promise<string> {
   const entrada = await chamarAuth('token?grant_type=password', {
     email: usuario.email,
     password: usuario.senha,
@@ -63,6 +74,11 @@ export async function entrarOuCadastrar(usuario: typeof USUARIO_UM): Promise<str
   if (entrada.ok) {
     const dados = await entrada.json()
     return dados.access_token
+  }
+  if (CONTAS_DO_AMBIENTE) {
+    throw new Error(
+      `não consegui entrar com ${usuario.email} (confira USER_TESTE_E2E_* no .env.local): ${await entrada.text()}`,
+    )
   }
 
   const cadastro = await chamarAuth('signup', {
@@ -108,10 +124,21 @@ function idDoToken(token: string): string {
  * Deixa o usuário no estado inicial: logável, sem casal, sem exclusão
  * pendente e sem favoritos (que são pessoais e sobrevivem entre casais).
  */
-export async function prepararUsuario(usuario: typeof USUARIO_UM): Promise<string> {
+export async function prepararUsuario(usuario: UsuarioTeste): Promise<string> {
   const token = await entrarOuCadastrar(usuario)
   await rpc(token, 'cancelar_exclusao_conta')
   await rpc(token, 'sair_do_casal')
+
+  // Os specs procuram o casal pelos nomes ("Pessoa Um & Pessoa Dois").
+  await fetch(`${URL_SUPABASE}/rest/v1/perfis?id=eq.${idDoToken(token)}`, {
+    method: 'PATCH',
+    headers: {
+      apikey: CHAVE_ANON,
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ nome_exibicao: usuario.nome }),
+  })
 
   // Melhor esforço: a tabela pode ainda não existir nas fases iniciais.
   await fetch(`${URL_SUPABASE}/rest/v1/favoritos?perfil_id=eq.${idDoToken(token)}`, {
@@ -159,3 +186,14 @@ export async function tabelaExiste(token: string, tabela: string): Promise<boole
   })
   return resposta.ok
 }
+
+/**
+ * Navega fixando o tema: os testes nunca mudam de cara quando um tema de
+ * evento entra na janela de datas (ex.: Natal em dezembro).
+ */
+export function irPara(pagina: Page, rota: string) {
+  const separador = rota.includes('?') ? '&' : '?'
+  return pagina.goto(`${rota}${separador}tema=${TEMA_DOS_TESTES}`)
+}
+
+export const TEMA_DOS_TESTES = 'noir'

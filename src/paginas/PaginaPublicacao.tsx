@@ -54,7 +54,7 @@ export function PaginaPublicacao() {
       <main>
         <CabecalhoPagina titulo={textos.publicacao.titulo} fallback={state?.voltarPara ?? '/'} />
         <div className="mt-4 px-5">
-          <Esqueleto className="h-56 rounded-2xl" />
+          <Esqueleto className="h-56 rounded-cartao" />
         </div>
       </main>
     )
@@ -63,7 +63,7 @@ export function PaginaPublicacao() {
     return (
       <main>
         <CabecalhoPagina titulo={textos.publicacao.titulo} fallback={state?.voltarPara ?? '/'} />
-        <p className="px-5 pt-4 text-nevoa">{textos.publicacao.naoEncontrada}</p>
+        <p className="px-5 pt-4 text-texto-secundario">{textos.publicacao.naoEncontrada}</p>
       </main>
     )
   }
@@ -98,13 +98,13 @@ export function PaginaPublicacao() {
         titulo={textos.publicacao.titulo}
         fallback={state?.voltarPara ?? '/'}
         acao={
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             {dados.tipo === 'avaliacao' && !editando && (
               <button
                 type="button"
                 aria-label={textos.compartilhar.botaoAbrir}
                 onClick={() => setCompartilhando(true)}
-                className="flex h-9 w-9 items-center justify-center rounded-full text-nevoa transition-transform active:scale-90"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-vidro-borda bg-vidro text-texto transition-transform active:scale-90"
               >
                 <IconeCompartilhar size={19} aria-hidden />
               </button>
@@ -114,7 +114,7 @@ export function PaginaPublicacao() {
                 type="button"
                 aria-label={textos.publicacao.excluir}
                 onClick={() => setConfirmandoExclusao(true)}
-                className="flex h-9 w-9 items-center justify-center rounded-full text-erro transition-transform active:scale-90"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-vidro-borda bg-vidro text-perigo-texto transition-transform active:scale-90"
               >
                 <IconeLixeira size={19} aria-hidden />
               </button>
@@ -123,10 +123,10 @@ export function PaginaPublicacao() {
         }
       />
 
-      <div className="mt-2 px-5">
+      <div className="mt-4 px-5">
         {editando ? (
-          <div className="rounded-2xl border border-linha bg-cartao p-4">
-            <p className="text-sm text-nevoa">{textos.novo.notaRotulo}</p>
+          <div className="rounded-cartao border border-borda bg-superficie p-4">
+            <p className="text-sm text-texto-secundario">{textos.novo.notaRotulo}</p>
             <EstrelasNota valor={notaEditada} aoMudar={setNotaEditada} />
             <AreaTexto
               rows={3}
@@ -164,18 +164,16 @@ export function PaginaPublicacao() {
           <button
             type="button"
             onClick={comecarEdicao}
-            className="mt-3 text-sm text-nevoa underline"
+            className="mt-3 text-sm text-texto-secundario underline decoration-texto/30 underline-offset-4"
           >
             {textos.publicacao.editar}
           </button>
         )}
 
         {!editando && (
-          <section className="mt-6">
-            <h2 className="text-xs font-medium tracking-wide text-cinza uppercase">
-              {textos.publicacao.comentarios}
-            </h2>
-            <div className="mt-3">
+          <section className="mt-6 border-t border-borda pt-6">
+            <h2 className="rotulo-secao">{textos.publicacao.comentarios}</h2>
+            <div className="mt-4">
               <Comentarios
                 publicacaoId={dados.id}
                 membros={casal.data?.membros ?? []}

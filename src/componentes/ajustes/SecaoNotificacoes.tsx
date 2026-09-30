@@ -19,6 +19,7 @@ const TIPOS: (keyof PreferenciasNotificacao)[] = [
   'memorias',
   'listas',
   'casal',
+  'novidades',
 ]
 
 /**
@@ -45,15 +46,15 @@ export function SecaoNotificacoes() {
           : null
 
   return (
-    <section className="mt-4 rounded-2xl border border-linha bg-cartao p-5 shadow-cartao">
+    <section className="cartao mt-4 p-5">
       <div className="flex items-center gap-2.5">
         <IconeSino
           size={18}
           weight={ativas ? 'fill' : 'regular'}
-          className="text-rosa-suave"
+          className="text-afeto-claro"
           aria-hidden
         />
-        <h2 className="flex-1 font-medium text-neve">{textos.notificacoes.titulo}</h2>
+        <h2 className="flex-1 font-medium text-texto">{textos.notificacoes.titulo}</h2>
         {!indisponivelPorque && (
           <Alternador
             ligado={ativas}
@@ -63,7 +64,7 @@ export function SecaoNotificacoes() {
           />
         )}
       </div>
-      <p className="mt-1.5 text-xs text-cinza">
+      <p className="mt-1.5 text-xs text-texto-discreto">
         {indisponivelPorque ?? textos.notificacoes.descricao}
       </p>
 
@@ -72,9 +73,11 @@ export function SecaoNotificacoes() {
           {TIPOS.map((tipo) => (
             <li
               key={tipo}
-              className="flex items-center justify-between border-b border-linha py-2.5 last:border-b-0"
+              className="flex items-center justify-between border-b border-borda py-2.5 last:border-b-0"
             >
-              <span className="text-sm text-nevoa">{textos.notificacoes.tipos[tipo]}</span>
+              <span className="text-sm text-texto-secundario">
+                {textos.notificacoes.tipos[tipo]}
+              </span>
               <Alternador
                 ligado={preferencias.data?.[tipo] ?? true}
                 rotulo={textos.notificacoes.tipos[tipo]}

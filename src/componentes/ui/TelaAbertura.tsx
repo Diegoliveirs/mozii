@@ -1,13 +1,10 @@
-import { IconeCoracao } from './icones'
+import { useTema } from '../../temas/contextoTema'
 
 /**
- * Splash mínima exibida enquanto as guardas resolvem sessão e casal —
- * o coração pulsando substitui o flash de tela vazia no boot.
+ * Splash exibida enquanto as guardas resolvem sessão e casal — substitui
+ * o flash de tela vazia no boot. Quem desenha é o tema ativo.
  */
 export function TelaAbertura() {
-  return (
-    <div className="flex min-h-dvh items-center justify-center bg-noite">
-      <IconeCoracao size={44} weight="fill" className="animate-pulse text-rosa" aria-hidden />
-    </div>
-  )
+  const { TelaAbertura: AberturaDoTema } = useTema().componentes
+  return <AberturaDoTema />
 }

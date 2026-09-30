@@ -1,5 +1,6 @@
 import { urlPoster } from '../api/tmdb'
-import { CARTAO, TEMAS, quebrarLinhas, type NomeTema } from './layoutCartao'
+import { CARTAO, ESTILOS_CARTAO, quebrarLinhas, type NomeEstiloCartao } from './layoutCartao'
+import { textos } from './textos'
 
 /**
  * Desenha o cartão de compartilhar DIRETO num canvas 2D e devolve o PNG.
@@ -18,11 +19,16 @@ export interface DadosCartao {
   nota: number
   corpo: string | null
   nomes: string[]
-  tema: NomeTema
+  estilo: NomeEstiloCartao
 }
 
 export async function desenharCartao(dados: DadosCartao): Promise<Blob> {
-  const tema = TEMAS[dados.tema]
+  const estilo = ESTILOS_CARTAO[dados.estilo]
+  // O canvas não espera fonte: garante a Fraunces antes de desenhar.
+  await Promise.all([
+    document.fonts.load('italic 46px Fraunces'),
+    document.fonts.load('48px Fraunces'),
+  ])
   const tela = document.createElement('canvas')
   tela.width = CARTAO.largura
   tela.height = CARTAO.altura
@@ -30,8 +36,8 @@ export async function desenharCartao(dados: DadosCartao): Promise<Blob> {
 
   // Fundo em degradê vertical
   const fundo = ctx.createLinearGradient(0, 0, 0, CARTAO.altura)
-  fundo.addColorStop(0, tema.fundoTopo)
-  fundo.addColorStop(1, tema.fundoBase)
+  fundo.addColorStop(0, estilo.fundoTopo)
+  fundo.addColorStop(1, estilo.fundoBase)
   ctx.fillStyle = fundo
   ctx.fillRect(0, 0, CARTAO.largura, CARTAO.altura)
 
@@ -55,7 +61,7 @@ export async function desenharCartao(dados: DadosCartao): Promise<Blob> {
 
   // Título e ano
   ctx.textAlign = 'center'
-  ctx.fillStyle = tema.texto
+  ctx.fillStyle = estilo.texto
   ctx.font = '600 64px system-ui, sans-serif'
   const centro = CARTAO.largura / 2
   for (const linha of quebrarLinhas(dados.tituloFilme, 24, 2)) {
@@ -63,20 +69,20 @@ export async function desenharCartao(dados: DadosCartao): Promise<Blob> {
     baseY += 76
   }
   if (dados.ano) {
-    ctx.fillStyle = tema.textoSuave
+    ctx.fillStyle = estilo.textoSuave
     ctx.font = '44px system-ui, sans-serif'
     ctx.fillText(String(dados.ano), centro, baseY)
     baseY += 72
   }
 
   // Estrelas (com meia estrela via clip)
-  desenharEstrelas(ctx, dados.nota, baseY, tema.destaque)
+  desenharEstrelas(ctx, dados.nota, baseY, estilo.destaque)
   baseY += CARTAO.estrela.tamanho + 88
 
   // Texto da avaliação
   if (dados.corpo) {
-    ctx.fillStyle = tema.texto
-    ctx.font = 'italic 46px Georgia, serif'
+    ctx.fillStyle = estilo.texto
+    ctx.font = 'italic 46px Fraunces, Georgia, serif'
     for (const linha of quebrarLinhas(`“${dados.corpo}”`, 38, 6)) {
       ctx.fillText(linha, centro, baseY)
       baseY += 64
@@ -84,12 +90,12 @@ export async function desenharCartao(dados: DadosCartao): Promise<Blob> {
   }
 
   // Assinatura do casal + marca do app
-  ctx.fillStyle = tema.destaque
-  ctx.font = '48px Georgia, serif'
+  ctx.fillStyle = estilo.destaque
+  ctx.font = '48px Fraunces, Georgia, serif'
   ctx.fillText(dados.nomes.join(' ♥ '), centro, CARTAO.altura - 180)
-  ctx.fillStyle = tema.textoSuave
+  ctx.fillStyle = estilo.textoSuave
   ctx.font = '36px system-ui, sans-serif'
-  ctx.fillText('mozii 💜', centro, CARTAO.altura - 100)
+  ctx.fillText(textos.app.assinatura, centro, CARTAO.altura - 100)
 
   const blob = await new Promise<Blob | null>((resolver) => tela.toBlob(resolver, 'image/png'))
   if (!blob || blob.size < 25_000) {

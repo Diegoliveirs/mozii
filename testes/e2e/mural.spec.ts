@@ -1,5 +1,13 @@
 import { expect, test, type Page } from '@playwright/test'
-import { formarCasal, prepararUsuario, tabelaExiste, USUARIO_DOIS, USUARIO_UM } from './apoio'
+import {
+  colunaExiste,
+  formarCasal,
+  prepararUsuario,
+  tabelaExiste,
+  USUARIO_DOIS,
+  USUARIO_UM,
+  irPara,
+} from './apoio'
 
 /**
  * Fase 3 de ponta a ponta: publicar, curtir (like de coração), comentar
@@ -10,16 +18,25 @@ import { formarCasal, prepararUsuario, tabelaExiste, USUARIO_DOIS, USUARIO_UM } 
  */
 
 let migracaoAplicada = false
+let variasFotos = false
+
+// PNG de 1×1 pixel para os uploads de teste.
+const PNG_MINUSCULO = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+  'base64',
+)
+const foto = (nome: string) => ({ name: nome, mimeType: 'image/png', buffer: PNG_MINUSCULO })
 
 test.beforeAll(async () => {
   const tokenUm = await prepararUsuario(USUARIO_UM)
   const tokenDois = await prepararUsuario(USUARIO_DOIS)
   migracaoAplicada = await tabelaExiste(tokenUm, 'publicacoes')
+  variasFotos = await colunaExiste(tokenUm, 'publicacoes', 'caminhos_fotos')
   if (migracaoAplicada) await formarCasal(tokenUm, tokenDois)
 })
 
 async function entrar(pagina: Page, usuario: typeof USUARIO_UM) {
-  await pagina.goto('/entrar')
+  await irPara(pagina, '/entrar')
   await pagina.getByLabel('E-mail').fill(usuario.email)
   await pagina.getByLabel('Senha', { exact: true }).fill(usuario.senha)
   await pagina.getByRole('button', { name: 'Entrar', exact: true }).click()
@@ -110,7 +127,7 @@ test('avaliar na página do filme mostra as duas avaliações e bloqueia repeti�
   await entrar(paginaUm, USUARIO_UM)
 
   // Pessoa Um avalia a partir do detalhe de Matrix (TMDB 603).
-  await paginaUm.goto('/filme/603')
+  await irPara(paginaUm, '/filme/603')
   await expect(paginaUm.getByRole('heading', { name: 'Matrix' })).toBeVisible({ timeout: 15_000 })
   await paginaUm.getByRole('button', { name: 'Avaliar filme' }).click()
   await paginaUm.getByRole('button', { name: '4 estrelas' }).click()
@@ -135,7 +152,7 @@ test('avaliar na página do filme mostra as duas avaliações e bloqueia repeti�
   const contextoDois = await browser.newContext()
   const paginaDois = await contextoDois.newPage()
   await entrar(paginaDois, USUARIO_DOIS)
-  await paginaDois.goto('/filme/603')
+  await irPara(paginaDois, '/filme/603')
   await expect(paginaDois.getByRole('heading', { name: 'Matrix' })).toBeVisible({ timeout: 15_000 })
   await paginaDois.getByRole('button', { name: 'Avaliar filme' }).click()
   await paginaDois.getByRole('button', { name: '3.5 estrelas' }).click()
@@ -149,4 +166,23 @@ test('avaliar na página do filme mostra as duas avaliações e bloqueia repeti�
 
   await contextoUm.close()
   await contextoDois.close()
+})
+
+test('publicação com várias fotos, escolhidas em duas vezes', async ({ page }) => {
+  test.skip(!variasFotos, 'aplicar 018_publicacao_com_varias_fotos.sql antes (docs/03)')
+
+  await entrar(page, USUARIO_UM)
+  await page.getByRole('link', { name: 'Nova publicação' }).click()
+  await page.getByPlaceholder('Escreve algo para vocês…').fill('Três fotos da maratona')
+  // Cada escolha soma às anteriores
+  const campo = page.locator('input[type=file]')
+  await campo.setInputFiles([foto('uma.png'), foto('duas.png')])
+  await campo.setInputFiles(foto('tres.png'))
+  await expect(page.getByRole('button', { name: 'Remover foto' })).toHaveCount(3)
+  await page.getByRole('button', { name: 'Publicar' }).click()
+
+  const publicacao = page.locator('article', { hasText: 'Três fotos da maratona' })
+  await expect(publicacao.locator('img')).toHaveCount(3)
+  await publicacao.locator('img').first().click()
+  await expect(page.getByRole('dialog', { name: 'Foto ampliada' }).getByText('1 / 3')).toBeVisible()
 })

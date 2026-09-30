@@ -30,33 +30,26 @@ export function SessoesPassadas() {
 
   return (
     <section className="mt-8">
-      <h2 className="text-xs font-medium tracking-wide text-cinza uppercase">
-        {textos.sessao.passadasTitulo}
-      </h2>
-      <div className="mt-2 space-y-2">
+      <h2 className="rotulo-secao">{textos.sessao.passadasTitulo}</h2>
+      <div className="mt-2 divide-y divide-borda">
         {pendentes.map((sessao) => (
           <SessaoPendente key={sessao.id} sessao={sessao} />
         ))}
         {concluidas.data?.map((sessao) => (
-          <div key={sessao.id} className="flex items-center gap-3 px-1 py-1.5 opacity-55">
+          <div key={sessao.id} className="flex items-center gap-3.5 py-3 opacity-55">
             <Poster
               caminho={sessao.filme.caminhoPoster}
               titulo={sessao.filme.titulo}
               largura={185}
-              className="w-8"
+              className="w-10"
             />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm text-neve">{sessao.filme.titulo}</p>
-              <p className="text-xs text-cinza">
+              <p className="truncate titulo text-base text-texto">{sessao.filme.titulo}</p>
+              <p className="text-xs text-texto-discreto">
                 {formatarQuando(sessao.agendadaPara)} · {textos.sessao.concluida}
               </p>
             </div>
-            <IconeConfirmado
-              size={18}
-              weight="fill"
-              className="shrink-0 text-sucesso"
-              aria-hidden
-            />
+            <IconeConfirmado size={18} weight="fill" className="shrink-0 text-metal" aria-hidden />
           </div>
         ))}
       </div>
@@ -72,23 +65,23 @@ export function SessaoPendente({ sessao }: { sessao: SessaoCinema }) {
   const [confirmandoCancelamento, setConfirmandoCancelamento] = useState(false)
 
   return (
-    <div className="rounded-2xl border border-linha bg-cartao px-3 py-2.5">
-      <div className="flex items-center gap-3">
+    <div className="py-3">
+      <div className="flex items-center gap-3.5">
         <Poster
           caminho={sessao.filme.caminhoPoster}
           titulo={sessao.filme.titulo}
           largura={185}
-          className="w-8"
+          className="w-10"
         />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-neve">{sessao.filme.titulo}</p>
-          <p className="text-xs text-cinza">{formatarQuando(sessao.agendadaPara)}</p>
+          <p className="truncate titulo text-base text-texto">{sessao.filme.titulo}</p>
+          <p className="text-xs text-texto-discreto">{formatarQuando(sessao.agendadaPara)}</p>
         </div>
         <button
           type="button"
           aria-expanded={aberta}
           onClick={() => setAberta((estava) => !estava)}
-          className="shrink-0 rounded-full bg-rosa/25 px-3 py-1.5 text-xs font-medium text-rosa-suave"
+          className="shrink-0 rounded-full border border-texto/30 px-3.5 py-2 text-xs font-medium text-texto"
         >
           {textos.sessao.comoFoiCurto}
         </button>
@@ -96,7 +89,7 @@ export function SessaoPendente({ sessao }: { sessao: SessaoCinema }) {
 
       {aberta && (
         <div className="entrada-folha mt-3 space-y-2">
-          <p className="text-sm text-nevoa">{textos.sessao.comoFoi}</p>
+          <p className="text-sm text-texto-secundario">{textos.sessao.comoFoi}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Botao
               onClick={() =>
@@ -117,7 +110,7 @@ export function SessaoPendente({ sessao }: { sessao: SessaoCinema }) {
             <button
               type="button"
               onClick={() => setConfirmandoCancelamento(true)}
-              className="px-1 text-xs text-cinza underline"
+              className="px-1 text-xs text-texto-discreto underline"
             >
               {textos.sessao.cancelar}
             </button>

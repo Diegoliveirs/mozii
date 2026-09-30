@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { textos } from '../../lib/textos'
 import { IconeAvancar, IconeFechar, IconeVoltar } from './icones'
 
 /**
@@ -34,10 +35,10 @@ export function Lightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-abismo/95"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-fundo-profundo/95"
       role="dialog"
       aria-modal="true"
-      aria-label="Foto ampliada"
+      aria-label={textos.lightbox.rotulo}
       onClick={aoFechar}
     >
       <img
@@ -51,27 +52,27 @@ export function Lightbox({
         <>
           <button
             type="button"
-            aria-label="Foto anterior"
+            aria-label={textos.lightbox.anterior}
             onClick={(evento) => {
               evento.stopPropagation()
               anterior()
             }}
-            className="absolute left-2 flex h-10 w-10 items-center justify-center rounded-full bg-cartao/80 text-neve"
+            className="absolute left-2 flex h-10 w-10 items-center justify-center rounded-full bg-superficie/80 text-texto"
           >
             <IconeVoltar size={18} aria-hidden />
           </button>
           <button
             type="button"
-            aria-label="Próxima foto"
+            aria-label={textos.lightbox.proxima}
             onClick={(evento) => {
               evento.stopPropagation()
               proxima()
             }}
-            className="absolute right-2 flex h-10 w-10 items-center justify-center rounded-full bg-cartao/80 text-neve"
+            className="absolute right-2 flex h-10 w-10 items-center justify-center rounded-full bg-superficie/80 text-texto"
           >
             <IconeAvancar size={18} aria-hidden />
           </button>
-          <span className="absolute bottom-6 rounded-full bg-cartao/80 px-3 py-1 text-sm text-nevoa">
+          <span className="absolute bottom-6 rounded-full bg-superficie/80 px-3 py-1 text-sm text-texto-secundario">
             {indice + 1} / {urls.length}
           </span>
         </>
@@ -80,9 +81,9 @@ export function Lightbox({
       {/* Abaixo do notch do iPhone, sempre */}
       <button
         type="button"
-        aria-label="Fechar"
+        aria-label={textos.comuns.fechar}
         onClick={aoFechar}
-        className="absolute top-[max(1rem,env(safe-area-inset-top))] right-4 flex h-10 w-10 items-center justify-center rounded-full bg-cartao/80 text-neve"
+        className="absolute top-[max(1rem,env(safe-area-inset-top))] right-4 flex h-10 w-10 items-center justify-center rounded-full bg-superficie/80 text-texto"
       >
         <IconeFechar size={18} aria-hidden />
       </button>

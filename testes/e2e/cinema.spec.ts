@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { criarCasalPara, prepararUsuario, tabelaExiste, USUARIO_UM } from './apoio'
+import { criarCasalPara, prepararUsuario, tabelaExiste, USUARIO_UM, irPara } from './apoio'
 
 /**
  * Fase 2 de ponta a ponta: busca real no TMDB, lista do casal, marcar
@@ -21,7 +21,7 @@ test('buscar filme, montar lista, marcar assistido e sortear', async ({ page }) 
   test.skip(!migracoesAplicadas, 'aplicar 002_filmes.sql e 003_listas.sql antes (docs/03)')
 
   // Entrar
-  await page.goto('/entrar')
+  await irPara(page, '/entrar')
   await page.getByLabel('E-mail').fill(USUARIO_UM.email)
   await page.getByLabel('Senha', { exact: true }).fill(USUARIO_UM.senha)
   await page.getByRole('button', { name: 'Entrar', exact: true }).click()

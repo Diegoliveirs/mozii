@@ -44,12 +44,12 @@ export function ProvedorAvisos({ children }: { children: ReactNode }) {
         {avisos.map((aviso) => (
           <div
             key={aviso.id}
-            className={`entrada-aviso flex w-full max-w-sm items-center gap-2.5 rounded-xl border bg-cartao px-4 py-3 text-sm text-neve shadow-cartao ${
-              aviso.tipo === 'erro' ? 'border-erro/40' : 'border-linha'
+            className={`entrada-aviso flex w-full max-w-sm items-center gap-2.5 rounded-xl border bg-superficie px-4 py-3 text-sm text-texto shadow-cartao ${
+              aviso.tipo === 'erro' ? 'border-perigo/40' : 'border-borda'
             }`}
           >
             {aviso.tipo === 'erro' ? (
-              <IconeAlerta size={18} weight="fill" className="shrink-0 text-erro" />
+              <IconeAlerta size={18} weight="fill" className="shrink-0 text-perigo-texto" />
             ) : (
               <IconeConfirmado size={18} weight="fill" className="shrink-0 text-sucesso" />
             )}

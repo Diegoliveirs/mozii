@@ -6,6 +6,9 @@
  * as inscrições do destinatário e envia via Web Push (VAPID). Endpoints
  * mortos (404/410) são apagados na hora.
  *
+ * O tipo `novidades` vem do GitHub (avisar-novidades.yml), depois do deploy
+ * de produção: vai para TODOS os inscritos, menos quem desligou (019).
+ *
  * Deploy e secrets: ver docs/03-roteiros-sql.md § 008 (o Diego executa).
  */
 import webpush from 'npm:web-push@3.6.7'
@@ -23,6 +26,19 @@ interface CorpoDoGatilho {
     tituloFilme?: string
     nomeLista?: string
   }
+}
+
+/** Versão nova no ar: a nota mais nova de `textos.novidades.notas`. */
+interface CorpoDasNovidades {
+  tipo: 'novidades'
+  versao: string
+  titulo: string
+}
+
+interface Inscricao {
+  endpoint: string
+  p256dh: string
+  auth: string
 }
 
 interface Mensagem {
@@ -83,13 +99,45 @@ function montarMensagem({ tipo, nomeAutor, dados }: CorpoDoGatilho): Mensagem {
   }
 }
 
+/** Tocar abre o app, que acha a versão nova: "Atualizar" e depois a nota. */
+function mensagemDeNovidades({ versao, titulo }: CorpoDasNovidades): Mensagem {
+  return {
+    titulo: `Mozii ${versao} chegou ✨`,
+    corpo: `${titulo}. Toca para atualizar e ver as novidades.`,
+    url: '/',
+  }
+}
+
+type Supabase = ReturnType<typeof createClient>
+
+async function inscricoesDe(supabase: Supabase, perfilId: string): Promise<Inscricao[]> {
+  const { data, error } = await supabase
+    .from('inscricoes_push')
+    .select('endpoint, p256dh, auth')
+    .eq('perfil_id', perfilId)
+  if (error) throw error
+  return data ?? []
+}
+
+/** Todos os aparelhos inscritos, menos os de quem desligou as novidades. */
+async function inscricoesDasNovidades(supabase: Supabase): Promise<Inscricao[]> {
+  const [inscricoes, desligados] = await Promise.all([
+    supabase.from('inscricoes_push').select('perfil_id, endpoint, p256dh, auth'),
+    supabase.from('preferencias_notificacao').select('perfil_id').eq('novidades', false),
+  ])
+  if (inscricoes.error) throw inscricoes.error
+  if (desligados.error) throw desligados.error
+  const quemDesligou = new Set((desligados.data ?? []).map((linha) => linha.perfil_id))
+  return (inscricoes.data ?? []).filter((inscricao) => !quemDesligou.has(inscricao.perfil_id))
+}
+
 Deno.serve(async (requisicao) => {
   if (requisicao.headers.get('x-segredo') !== Deno.env.get('SEGREDO_GATILHO')) {
     return new Response('não autorizado', { status: 401 })
   }
 
-  const corpo = (await requisicao.json()) as CorpoDoGatilho
-  const mensagem = montarMensagem(corpo)
+  const corpo = (await requisicao.json()) as CorpoDoGatilho | CorpoDasNovidades
+  const mensagem = corpo.tipo === 'novidades' ? mensagemDeNovidades(corpo) : montarMensagem(corpo)
 
   webpush.setVapidDetails(
     'mailto:tidiegoliveira@gmail.com',
@@ -103,15 +151,19 @@ Deno.serve(async (requisicao) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
   )
 
-  const { data: inscricoes, error } = await supabase
-    .from('inscricoes_push')
-    .select('endpoint, p256dh, auth')
-    .eq('perfil_id', corpo.destinatario)
-  if (error) return new Response(error.message, { status: 500 })
+  let inscricoes: Inscricao[]
+  try {
+    inscricoes =
+      corpo.tipo === 'novidades'
+        ? await inscricoesDasNovidades(supabase)
+        : await inscricoesDe(supabase, corpo.destinatario)
+  } catch (erro) {
+    return new Response((erro as Error).message, { status: 500 })
+  }
 
   let enviadas = 0
   let removidas = 0
-  for (const inscricao of inscricoes ?? []) {
+  for (const inscricao of inscricoes) {
     try {
       await webpush.sendNotification(
         { endpoint: inscricao.endpoint, keys: { p256dh: inscricao.p256dh, auth: inscricao.auth } },

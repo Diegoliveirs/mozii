@@ -2,7 +2,8 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Botao } from '../componentes/ui/Botao'
 import { Campo } from '../componentes/ui/Campo'
-import { IconeCoracao } from '../componentes/ui/icones'
+import { ColagemPosteres } from '../componentes/ui/ColagemPosteres'
+import { IconeAvancar } from '../componentes/ui/icones'
 import { useEntrar } from '../hooks/useAutenticacao'
 import { textos } from '../lib/textos'
 
@@ -32,50 +33,45 @@ export function PaginaEntrar() {
   }
 
   return (
-    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
-      <div className="text-center">
-        <IconeCoracao size={34} weight="fill" className="mx-auto text-rosa" aria-hidden />
-        <p className="mt-1 font-voz text-2xl font-semibold text-neve">{textos.app.nome}</p>
-        <p className="text-sm text-cinza">{textos.app.slogan}</p>
-      </div>
+    <main className="entrada-pagina pt-seguro-6 mx-auto flex min-h-dvh max-w-md flex-col overflow-hidden px-6 pb-8">
+      <ColagemPosteres />
 
-      <h1 className="mt-9 font-voz text-2xl font-semibold tracking-tight text-neve">
-        {textos.entrar.titulo}
-      </h1>
+      <p className="titulo text-6xl leading-none tracking-tight text-texto">{textos.app.nome}</p>
 
-      <form onSubmit={aoEnviar} className="mt-5 flex flex-col gap-4">
-        <label className="flex flex-col gap-1.5 text-sm text-nevoa">
-          {textos.entrar.email}
-          <Campo
-            type="email"
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
+      <h1 className="mt-8 titulo text-2xl text-texto">{textos.entrar.titulo}</h1>
 
-        <label className="flex flex-col gap-1.5 text-sm text-nevoa">
-          {textos.entrar.senha}
-          <Campo
-            type="password"
-            required
-            autoComplete="current-password"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-          />
-        </label>
+      <form onSubmit={aoEnviar} className="mt-4 flex flex-col gap-2.5">
+        <Campo
+          rotulo={textos.entrar.email}
+          type="email"
+          required
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Campo
+          rotulo={textos.entrar.senha}
+          type="password"
+          required
+          autoComplete="current-password"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+        />
 
-        {erro && <p className="text-sm text-erro">{erro}</p>}
+        {erro && <p className="text-sm text-perigo-texto">{erro}</p>}
 
-        <Botao type="submit" carregando={entrar.isPending} className="mt-2">
+        <Botao type="submit" carregando={entrar.isPending} grande className="mt-3">
           {textos.entrar.botao}
+          <IconeAvancar size={16} weight="bold" aria-hidden />
         </Botao>
       </form>
 
-      <p className="mt-6 text-center text-sm text-cinza">
+      <p className="mt-auto pt-8 text-center text-sm text-texto-discreto">
         {textos.entrar.semConta}{' '}
-        <Link to="/cadastro" className="text-rosa-suave underline">
+        <Link
+          to="/cadastro"
+          className="text-texto underline decoration-texto/30 underline-offset-4"
+        >
           {textos.entrar.linkCadastro}
         </Link>
       </p>

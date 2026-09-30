@@ -58,13 +58,15 @@ export function ModalAgendarSessao({
             largura={185}
             className="w-12"
           />
-          <p className="font-medium text-neve">
+          <p className="font-medium text-texto">
             {filme.titulo}
-            {filme.anoLancamento && <span className="text-cinza"> ({filme.anoLancamento})</span>}
+            {filme.anoLancamento && (
+              <span className="text-texto-discreto"> ({filme.anoLancamento})</span>
+            )}
           </p>
         </div>
 
-        <label className="mt-4 flex flex-col gap-1.5 text-sm text-nevoa">
+        <label className="mt-4 flex flex-col gap-1.5 text-sm text-texto-secundario">
           {textos.sessao.quandoRotulo}
           <Campo
             type="datetime-local"
@@ -83,7 +85,7 @@ export function ModalAgendarSessao({
           className="mt-3"
         />
 
-        {erro && <p className="mt-3 text-sm text-erro">{erro}</p>}
+        {erro && <p className="mt-3 text-sm text-perigo-texto">{erro}</p>}
 
         <Botao
           type="submit"

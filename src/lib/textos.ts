@@ -1,3 +1,5 @@
+import type { NotaDeAtualizacao } from '../dominio/tipos'
+
 /**
  * Todos os textos do app vivem aqui, em português do Brasil.
  * Regra: nenhum componente escreve texto de interface direto no JSX —
@@ -6,7 +8,7 @@
 export const textos = {
   app: {
     nome: 'Mozii',
-    slogan: 'vocês, em um só lugar',
+    assinatura: 'mozii 💜',
   },
 
   comuns: {
@@ -14,6 +16,8 @@ export const textos = {
     cancelar: 'Cancelar',
     confirmar: 'Confirmar',
     carregando: 'Carregando…',
+    voltar: 'Voltar',
+    fechar: 'Fechar',
     erroInesperado: 'Algo deu errado. Tenta de novo?',
   },
 
@@ -30,7 +34,9 @@ export const textos = {
   },
 
   cadastro: {
-    titulo: 'Criar sua conta',
+    tituloInicio: 'Criar sua',
+    tituloDestaque: 'conta',
+    subtitulo: 'Um espaço só de vocês dois — filmes, memórias e sessões.',
     nome: 'Seu nome',
     nomeDica: 'Como seu par te chama?',
     email: 'E-mail',
@@ -43,6 +49,7 @@ export const textos = {
   },
 
   confirmarEmail: {
+    antetitulo: 'Quase lá',
     titulo: 'Confirma seu e-mail 💌',
     explicacaoAntes: 'Enviamos um link para',
     explicacaoDepois: 'Toca nele para ativar sua conta — depois é só entrar.',
@@ -56,7 +63,9 @@ export const textos = {
   },
 
   parear: {
-    titulo: 'Falta uma pessoa',
+    antetitulo: 'Último passo',
+    tituloInicio: 'Falta',
+    tituloDestaque: 'uma pessoa',
     subtitulo: 'O Mozii é feito para vocês dois. Crie o espaço ou entre no do seu par.',
     criarTitulo: 'Começar o nosso espaço',
     criarBotao: 'Criar espaço do casal',
@@ -74,7 +83,8 @@ export const textos = {
 
   mural: {
     titulo: 'Mural',
-    juntos: (nomes: string[]) => nomes.join(' ♥ '),
+    saudacaoDoDia: (hora: number) =>
+      hora >= 5 && hora < 12 ? 'Bom dia,' : hora >= 12 && hora < 18 ? 'Boa tarde,' : 'Boa noite,',
     esperandoPar: 'Seu par ainda não entrou — o código de convite está nos Ajustes.',
     vazio: 'O Mural de vocês começa aqui 💜',
     vazioDica: 'Publiquem a primeira memória de cinema.',
@@ -85,7 +95,8 @@ export const textos = {
   novo: {
     titulo: 'Nova publicação',
     dicaTexto: 'Escreve algo para vocês…',
-    foto: 'Foto',
+    foto: 'Fotos',
+    maisFotos: 'Mais fotos',
     removerFoto: 'Remover foto',
     avaliarFilme: 'Avaliar um filme',
     trocarFilme: 'Trocar filme',
@@ -159,11 +170,22 @@ export const textos = {
   compartilhar: {
     titulo: 'Compartilhar nos Stories',
     botaoAbrir: 'Compartilhar',
-    tema: 'Tema',
+    estilo: 'Estilo',
+    estilos: {
+      meianoite: 'Meia-noite',
+      vinho: 'Vinho',
+      oceano: 'Oceano',
+    },
     compartilhar: 'Compartilhar',
     baixar: 'Baixar imagem',
     gerando: 'Gerando o cartão…',
     erro: 'Não consegui gerar a imagem. Tenta de novo?',
+  },
+
+  lightbox: {
+    rotulo: 'Foto ampliada',
+    anterior: 'Foto anterior',
+    proxima: 'Próxima foto',
   },
 
   reacoes: {
@@ -296,7 +318,8 @@ export const textos = {
 
   notificacoes: {
     titulo: 'Notificações',
-    descricao: 'Avisos quando seu par mexer no espaço de vocês.',
+    descricao:
+      'Avisos quando seu par mexer no espaço de vocês — e quando o Mozii ganhar novidades.',
     ativadas: 'Notificações ativadas 💜',
     desativadas: 'Notificações desativadas.',
     tipos: {
@@ -306,6 +329,7 @@ export const textos = {
       memorias: 'Memórias',
       listas: 'Filmes na lista',
       casal: 'Casal',
+      novidades: 'Novidades do app',
     },
     precisaInstalarIos: 'Instale o Mozii na tela inicial para ativar as notificações.',
     indisponivel: 'Este navegador não suporta notificações.',
@@ -328,6 +352,54 @@ export const textos = {
   atualizacao: {
     disponivel: 'Nova versão do Mozii disponível!',
     atualizar: 'Atualizar',
+  },
+
+  // Notas de atualização: a cada merge, uma entrada NOVA no TOPO de `notas`
+  // (versão maior, até ~5 itens por seção, em linguagem de gente).
+  novidades: {
+    titulo: 'Novidades',
+    rotuloNota: 'Nota de atualização',
+    rotuloVersao: 'versão',
+    novidades: 'Novidades',
+    correcoes: 'Correções',
+    avisos: 'Avisos',
+    fechar: 'Bora ver',
+    abrirAjustes: 'Novidades do app',
+    notas: [
+      {
+        versao: '2.1',
+        data: '2026-09-30',
+        tituloInicio: 'O Mozii ficou',
+        tituloDestaque: 'Noir',
+        novidades: [
+          'Visual novo: quase preto, marfim e champanhe, com Fraunces nos títulos.',
+          'Barra de navegação flutuante de vidro.',
+          'Telas redesenhadas: saudação do dia no Mural, ingresso da sessão com a data grande, listas em carrossel e o filme com o título sobre o fundo.',
+          'Perfil com o seletor do casal e os números lado a lado.',
+          'Publicações com quantas fotos vocês quiserem.',
+          'Aviso no celular quando sair versão nova — dá para desligar em Ajustes › Notificações.',
+          'Esta aba de Novidades, nos Ajustes.',
+        ],
+        correcoes: [
+          'O topo das telas não fica mais colado no notch do iPhone.',
+          'Os campos de texto voltaram a respeitar o tamanho de letra.',
+          'Dá para avaliar de novo um filme depois de trocar de casal.',
+          'As janelas do app fecham com Esc.',
+          'As atividades do Mural ("marcou como assistido") ficaram compactas, sem espaço sobrando.',
+        ],
+        avisos: ['Para ver o ícone novo na tela de início, remova o Mozii e adicione de novo.'],
+      },
+    ] as const satisfies readonly NotaDeAtualizacao[],
+  },
+
+  // Microcopy que varia por tema (contrato em src/temas/contrato.ts).
+  temas: {
+    classico: {
+      saudacao: (nomes: string[]) => nomes.join(' ♥ '),
+    },
+    noir: {
+      saudacao: (nomes: string[]) => nomes.join(' & '),
+    },
   },
 
   configuracao: {

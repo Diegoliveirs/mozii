@@ -6,6 +6,7 @@ import type { SessaoCinema } from '../../dominio/tipos'
 import { useSessoesAgendadas } from '../../hooks/useSessoes'
 import { contagemRegressiva } from '../../lib/datas'
 import { textos } from '../../lib/textos'
+import { EncaixeAdereco } from '../../temas/EncaixeAdereco'
 import { IconeSessao } from '../ui/icones'
 import { AcoesSessaoAgendada } from './AcoesSessaoAgendada'
 
@@ -35,57 +36,60 @@ function Ingresso({ sessao }: { sessao: SessaoCinema }) {
   const restante = contagemRegressiva(sessao.agendadaPara)
 
   return (
-    <section className="mt-4">
-      <p className="flex items-center gap-1.5 text-xs font-medium tracking-wide text-rosa-suave uppercase">
+    <section className="mt-8">
+      <p className="flex items-center gap-1.5 rotulo-secao">
         <IconeSessao size={14} aria-hidden />
         {textos.sessao.cartaoTitulo}
       </p>
 
-      <div className="relative mt-2 flex overflow-hidden rounded-2xl border border-rosa/40 bg-cartao shadow-cartao">
+      <div className="relative mt-3 flex overflow-hidden ingresso">
+        <EncaixeAdereco nome="ingresso-canto" />
         {/* Canhoto do ingresso */}
-        <div className="w-[88px] shrink-0 border-r-2 border-dashed border-linha-forte px-2 py-3 text-center">
-          <p className="text-[11px] tracking-widest text-cinza uppercase">
+        <div className="flex w-[100px] shrink-0 flex-col items-center justify-center border-r-2 border-dashed border-borda-forte px-2 py-4 text-center">
+          <p className="text-[11px] tracking-[0.18em] text-texto-secundario uppercase">
             {format(quando, 'EEEEEE', { locale: ptBR })}
           </p>
-          <p className="font-voz text-3xl leading-tight font-semibold text-neve">
+          <p className="titulo text-5xl leading-none tracking-tight text-texto">
             {format(quando, 'dd')}
           </p>
-          <p className="text-[11px] text-cinza">
+          <p className="mt-1 text-[11px] tracking-[0.12em] text-texto-secundario uppercase">
             {format(quando, 'MMM', { locale: ptBR })} · {format(quando, 'HH:mm')}
           </p>
-          {restante && (
-            <p className="mt-2 inline-block rounded-full bg-rosa/25 px-2 py-0.5 text-[11px] text-rosa-suave">
-              {restante}
-            </p>
-          )}
         </div>
 
         {/* Perfurações do bilhete */}
         <span
           aria-hidden
-          className="absolute -top-2 left-[80px] h-4 w-4 rounded-full border border-linha bg-noite"
+          className="absolute -top-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
         />
         <span
           aria-hidden
-          className="absolute -bottom-2 left-[80px] h-4 w-4 rounded-full border border-linha bg-noite"
+          className="absolute -bottom-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
         />
 
         {/* Corpo: o filme e as ações */}
-        <div className="min-w-0 flex-1 px-4 py-3">
+        <div className="min-w-0 flex-1 px-4 py-4">
+          {restante && (
+            <p className="inline-block rounded-full bg-afeto/20 px-2.5 py-0.5 text-[11px] font-medium text-afeto-claro">
+              {restante}
+            </p>
+          )}
           <Link
             to={`/filme/${sessao.filme.tmdbId}`}
-            className="block truncate font-voz text-lg font-semibold text-neve"
+            className="mt-2 block truncate titulo text-xl text-texto"
           >
             {sessao.filme.titulo}
           </Link>
           {sessao.observacao && (
-            <p className="mt-0.5 truncate text-xs text-cinza">{sessao.observacao}</p>
+            <p className="mt-0.5 truncate font-titulo text-sm text-texto-secundario italic">
+              {sessao.observacao}
+            </p>
           )}
-
-          <div className="mt-3">
-            <AcoesSessaoAgendada sessao={sessao} />
-          </div>
         </div>
+      </div>
+
+      <div className="mt-3">
+        <AcoesSessaoAgendada sessao={sessao} />
       </div>
     </section>
   )

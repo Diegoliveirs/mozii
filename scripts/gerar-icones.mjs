@@ -22,9 +22,9 @@ const svgPadrao = readFileSync(new URL('../public/icone.svg', import.meta.url), 
 
 // Fundo cheio (sem cantos transparentes) + coração reduzido para a zona segura.
 const svgQuadrado = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#16131c"/>
+  <rect width="64" height="64" fill="#0c0a0f"/>
   <g transform="translate(32 32) scale(0.72) translate(-32 -32)">
-    <path d="${CORACAO}" fill="#d4537e"/>
+    <path d="${CORACAO}" fill="#e48aa6"/>
   </g>
 </svg>`
 
@@ -35,16 +35,16 @@ const saidas = [
   { arquivo: 'apple-touch-icon.png', tamanho: 180, svg: svgQuadrado },
 ]
 
-// Splash screens do iOS (apple-touch-startup-image): fundo noite + coração.
+// Splash screens do iOS (apple-touch-startup-image): fundo do tema base + coração.
 // Tamanhos dos iPhones que interessam (retrato, pixels reais).
 function svgSplash(largura, altura) {
   const escala = largura / 6.4 // coração ocupa ~10% da largura
   const x = (largura - escala) / 2
   const y = (altura - escala) / 2
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${largura} ${altura}">
-  <rect width="${largura}" height="${altura}" fill="#16131c"/>
+  <rect width="${largura}" height="${altura}" fill="#0c0a0f"/>
   <g transform="translate(${x} ${y}) scale(${escala / 64})">
-    <path d="${CORACAO}" fill="#d4537e"/>
+    <path d="${CORACAO}" fill="#e48aa6"/>
   </g>
 </svg>`
 }

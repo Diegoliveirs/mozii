@@ -19,12 +19,14 @@ Estado de cada função do app. Uma feature só muda para ✅ com esta página a
 | 13  | Sessão de cinema agendada                                | 5    | ✅     |
 | 14  | Redesign "cara de app" (design system, ícones, fonte)    | R    | ✅     |
 | 15  | **Notificações push + permissões do aparelho**           | 7    | 🚧     |
+| 16  | Tema Noir + sistema de temas trocáveis (`src/temas/`)    | T    | ✅     |
+| 17  | Nota de atualização (popup + Ajustes › Novidades)        | T    | ✅     |
 
 > Feature 15: o front está pronto; falta o Diego aplicar a migration 008 e deployar a Edge Function (roteiro em [03-roteiros-sql.md](03-roteiros-sql.md)).
 
 > **Segurança (28/09/2026):** auditoria completa com staging local; correções nas migrations 011–016 (aplicadas em 28/09/2026 — roteiro em [03-roteiros-sql.md](03-roteiros-sql.md)) e no app (PKCE, limpeza de cache/push na troca de conta, `.ics` sem injeção de linha). Detalhes na decisão de 2026-09-28 em [01-arquitetura.md](01-arquitetura.md).
 
-> **Fase R** = redesign UX/UI de 02/08/2026 (aprovado por mockups no chat).
+> **Fase R** = redesign UX/UI de 02/08/2026 (aprovado por mockups no chat). **Fase T** = temas, 29/09/2026 (Noir aprovado no canvas "Mozii — Telas").
 
 ## Detalhes por feature
 
@@ -44,7 +46,7 @@ O hub Cinema tem duas abas guardadas na URL (`?aba=listas`). A busca consulta o 
 
 ### 3, 4 e 11. Mural, reações/comentários e tempo real (entregues na Fase 3)
 
-O Mural é o feed infinito do casal (cursor por `criado_em`, páginas de 20). Quatro tipos de publicação: **texto** (com foto opcional, redimensionada para WebP no navegador e guardada no bucket privado), **avaliação** (filme + nota com meia estrela + texto), **atividade** (linha discreta gerada pelo app ao mexer nas listas) e **momento** (espelho do diário, chega na Fase 4). Interação estilo Threads (desde o redesign): **curtida de coração** (toggle com animação de pulso; grava sempre `'❤️'` na tabela de reações — sem migration) e **balão de comentário** que abre a visão detalhada, onde a conversa fica sempre aberta — os dois com update otimista e rollback. O cartão inteiro é clicável e leva ao detalhe; a foto é o foco (sangra de borda a borda). O composer fica no botão rosa central; o detalhe da publicação tem compartilhar e **lixeira** no topo (exclusão só do autor, com confirmação), além de edição de avaliações (só do autor). O **tempo real** monta um canal por casal na casca do app: cada mudança do par invalida as queries certas e a tela atualiza sozinha — comprovado por E2E com duas janelas.
+O Mural é o feed infinito do casal (cursor por `criado_em`, páginas de 20). Quatro tipos de publicação: **texto** (com quantas fotos quiser — cada escolha soma às anteriores, e cada uma pode sair antes de publicar —, redimensionadas para WebP no navegador e guardadas no bucket privado; no feed, uma foto ocupa a largura toda e várias viram grade com lightbox, a mesma `GradeFotos` das memórias), **avaliação** (filme + nota com meia estrela + texto), **atividade** (pílula discreta gerada pelo app ao mexer nas listas; atividades seguidas formam um bloco compacto, sem o respiro de uma publicação entre elas) e **momento** (espelho do diário, chega na Fase 4). Interação estilo Threads (desde o redesign): **curtida de coração** (toggle com animação de pulso; grava sempre `'❤️'` na tabela de reações — sem migration) e **balão de comentário** que abre a visão detalhada, onde a conversa fica sempre aberta — os dois com update otimista e rollback. O cartão inteiro é clicável e leva ao detalhe; a foto é o foco (sangra de borda a borda). O composer fica no botão rosa central; o detalhe da publicação tem compartilhar e **lixeira** no topo (exclusão só do autor, com confirmação), além de edição de avaliações (só do autor). O **tempo real** monta um canal por casal na casca do app: cada mudança do par invalida as queries certas e a tela atualiza sozinha — comprovado por E2E com duas janelas.
 
 ### 12. Ajustes e exclusão de conta (Fases 1 e 4)
 
@@ -69,3 +71,58 @@ O casal agenda um filme para uma data/hora por três caminhos: página do filme,
 ### 14. Redesign "cara de app" (entregue na Fase R — 02/08/2026)
 
 Sistema de design próprio no lugar do look "gerado por IA": ícones **Phosphor** com nomes PT (`componentes/ui/icones.tsx`; fill = ativo), fonte de voz **Fraunces variável** self-hosted, grão de filme sutil no fundo, tokens novos (`erro`, `sucesso`, `cartao-alto`, `shadow-cartao`) e primitivas compartilhadas (`Botao` com spinner, `Campo`, `FolhaBase` com alça/Esc/trava de scroll, `ProvedorAvisos` com toasts, `Esqueleto`, `EstadoVazio`, `ControleSegmentado`). Assinatura visual: o **ingresso perfurado** (próxima sessão e código de convite). Splash mínima no boot (coração pulsando), tab bar com rótulos, estados vazios com convite + ação, splash screens iOS e ícone novo da PWA em formato de bilhete. Mockups aprovados no chat antes do código.
+
+### 16. Tema Noir e sistema de temas (Fase T — 29/09/2026)
+
+**O que mudou:** o app ganhou o visual **Noir**, que virou o padrão:
+
+- quase preto;
+- marfim para ação;
+- rosa só para afeto;
+- estrelas champanhe;
+- Instrument Sans no corpo e Fraunces fina nos títulos;
+- botões em pílula;
+- navegação flutuante de vidro, só com ícones, em que a aba ativa mostra o nome.
+
+O visual anterior continua disponível como tema **Clássico**.
+
+**Como funciona:** todo visual é uma pasta em `src/temas/`, com seus tokens, seus componentes estruturais (barra, cabeçalho, abertura, camada de adereços), seus encaixes de enfeite e seus textos.
+
+**Ativação:**
+
+- Um tema de evento (ex.: Natal) liga sozinho dentro da sua janela de datas e herda do tema base tudo o que não define.
+- `?tema=<id>` na URL pré-visualiza qualquer tema.
+- `?tema=` com um id desconhecido cai no padrão.
+
+**Layout das telas:** as páginas seguem as composições do canvas, e esse layout vale para todos os temas, com o Clássico mudando só a pele:
+
+- **Entrar:** colagem de cartazes;
+- **Cadastro e Parear:** títulos em duas vozes;
+- **Campos:** rótulo dentro da moldura;
+- **Mural:** saudação do dia com o casal em itálico e publicações sem caixa, separadas por divisores;
+- **Cinema:** ingresso com data grande, abas sublinhadas e listas em carrossel com capas em leque;
+- **Filme:** herói com o título grande;
+- **Lista:** capa em leque;
+- **Momentos:** dias em itálico e marco de aniversário centralizado;
+- **Perfil:** seletor do casal, avatar em destaque, números com divisores e avaliações recentes em carrossel;
+- **Ajustes:** código de convite em ingresso.
+
+**Cartão de compartilhar:** o estilo "Meia-noite" segue a paleta Noir e desenha os títulos em Fraunces.
+
+**Ícone e splash:** foram regenerados com as cores do Noir.
+
+**Receitas:** tema de evento, tema completo, slot novo e encaixe novo estão em [`src/temas/LEIAME.md`](../src/temas/LEIAME.md).
+
+### 17. Nota de atualização (Fase T — 30/09/2026)
+
+**O popup:** quando há versão nova, o PWA mostra o aviso com **Atualizar**. O toque marca o aparelho (`mozii:mostrar-novidades` no localStorage) antes de o service worker recarregar o app. Ao abrir, o app novo consome a marca e sobe uma folha com as notas que a pessoa ainda não viu, e o "Bora ver" registra a versão vista (`mozii:ultima-nota-vista`).
+
+**Quando não aparece:** numa instalação nova, se a versão trocou sem o botão ou num deploy sem nota nova.
+
+**O visual:** cada nota tem o ingresso da versão (número e data no canhoto, título em duas vozes) e as seções Novidades, Correções e Avisos. Só aparecem as seções com itens.
+
+**A aba:** o histórico completo fica em Ajustes › Novidades do app (`/novidades`).
+
+**Onde ficam as notas:** em `textos.novidades.notas`, da mais nova para a mais antiga. Como escrever uma nota a cada merge: [06-frontend.md](06-frontend.md).
+
+**O push de versão nova:** quando a Vercel termina um deploy de produção, o workflow `.github/workflows/avisar-novidades.yml` lê a nota mais nova (`scripts/nota-mais-nova.mjs`). Se essa versão ainda não tem a tag `novidades-v<versão>`, ele chama a `enviar-push` com o tipo `novidades` e cria a tag. O push vai para **todos** os aparelhos inscritos, menos os de quem desligou "Novidades do app" nos Ajustes (migration 019). Tocar abre o app, que acha a versão nova: aparece o Atualizar e, depois dele, a nota. Merge sem nota nova, redeploy e rollback não mandam push.

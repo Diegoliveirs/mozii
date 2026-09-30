@@ -9,6 +9,7 @@ import {
   useFeedInfinito,
   useReacoesLote,
 } from '../../hooks/useMural'
+import { agruparAtividades } from '../../lib/feed'
 import { textos } from '../../lib/textos'
 import { Esqueleto } from '../ui/Esqueleto'
 import { EstadoVazio } from '../ui/EstadoVazio'
@@ -44,8 +45,8 @@ export function FeedPublicacoes({
     <>
       {feed.isLoading && (
         <div className="mt-5 space-y-4">
-          <Esqueleto className="h-40 rounded-2xl" />
-          <Esqueleto className="h-24 rounded-2xl" />
+          <Esqueleto className="h-40 rounded-cartao" />
+          <Esqueleto className="h-24 rounded-cartao" />
         </div>
       )}
 
@@ -60,18 +61,27 @@ export function FeedPublicacoes({
         </div>
       )}
 
-      <div className="mt-5 space-y-4">
-        {publicacoes.map((publicacao) => (
-          <CartaoPublicacao
-            key={publicacao.id}
-            publicacao={publicacao}
-            membros={casal.data?.membros ?? []}
-            meuId={usuario?.id}
-            reacoes={reacoes.data?.filter((reacao) => reacao.publicacaoId === publicacao.id) ?? []}
-            qtdComentarios={contagens.data?.[publicacao.id] ?? 0}
-            aoCurtir={() => reagir.mutate({ publicacaoId: publicacao.id, emoji: EMOJI_CURTIDA })}
-            aoAbrir={() => navegar(`/publicacao/${publicacao.id}`)}
-          />
+      {/* Cada bloco (uma publicação, ou atividades seguidas) ganha o respiro e o divisor */}
+      <div className="mt-6 divide-y divide-borda [&>*]:py-6 [&>*:first-child]:pt-0">
+        {agruparAtividades(publicacoes).map((bloco) => (
+          <div key={bloco[0].id} className="space-y-2">
+            {bloco.map((publicacao) => (
+              <CartaoPublicacao
+                key={publicacao.id}
+                publicacao={publicacao}
+                membros={casal.data?.membros ?? []}
+                meuId={usuario?.id}
+                reacoes={
+                  reacoes.data?.filter((reacao) => reacao.publicacaoId === publicacao.id) ?? []
+                }
+                qtdComentarios={contagens.data?.[publicacao.id] ?? 0}
+                aoCurtir={() =>
+                  reagir.mutate({ publicacaoId: publicacao.id, emoji: EMOJI_CURTIDA })
+                }
+                aoAbrir={() => navegar(`/publicacao/${publicacao.id}`)}
+              />
+            ))}
+          </div>
         ))}
       </div>
 
@@ -80,7 +90,7 @@ export function FeedPublicacoes({
           type="button"
           onClick={() => feed.fetchNextPage()}
           disabled={feed.isFetchingNextPage}
-          className="mt-4 w-full rounded-xl border border-linha-forte py-3 text-sm text-nevoa disabled:opacity-50"
+          className="mt-4 w-full rounded-botao border border-borda-forte py-3 text-sm text-texto-secundario disabled:opacity-50"
         >
           {feed.isFetchingNextPage ? textos.comuns.carregando : textos.mural.carregarMais}
         </button>

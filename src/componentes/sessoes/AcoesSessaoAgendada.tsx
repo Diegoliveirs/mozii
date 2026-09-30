@@ -5,6 +5,7 @@ import { valorParaCampoDataHoraLocal } from '../../lib/datas'
 import { baixarIcs, gerarIcs } from '../../lib/ics'
 import { textos } from '../../lib/textos'
 import { Botao } from '../ui/Botao'
+import { Campo } from '../ui/Campo'
 import { DialogoConfirmar } from '../ui/DialogoConfirmar'
 import { IconeCalendario, IconeReagendar } from '../ui/icones'
 
@@ -33,11 +34,11 @@ export function AcoesSessaoAgendada({ sessao }: { sessao: SessaoCinema }) {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <button
           type="button"
           onClick={aoBaixarIcs}
-          className="flex items-center gap-1 rounded-full bg-veu px-3 py-1.5 text-xs text-nevoa"
+          className="flex h-11 items-center justify-center gap-1.5 rounded-full border border-vidro-borda bg-vidro text-[13px] text-texto-secundario transition-transform active:scale-95"
         >
           <IconeCalendario size={14} aria-hidden />
           {textos.sessao.calendario}
@@ -46,7 +47,7 @@ export function AcoesSessaoAgendada({ sessao }: { sessao: SessaoCinema }) {
           type="button"
           aria-expanded={reagendando}
           onClick={() => setReagendando((estava) => !estava)}
-          className="flex items-center gap-1 rounded-full bg-veu px-3 py-1.5 text-xs text-nevoa"
+          className="flex h-11 items-center justify-center gap-1.5 rounded-full border border-vidro-borda bg-vidro text-[13px] text-texto-secundario transition-transform active:scale-95"
         >
           <IconeReagendar size={14} aria-hidden />
           {textos.sessao.reagendar}
@@ -54,7 +55,7 @@ export function AcoesSessaoAgendada({ sessao }: { sessao: SessaoCinema }) {
         <button
           type="button"
           onClick={() => setConfirmandoCancelamento(true)}
-          className="px-1 text-xs text-cinza underline"
+          className="flex h-11 items-center justify-center gap-1.5 rounded-full border border-vidro-borda bg-vidro text-[13px] text-texto-secundario transition-transform active:scale-95"
         >
           {textos.sessao.cancelar}
         </button>
@@ -62,12 +63,12 @@ export function AcoesSessaoAgendada({ sessao }: { sessao: SessaoCinema }) {
 
       {reagendando && (
         <div className="entrada-folha mt-3 flex gap-2">
-          <input
+          <Campo
             type="datetime-local"
             aria-label={textos.sessao.novaDataRotulo}
             value={novoQuando}
             onChange={(evento) => setNovoQuando(evento.target.value)}
-            className="min-w-0 flex-1 rounded-xl border border-linha bg-veu px-3 py-2 text-sm text-neve outline-none focus:border-rosa"
+            className="min-w-0 flex-1"
           />
           <Botao
             carregando={reagendar.isPending}

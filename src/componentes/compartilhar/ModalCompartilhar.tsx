@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import type { Publicacao } from '../../dominio/tipos'
 import { desenharCartao } from '../../lib/desenharCartao'
-import { TEMAS, type NomeTema } from '../../lib/layoutCartao'
+import { ESTILOS_CARTAO, type NomeEstiloCartao } from '../../lib/layoutCartao'
 import { textos } from '../../lib/textos'
+import { Botao } from '../ui/Botao'
+import { ModalBase } from '../ui/ModalBase'
 
 /**
  * Gera o cartão 1080×1920 e compartilha via Web Share (com arquivos);
@@ -18,7 +20,7 @@ export function ModalCompartilhar({
   nomes: string[]
   aoFechar: () => void
 }) {
-  const [tema, setTema] = useState<NomeTema>('meianoite')
+  const [estilo, setEstilo] = useState<NomeEstiloCartao>('meianoite')
   const [urlPreview, setUrlPreview] = useState<string | null>(null)
   const [blob, setBlob] = useState<Blob | null>(null)
   const [erro, setErro] = useState<string | null>(null)
@@ -36,7 +38,7 @@ export function ModalCompartilhar({
       nota: publicacao.nota ?? 0,
       corpo: publicacao.corpo,
       nomes,
-      tema,
+      estilo,
     })
       .then((gerado) => {
         if (!ativo) return
@@ -50,7 +52,7 @@ export function ModalCompartilhar({
     return () => {
       ativo = false
     }
-  }, [publicacao, nomes, tema])
+  }, [publicacao, nomes, estilo])
 
   async function aoCompartilhar() {
     if (!blob) return
@@ -68,52 +70,45 @@ export function ModalCompartilhar({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-abismo/90 px-6"
-      role="dialog"
-      aria-modal="true"
-      aria-label={textos.compartilhar.titulo}
-      onClick={aoFechar}
+    <ModalBase
+      rotulo={textos.compartilhar.titulo}
+      aoFechar={aoFechar}
+      className="max-w-xs text-center"
     >
-      <div
-        className="w-full max-w-xs rounded-2xl bg-cartao p-5 text-center"
-        onClick={(evento) => evento.stopPropagation()}
-      >
-        <h2 className="font-voz text-xl text-neve">{textos.compartilhar.titulo}</h2>
+      <h2 className="font-titulo text-xl text-texto">{textos.compartilhar.titulo}</h2>
 
-        <div className="mx-auto mt-4 aspect-[9/16] w-44 overflow-hidden rounded-xl bg-veu">
-          {urlPreview ? (
-            <img src={urlPreview} alt="" className="h-full w-full object-cover" />
-          ) : (
-            <p className="mt-24 text-sm text-cinza">{erro ?? textos.compartilhar.gerando}</p>
-          )}
-        </div>
-
-        {/* Temas */}
-        <div className="mt-4 flex justify-center gap-2">
-          {(Object.keys(TEMAS) as NomeTema[]).map((nome) => (
-            <button
-              key={nome}
-              type="button"
-              onClick={() => setTema(nome)}
-              className={`rounded-full px-3 py-1.5 text-sm ${
-                tema === nome ? 'bg-rosa text-neve' : 'bg-veu text-nevoa'
-              }`}
-            >
-              {TEMAS[nome].nome}
-            </button>
-          ))}
-        </div>
-
-        <button
-          type="button"
-          onClick={aoCompartilhar}
-          disabled={!blob}
-          className="mt-4 w-full rounded-xl bg-rosa py-3 font-medium text-neve disabled:opacity-50"
-        >
-          {textos.compartilhar.compartilhar}
-        </button>
+      <div className="mx-auto mt-4 aspect-[9/16] w-44 overflow-hidden rounded-xl bg-vidro">
+        {urlPreview ? (
+          <img src={urlPreview} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <p className="mt-24 text-sm text-texto-discreto">{erro ?? textos.compartilhar.gerando}</p>
+        )}
       </div>
-    </div>
+
+      {/* Estilos do cartão (independentes do tema do app) */}
+      <div
+        role="group"
+        aria-label={textos.compartilhar.estilo}
+        className="mt-4 flex justify-center gap-2"
+      >
+        {(Object.keys(ESTILOS_CARTAO) as NomeEstiloCartao[]).map((nome) => (
+          <button
+            key={nome}
+            type="button"
+            aria-pressed={estilo === nome}
+            onClick={() => setEstilo(nome)}
+            className={`rounded-full px-3 py-1.5 text-sm ${
+              estilo === nome ? 'bg-primario text-primario-texto' : 'bg-vidro text-texto-secundario'
+            }`}
+          >
+            {textos.compartilhar.estilos[nome]}
+          </button>
+        ))}
+      </div>
+
+      <Botao onClick={aoCompartilhar} disabled={!blob} className="mt-4 w-full">
+        {textos.compartilhar.compartilhar}
+      </Botao>
+    </ModalBase>
   )
 }

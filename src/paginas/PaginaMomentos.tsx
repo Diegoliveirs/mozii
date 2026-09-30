@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CartaoMomento } from '../componentes/momentos/CartaoMomento'
 import { FolhaNovaMemoria } from '../componentes/momentos/FolhaNovaMemoria'
+import { Botao } from '../componentes/ui/Botao'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
 import { Esqueleto } from '../componentes/ui/Esqueleto'
 import { EstadoVazio } from '../componentes/ui/EstadoVazio'
@@ -53,28 +54,24 @@ export function PaginaMomentos() {
   const dias = montarLinhaDoTempo(linhaDoTempo.data ?? [], marcos)
 
   return (
-    <main className="area-segura-topo px-5 pt-8 pb-8">
-      <div className="flex items-end justify-between">
+    <main className="pt-seguro-10 px-5 pb-8">
+      <div className="flex items-end justify-between gap-3">
         <div>
-          <h1 className="font-voz text-3xl font-semibold tracking-tight text-neve">
+          <p className="rotulo-secao">{textos.momentos.subtitulo}</p>
+          <h1 className="mt-2.5 titulo text-4xl leading-none tracking-tight text-texto">
             {textos.momentos.titulo}
           </h1>
-          <p className="mt-1 text-sm text-rosa-suave">{textos.momentos.subtitulo}</p>
         </div>
-        <button
-          type="button"
-          onClick={() => setFolhaAberta(true)}
-          className="flex items-center gap-1.5 rounded-full border border-rosa/50 px-4 py-2 text-sm font-medium text-rosa-suave transition-transform active:scale-95"
-        >
-          <IconeMais size={15} aria-hidden />
+        <Botao onClick={() => setFolhaAberta(true)} className="shrink-0">
+          <IconeMais size={15} weight="bold" aria-hidden />
           {textos.momentos.nova}
-        </button>
+        </Botao>
       </div>
 
       {linhaDoTempo.isLoading && (
         <div className="mt-6 space-y-4">
-          <Esqueleto className="h-48 rounded-2xl" />
-          <Esqueleto className="h-24 rounded-2xl" />
+          <Esqueleto className="h-48 rounded-cartao" />
+          <Esqueleto className="h-24 rounded-cartao" />
         </div>
       )}
 
@@ -83,33 +80,31 @@ export function PaginaMomentos() {
           <EstadoVazio
             icone={<IconeMomentos size={28} aria-hidden />}
             titulo={textos.momentos.vazio}
-            acao={
-              <button
-                type="button"
-                onClick={() => setFolhaAberta(true)}
-                className="rounded-full bg-rosa px-5 py-2 text-sm font-medium text-neve"
-              >
-                {textos.momentos.nova}
-              </button>
-            }
+            acao={<Botao onClick={() => setFolhaAberta(true)}>{textos.momentos.nova}</Botao>}
           />
         </div>
       )}
 
-      <div className="mt-5 space-y-6">
+      <div className="mt-8 space-y-9">
         {dias.map(({ dia, itens }) => (
           <section key={dia}>
-            <h2 className="text-sm font-medium tracking-wide text-cinza">{rotuloDoDia(dia)}</h2>
-            <div className="mt-2 space-y-3">
+            <h2 className="flex items-baseline gap-3 font-titulo text-xl font-light text-texto italic">
+              {rotuloDoDia(dia)}
+              <span aria-hidden className="h-px flex-1 bg-borda" />
+            </h2>
+            <div className="mt-3.5 space-y-6">
               {itens.map((item) =>
                 item.tipo === 'marco' ? (
-                  <p
-                    key={`marco-${item.marco.data}`}
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-rosa/40 bg-rosa/10 p-4 text-center font-voz text-lg font-semibold text-rosa-suave"
-                  >
-                    <IconeComemoracao size={20} aria-hidden />
-                    {item.marco.rotulo}
-                  </p>
+                  <div key={`marco-${item.marco.data}`} className="py-2 text-center">
+                    <div aria-hidden className="flex items-center gap-3.5 text-afeto">
+                      <span className="h-px flex-1 bg-linear-to-r from-transparent to-afeto/50" />
+                      <IconeComemoracao size={18} />
+                      <span className="h-px flex-1 bg-linear-to-l from-transparent to-afeto/50" />
+                    </div>
+                    <p className="mt-3 font-titulo text-3xl font-light text-afeto-claro italic">
+                      {item.marco.rotulo}
+                    </p>
+                  </div>
                 ) : (
                   <CartaoMomento
                     key={item.momento.id}

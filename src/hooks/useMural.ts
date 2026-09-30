@@ -1,7 +1,9 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAviso } from '../componentes/ui/Avisos'
 import { useRepositorios } from '../dados/ContextoRepositorios'
+import type { RepositorioArquivos } from '../dados/repositorios'
 import type { Comentario, Reacao, RefFilme } from '../dominio/tipos'
+import { redimensionarFoto } from '../lib/imagem'
 import { textos } from '../lib/textos'
 import { useAutenticacao } from './useAutenticacao'
 
@@ -40,12 +42,25 @@ export function useAvaliacoesDoFilme(tmdbId: number | null) {
   })
 }
 
+/** Redimensiona e sobe as fotos na ordem escolhida; devolve os caminhos. */
+export async function enviarFotos(arquivos: RepositorioArquivos, fotos: File[]) {
+  const caminhos: string[] = []
+  for (const foto of fotos) {
+    caminhos.push(await arquivos.enviarFoto(await redimensionarFoto(foto)))
+  }
+  return caminhos
+}
+
+/** Publica texto e/ou fotos: sobe as fotos e grava a publicação. */
 export function useCriarTexto() {
-  const { mural } = useRepositorios()
+  const { mural, arquivos } = useRepositorios()
   const clienteQuery = useQueryClient()
   return useMutation({
-    mutationFn: (dados: { corpo: string | null; caminhoFoto: string | null }) =>
-      mural.criarTexto(dados),
+    mutationFn: async (dados: { corpo: string | null; fotos: File[] }) =>
+      mural.criarTexto({
+        corpo: dados.corpo,
+        caminhosFotos: await enviarFotos(arquivos, dados.fotos),
+      }),
     onSuccess: () => clienteQuery.invalidateQueries({ queryKey: chaveFeed }),
   })
 }

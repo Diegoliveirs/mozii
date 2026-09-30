@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Botao } from '../componentes/ui/Botao'
+import { Campo } from '../componentes/ui/Campo'
+import { TituloAfetivo } from '../componentes/ui/TituloAfetivo'
 import { IconeCoracao } from '../componentes/ui/icones'
 import { useCriarCasal, useEntrarNoCasal } from '../hooks/useCasal'
 import { codigoCompleto, normalizarCodigo } from '../lib/codigo'
@@ -48,35 +50,35 @@ export function PaginaParear() {
   if (codigoCriado) {
     return (
       <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 px-6 text-center">
-        <h1 className="font-voz text-3xl font-semibold tracking-tight text-neve">
+        <h1 className="titulo text-4xl tracking-tight text-texto">
           {textos.parear.codigoCriadoTitulo}
         </h1>
-        <p className="text-nevoa">{textos.parear.codigoCriadoDica}</p>
+        <p className="text-texto-secundario">{textos.parear.codigoCriadoDica}</p>
 
-        <div className="relative w-full overflow-hidden rounded-2xl border border-linha bg-cartao shadow-cartao">
-          <p className="px-8 pt-6 text-xs font-medium tracking-wide text-rosa-suave uppercase">
-            {textos.ajustes.codigoConvite}
-          </p>
+        <div className="relative w-full overflow-hidden ingresso">
+          <p className="px-8 pt-6 rotulo-secao">{textos.ajustes.codigoConvite}</p>
           <p
             data-testid="codigo-convite"
-            className="px-8 pt-2 pb-5 font-mono text-4xl tracking-[0.3em] text-rosa-suave"
+            className="px-8 pt-2 pb-5 font-mono text-4xl tracking-[0.3em] text-texto"
           >
             {codigoCriado}
           </p>
-          <div className="relative border-t-2 border-dashed border-linha-forte">
+          <div className="relative border-t-2 border-dashed border-borda-forte">
             <span
               aria-hidden
-              className="absolute top-0 -left-2 h-4 w-4 -translate-y-1/2 rounded-full border border-linha bg-noite"
+              className="absolute top-0 -left-2 h-4 w-4 -translate-y-1/2 rounded-full border border-borda bg-fundo"
             />
             <span
               aria-hidden
-              className="absolute top-0 -right-2 h-4 w-4 -translate-y-1/2 rounded-full border border-linha bg-noite"
+              className="absolute top-0 -right-2 h-4 w-4 -translate-y-1/2 rounded-full border border-borda bg-fundo"
             />
-            <p className="px-8 py-3 text-xs text-cinza">{textos.parear.codigoCriadoDica}</p>
+            <p className="px-8 py-3 text-xs text-texto-discreto">
+              {textos.parear.codigoCriadoDica}
+            </p>
           </div>
         </div>
 
-        <Botao onClick={() => navegar('/', { replace: true })} className="mt-2 w-full">
+        <Botao onClick={() => navegar('/', { replace: true })} grande className="mt-2 w-full">
           {textos.parear.irParaApp}
         </Botao>
       </main>
@@ -84,52 +86,57 @@ export function PaginaParear() {
   }
 
   return (
-    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
-      <h1 className="flex items-center gap-2 font-voz text-3xl font-semibold tracking-tight text-neve">
-        {textos.parear.titulo}
-        <IconeCoracao size={22} weight="fill" className="text-rosa" aria-hidden />
+    <main className="entrada-pagina pt-seguro-16 mx-auto flex min-h-dvh max-w-md flex-col px-6 pb-8">
+      <p className="rotulo-secao">{textos.parear.antetitulo}</p>
+      <h1 className="mt-3 titulo text-5xl leading-none tracking-tight text-texto">
+        <TituloAfetivo
+          inicio={textos.parear.tituloInicio}
+          destaque={textos.parear.tituloDestaque}
+        />
       </h1>
-      <p className="mt-2 text-nevoa">{textos.parear.subtitulo}</p>
+      <p className="mt-4 text-texto-secundario">{textos.parear.subtitulo}</p>
 
-      <section className="mt-8 rounded-2xl border border-linha bg-cartao p-5 shadow-cartao">
-        <h2 className="font-medium text-neve">{textos.parear.criarTitulo}</h2>
-        <Botao onClick={aoCriar} carregando={criar.isPending} className="mt-3 w-full">
+      <section className="ingresso mt-8 p-5">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="titulo text-xl text-texto">{textos.parear.criarTitulo}</h2>
+          <IconeCoracao size={22} weight="fill" className="shrink-0 text-afeto" aria-hidden />
+        </div>
+        <Botao onClick={aoCriar} carregando={criar.isPending} grande className="mt-4 w-full">
           {textos.parear.criarBotao}
         </Botao>
       </section>
 
-      <div className="my-4 flex items-center gap-3 text-sm text-cinza">
-        <span aria-hidden className="h-px flex-1 bg-linha" />
+      <div className="my-5 flex items-center gap-3 font-titulo text-texto-discreto italic">
+        <span aria-hidden className="h-px flex-1 bg-borda" />
         {textos.parear.ou}
-        <span aria-hidden className="h-px flex-1 bg-linha" />
+        <span aria-hidden className="h-px flex-1 bg-borda" />
       </div>
 
-      <section className="rounded-2xl border border-linha bg-cartao p-5 shadow-cartao">
-        <h2 className="font-medium text-neve">{textos.parear.entrarTitulo}</h2>
-        <form onSubmit={aoEntrar} className="mt-3 flex flex-col gap-3">
-          <label className="flex flex-col gap-1.5 text-sm text-nevoa">
-            {textos.parear.entrarRotulo}
-            <input
-              type="text"
-              inputMode="text"
-              autoCapitalize="characters"
-              value={codigo}
-              onChange={(e) => setCodigo(normalizarCodigo(e.target.value))}
-              className="rounded-xl border border-linha bg-veu px-4 py-3 text-center font-mono text-2xl tracking-[0.3em] text-neve outline-none transition-colors focus:border-rosa focus:ring-2 focus:ring-rosa/25"
-            />
-          </label>
+      <section className="cartao p-5">
+        <h2 className="titulo text-xl text-texto">{textos.parear.entrarTitulo}</h2>
+        <form onSubmit={aoEntrar} className="mt-4 flex flex-col gap-3">
+          <Campo
+            rotulo={textos.parear.entrarRotulo}
+            type="text"
+            inputMode="text"
+            autoCapitalize="characters"
+            value={codigo}
+            onChange={(e) => setCodigo(normalizarCodigo(e.target.value))}
+            className="[&_input]:text-center [&_input]:font-mono [&_input]:text-2xl [&_input]:tracking-[0.3em]"
+          />
           <Botao
             type="submit"
             variante="secundario"
             carregando={entrar.isPending}
             disabled={!codigoCompleto(codigo)}
+            grande
           >
             {textos.parear.entrarBotao}
           </Botao>
         </form>
       </section>
 
-      {erro && <p className="mt-4 text-center text-sm text-erro">{erro}</p>}
+      {erro && <p className="mt-4 text-center text-sm text-perigo-texto">{erro}</p>}
     </main>
   )
 }
