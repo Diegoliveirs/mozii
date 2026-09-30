@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom'
 import type { Perfil, Publicacao, Reacao } from '../../dominio/tipos'
-import { useUrlFoto } from '../../hooks/useMural'
 import { tempoAtras } from '../../lib/datas'
 import { textos } from '../../lib/textos'
 import { Poster } from '../filmes/Poster'
-import { Esqueleto } from '../ui/Esqueleto'
+import { GradeFotos } from '../ui/GradeFotos'
 import { IconeConfirmado, IconeFilme, IconeSessao } from '../ui/icones'
 import { AcoesPublicacao } from './AcoesPublicacao'
 import { AvatarPerfil } from './AvatarPerfil'
@@ -12,15 +11,6 @@ import { EstrelasNota } from './EstrelasNota'
 
 /** O emoji que representa o like — único valor gravado nas reações. */
 export const EMOJI_CURTIDA = '❤️'
-
-function FotoDaPublicacao({ caminho }: { caminho: string }) {
-  const url = useUrlFoto(caminho)
-  if (!url.data) return <Esqueleto className="mt-3 h-72 w-full rounded-cartao" />
-  // A foto é o foco: ocupa a largura toda, com o raio de cartão do tema.
-  return (
-    <img src={url.data} alt="" className="mt-3 max-h-[420px] w-full rounded-cartao object-cover" />
-  )
-}
 
 /**
  * Uma publicação do Mural, sem caixa: o respiro e os divisores do feed
@@ -99,7 +89,7 @@ export function CartaoPublicacao({
         <span className="text-sm text-texto-discreto">· {tempoAtras(publicacao.criadoEm)}</span>
       </header>
 
-      {publicacao.caminhoFoto && <FotoDaPublicacao caminho={publicacao.caminhoFoto} />}
+      <GradeFotos caminhos={publicacao.caminhosFotos} className="mt-3" />
 
       {ehAvaliacao && publicacao.filme && (
         <div className="mt-4 flex items-end gap-4">

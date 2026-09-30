@@ -11,7 +11,7 @@ import { paraComentario, paraPublicacao, paraReacao, type LinhaPublicacao } from
 
 const TAMANHO_PAGINA = 20
 const COLUNAS =
-  'id, autor_id, tipo, corpo, caminho_foto, nota, meta_atividade, criado_em, filmes(*)'
+  'id, autor_id, tipo, corpo, caminhos_fotos, nota, meta_atividade, criado_em, filmes(*)'
 
 async function sessaoAtual(): Promise<{ usuarioId: string; casalId: string }> {
   const { data } = await supabase.auth.getSession()
@@ -87,7 +87,7 @@ export const repositorioMuralSupabase: RepositorioMural = {
         autor_id: usuarioId,
         tipo: 'texto',
         corpo: dados.corpo,
-        caminho_foto: dados.caminhoFoto,
+        caminhos_fotos: dados.caminhosFotos,
       })
       .select(COLUNAS)
       .single()

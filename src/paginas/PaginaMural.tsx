@@ -48,7 +48,6 @@ export function PaginaMural() {
         </div>
       </header>
       <EncaixeAdereco nome="mural-topo" />
-      <p className="mt-2 text-sm text-texto-discreto">{textos.app.slogan}</p>
 
       {casal.data && membros.length < 2 && (
         <p className="mt-4 rounded-xl border border-borda bg-superficie p-4 text-sm text-texto-secundario">

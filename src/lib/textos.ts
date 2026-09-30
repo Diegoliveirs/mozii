@@ -8,7 +8,6 @@ import type { NotaDeAtualizacao } from '../dominio/tipos'
 export const textos = {
   app: {
     nome: 'Mozii',
-    slogan: 'vocês, em um só lugar',
     assinatura: 'mozii 💜',
   },
 
@@ -96,7 +95,8 @@ export const textos = {
   novo: {
     titulo: 'Nova publicação',
     dicaTexto: 'Escreve algo para vocês…',
-    foto: 'Foto',
+    foto: 'Fotos',
+    maisFotos: 'Mais fotos',
     removerFoto: 'Remover foto',
     avaliarFilme: 'Avaliar um filme',
     trocarFilme: 'Trocar filme',
@@ -374,6 +374,7 @@ export const textos = {
           'Barra de navegação flutuante de vidro.',
           'Telas redesenhadas: saudação do dia no Mural, ingresso da sessão com a data grande, listas em carrossel e o filme com o título sobre o fundo.',
           'Perfil com o seletor do casal e os números lado a lado.',
+          'Publicações com quantas fotos vocês quiserem.',
           'Esta aba de Novidades, nos Ajustes.',
         ],
         correcoes: [
@@ -381,6 +382,7 @@ export const textos = {
           'Os campos de texto voltaram a respeitar o tamanho de letra.',
           'Dá para avaliar de novo um filme depois de trocar de casal.',
           'As janelas do app fecham com Esc.',
+          'As atividades do Mural ("marcou como assistido") ficaram compactas, sem espaço sobrando.',
         ],
         avisos: ['Para ver o ícone novo na tela de início, remova o Mozii e adicione de novo.'],
       },

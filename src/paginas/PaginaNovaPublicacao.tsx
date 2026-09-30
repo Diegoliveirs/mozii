@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { FolhaBuscarFilme } from '../componentes/filmes/FolhaBuscarFilme'
 import { Poster } from '../componentes/filmes/Poster'
@@ -7,13 +7,11 @@ import { EstrelasNota } from '../componentes/mural/EstrelasNota'
 import { Botao } from '../componentes/ui/Botao'
 import { AreaTexto } from '../componentes/ui/Campo'
 import { IconeFechar, IconeFilme, IconeFoto } from '../componentes/ui/icones'
-import { useRepositorios } from '../dados/ContextoRepositorios'
 import type { RefFilme } from '../dominio/tipos'
 import { useCriarAvaliacao, useCriarTexto } from '../hooks/useMural'
 import { useConcluirSessao } from '../hooks/useSessoes'
 import { useAutenticacao } from '../hooks/useAutenticacao'
 import { useAvaliacoesDoFilme } from '../hooks/useMural'
-import { redimensionarFoto } from '../lib/imagem'
 import { textos } from '../lib/textos'
 
 /** O cartão de sessão navega para cá com o filme e a sessão a concluir. */
@@ -24,21 +22,21 @@ interface EstadoDaNovaPublicacao {
 }
 
 /**
- * O composer do Mural: texto e/ou foto — ou uma avaliação, quando um
- * filme é escolhido (aí a nota vira obrigatória e a foto sai de cena).
+ * O composer do Mural: texto e/ou fotos (quantas quiser) — ou uma
+ * avaliação, quando um filme é escolhido (aí a nota vira obrigatória e as
+ * fotos saem de cena).
  * Vindo do "E aí, como foi?", publicar a avaliação também conclui a sessão.
  */
 export function PaginaNovaPublicacao() {
   const navegar = useNavigate()
   const estado = (useLocation().state ?? {}) as EstadoDaNovaPublicacao
   const { usuario } = useAutenticacao()
-  const { arquivos } = useRepositorios()
   const criarTexto = useCriarTexto()
   const criarAvaliacao = useCriarAvaliacao()
   const concluirSessao = useConcluirSessao()
 
   const [corpo, setCorpo] = useState('')
-  const [foto, setFoto] = useState<File | null>(null)
+  const [fotos, setFotos] = useState<File[]>([])
   const [filme, setFilme] = useState<RefFilme | null>(estado.filme ?? null)
   const [nota, setNota] = useState(0)
   const [buscaAberta, setBuscaAberta] = useState(false)
@@ -50,7 +48,8 @@ export function PaginaNovaPublicacao() {
     (avaliacao) => avaliacao.autorId === usuario?.id,
   )
 
-  const previewFoto = foto ? URL.createObjectURL(foto) : null
+  const previews = useMemo(() => fotos.map((foto) => URL.createObjectURL(foto)), [fotos])
+  useEffect(() => () => previews.forEach((url) => URL.revokeObjectURL(url)), [previews])
 
   async function aoPublicar() {
     setErro(null)
@@ -88,18 +87,14 @@ export function PaginaNovaPublicacao() {
       return
     }
 
-    if (!texto && !foto) {
+    if (!texto && fotos.length === 0) {
       setErro(textos.novo.faltaConteudo)
       return
     }
 
     setPublicando(true)
     try {
-      let caminhoFoto: string | null = null
-      if (foto) {
-        caminhoFoto = await arquivos.enviarFoto(await redimensionarFoto(foto))
-      }
-      await criarTexto.mutateAsync({ corpo: texto, caminhoFoto })
+      await criarTexto.mutateAsync({ corpo: texto, fotos })
       navegar('/', { replace: true })
     } catch {
       setErro(textos.comuns.erroInesperado)
@@ -168,18 +163,28 @@ export function PaginaNovaPublicacao() {
           </div>
         )}
 
-        {/* Foto escolhida (só em publicação de texto) */}
-        {previewFoto && !filme && (
-          <div className="relative mt-3">
-            <img src={previewFoto} alt="" className="max-h-72 w-full rounded-cartao object-cover" />
-            <button
-              type="button"
-              aria-label={textos.novo.removerFoto}
-              onClick={() => setFoto(null)}
-              className="absolute top-2.5 right-2.5 flex h-9 w-9 items-center justify-center rounded-full border border-vidro-borda bg-fundo-profundo/60 text-texto backdrop-blur-vidro"
-            >
-              <IconeFechar size={16} aria-hidden />
-            </button>
+        {/* Fotos escolhidas (só em publicação de texto) */}
+        {previews.length > 0 && !filme && (
+          <div
+            className={`mt-3 grid gap-2 ${previews.length === 1 ? 'grid-cols-1' : 'grid-cols-3'}`}
+          >
+            {previews.map((url, indice) => (
+              <div key={url} className="relative">
+                <img
+                  src={url}
+                  alt=""
+                  className={`w-full rounded-cartao object-cover ${previews.length === 1 ? 'max-h-72' : 'aspect-square'}`}
+                />
+                <button
+                  type="button"
+                  aria-label={textos.novo.removerFoto}
+                  onClick={() => setFotos((atuais) => atuais.filter((_, i) => i !== indice))}
+                  className="absolute top-1.5 right-1.5 flex h-8 w-8 items-center justify-center rounded-full border border-vidro-borda bg-fundo-profundo/60 text-texto backdrop-blur-vidro"
+                >
+                  <IconeFechar size={15} aria-hidden />
+                </button>
+              </div>
+            ))}
           </div>
         )}
 
@@ -192,18 +197,24 @@ export function PaginaNovaPublicacao() {
                 className="py-2.5"
               >
                 <IconeFoto size={17} aria-hidden />
-                {textos.novo.foto}
+                {fotos.length > 0 ? textos.novo.maisFotos : textos.novo.foto}
               </Botao>
+              {/* Cada escolha SOMA às fotos já escolhidas */}
               <input
                 ref={campoFoto}
                 type="file"
                 accept="image/*"
+                multiple
                 hidden
-                onChange={(evento) => setFoto(evento.target.files?.[0] ?? null)}
+                onChange={(evento) => {
+                  const escolhidas = [...(evento.target.files ?? [])]
+                  evento.target.value = ''
+                  setFotos((atuais) => [...atuais, ...escolhidas])
+                }}
               />
             </>
           )}
-          {!foto && (
+          {fotos.length === 0 && (
             <Botao variante="fantasma" onClick={() => setBuscaAberta(true)} className="py-2.5">
               <IconeFilme size={17} aria-hidden />
               {filme ? textos.novo.trocarFilme : textos.novo.avaliarFilme}
@@ -227,7 +238,7 @@ export function PaginaNovaPublicacao() {
           <FolhaBuscarFilme
             aoEscolher={(escolhido) => {
               setFilme(escolhido)
-              setFoto(null)
+              setFotos([])
               setBuscaAberta(false)
             }}
             aoFechar={() => setBuscaAberta(false)}

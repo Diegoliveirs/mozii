@@ -87,7 +87,7 @@ export interface RepositorioMural {
   /** Avaliações do casal para um filme — no máximo uma por pessoa. */
   avaliacoesDoFilme(tmdbId: number): Promise<Publicacao[]>
   publicacao(id: string): Promise<Publicacao | null>
-  criarTexto(dados: { corpo: string | null; caminhoFoto: string | null }): Promise<Publicacao>
+  criarTexto(dados: { corpo: string | null; caminhosFotos: string[] }): Promise<Publicacao>
   criarAvaliacao(dados: {
     filme: RefFilme
     nota: number

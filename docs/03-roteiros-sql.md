@@ -584,3 +584,38 @@ where schemaname = 'public'
 ### Depois de aplicar
 
 Rodar `npm run testes:e2e`. O spec "sessão passada vira Como foi?" deve passar mesmo com avaliações antigas das contas de teste em casais anteriores.
+
+## Roteiro da 018_publicacao_com_varias_fotos.sql (2026-09-30)
+
+### Por que existe
+
+A publicação de texto só aceitava uma foto (`caminho_foto text`). O pedido foi anexar quantas quiser. A coluna vira `caminhos_fotos text[]`, no mesmo formato de `momentos.caminhos_fotos`. As fotos que já existem viram um array de um item antes de a coluna velha sair. Os CHECKs que citavam `caminho_foto` (`texto_valido`, `atividade_valida` e o teto da 015) são recriados sobre o array. O teto contra abuso segue o dos momentos (50 fotos); o app não limita.
+
+### Como aplicar
+
+**Junto com o deploy desta branch**: o app que está no ar hoje lê `caminho_foto` e o Mural dele para de carregar depois da 018. E o app novo (inclusive o `npm run dev`) só carrega o Mural com ela aplicada.
+
+No SQL Editor, rodar o conteúdo de `supabase/migrations/018_publicacao_com_varias_fotos.sql`.
+
+### Queries de conferência
+
+```sql
+-- Esperado: caminhos_fotos (ARRAY) presente e caminho_foto ausente.
+select column_name, data_type
+from information_schema.columns
+where table_schema = 'public' and table_name = 'publicacoes'
+  and column_name in ('caminho_foto', 'caminhos_fotos');
+
+-- Esperado: os três CHECKs recriados.
+select conname from pg_constraint
+where conrelid = 'public.publicacoes'::regclass
+  and conname in ('texto_valido', 'atividade_valida', 'publicacoes_caminhos_fotos_tamanho');
+
+-- Esperado: nenhuma publicação de texto sem corpo e sem foto (as antigas migraram).
+select count(*) from public.publicacoes
+where tipo = 'texto' and corpo is null and cardinality(caminhos_fotos) = 0;
+```
+
+### Depois de aplicar
+
+Rodar `npm run testes:e2e`. O teste "publicação com várias fotos" do `mural.spec.ts` deixa de pular.

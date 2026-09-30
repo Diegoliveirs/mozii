@@ -1,10 +1,7 @@
-import { useState } from 'react'
 import type { Momento, Perfil } from '../../dominio/tipos'
-import { useUrlsFotos } from '../../hooks/useMomentos'
 import { textos } from '../../lib/textos'
-import { Esqueleto } from '../ui/Esqueleto'
+import { GradeFotos } from '../ui/GradeFotos'
 import { IconeLixeira } from '../ui/icones'
-import { Lightbox } from '../ui/Lightbox'
 import { AvatarPerfil } from '../mural/AvatarPerfil'
 
 /**
@@ -22,9 +19,6 @@ export function CartaoMomento({
   meuId: string | undefined
   aoExcluir: (momento: Momento) => void
 }) {
-  const urls = useUrlsFotos(momento.caminhosFotos)
-  const [fotoAberta, setFotoAberta] = useState<number | null>(null)
-
   const indiceAutor = Math.max(
     0,
     membros.findIndex((membro) => membro.id === momento.autorId),
@@ -33,21 +27,7 @@ export function CartaoMomento({
 
   return (
     <article>
-      {momento.caminhosFotos.length > 0 && (
-        <div
-          className={`grid gap-1 overflow-hidden rounded-cartao ${momento.caminhosFotos.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}
-        >
-          {urls.data
-            ? urls.data.map((url, indice) => (
-                <button key={url} type="button" onClick={() => setFotoAberta(indice)}>
-                  <img src={url} alt="" className="max-h-80 w-full object-cover" loading="lazy" />
-                </button>
-              ))
-            : momento.caminhosFotos.map((caminho) => (
-                <Esqueleto key={caminho} className="h-44 rounded-none" />
-              ))}
-        </div>
-      )}
+      <GradeFotos caminhos={momento.caminhosFotos} />
 
       <div className="pt-3.5">
         {momento.legenda && (
@@ -80,14 +60,6 @@ export function CartaoMomento({
           )}
         </footer>
       </div>
-
-      {fotoAberta !== null && urls.data && (
-        <Lightbox
-          urls={urls.data}
-          indiceInicial={fotoAberta}
-          aoFechar={() => setFotoAberta(null)}
-        />
-      )}
     </article>
   )
 }

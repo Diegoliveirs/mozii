@@ -71,7 +71,7 @@ export interface LinhaPublicacao {
   autor_id: string
   tipo: TipoPublicacao
   corpo: string | null
-  caminho_foto: string | null
+  caminhos_fotos: string[]
   nota: number | string | null
   meta_atividade: MetaAtividade | null
   criado_em: string
@@ -84,7 +84,7 @@ export function paraPublicacao(linha: LinhaPublicacao): Publicacao {
     autorId: linha.autor_id,
     tipo: linha.tipo,
     corpo: linha.corpo,
-    caminhoFoto: linha.caminho_foto,
+    caminhosFotos: linha.caminhos_fotos,
     filme: linha.filmes ? paraFilme(linha.filmes) : null,
     // numeric chega como string do PostgREST; o app trabalha com número.
     nota: linha.nota === null ? null : Number(linha.nota),

@@ -81,7 +81,7 @@ export interface Publicacao {
   autorId: string
   tipo: TipoPublicacao
   corpo: string | null
-  caminhoFoto: string | null
+  caminhosFotos: string[]
   /** Presente quando tipo = 'avaliacao'. */
   filme: RefFilme | null
   nota: number | null

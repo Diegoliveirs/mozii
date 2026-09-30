@@ -100,7 +100,7 @@ test('perfil: estatísticas, favorito, cartão de compartilhar e avatar', async 
   await page.getByRole('button', { name: '5 estrelas', exact: true }).click()
   await page.getByPlaceholder('Escreve algo para vocês…').fill('Épico do começo ao fim.')
   await page.getByRole('button', { name: 'Publicar' }).click()
-  await expect(page.getByText('vocês, em um só lugar')).toBeVisible()
+  await expect(page).toHaveURL(/\/$/)
 
   // Perfil: estatísticas e histograma (só aparece com avaliações)
   await page.getByRole('link', { name: 'Perfil' }).click()

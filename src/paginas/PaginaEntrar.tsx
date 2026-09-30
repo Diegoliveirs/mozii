@@ -37,9 +37,6 @@ export function PaginaEntrar() {
       <ColagemPosteres />
 
       <p className="titulo text-6xl leading-none tracking-tight text-texto">{textos.app.nome}</p>
-      <p className="mt-2 font-titulo text-lg font-light text-texto-secundario italic">
-        {textos.app.slogan}
-      </p>
 
       <h1 className="mt-8 titulo text-2xl text-texto">{textos.entrar.titulo}</h1>
 

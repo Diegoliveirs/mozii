@@ -9,6 +9,7 @@ import {
   useFeedInfinito,
   useReacoesLote,
 } from '../../hooks/useMural'
+import { agruparAtividades } from '../../lib/feed'
 import { textos } from '../../lib/textos'
 import { Esqueleto } from '../ui/Esqueleto'
 import { EstadoVazio } from '../ui/EstadoVazio'
@@ -60,18 +61,27 @@ export function FeedPublicacoes({
         </div>
       )}
 
+      {/* Cada bloco (uma publicação, ou atividades seguidas) ganha o respiro e o divisor */}
       <div className="mt-6 divide-y divide-borda [&>*]:py-6 [&>*:first-child]:pt-0">
-        {publicacoes.map((publicacao) => (
-          <CartaoPublicacao
-            key={publicacao.id}
-            publicacao={publicacao}
-            membros={casal.data?.membros ?? []}
-            meuId={usuario?.id}
-            reacoes={reacoes.data?.filter((reacao) => reacao.publicacaoId === publicacao.id) ?? []}
-            qtdComentarios={contagens.data?.[publicacao.id] ?? 0}
-            aoCurtir={() => reagir.mutate({ publicacaoId: publicacao.id, emoji: EMOJI_CURTIDA })}
-            aoAbrir={() => navegar(`/publicacao/${publicacao.id}`)}
-          />
+        {agruparAtividades(publicacoes).map((bloco) => (
+          <div key={bloco[0].id} className="space-y-2">
+            {bloco.map((publicacao) => (
+              <CartaoPublicacao
+                key={publicacao.id}
+                publicacao={publicacao}
+                membros={casal.data?.membros ?? []}
+                meuId={usuario?.id}
+                reacoes={
+                  reacoes.data?.filter((reacao) => reacao.publicacaoId === publicacao.id) ?? []
+                }
+                qtdComentarios={contagens.data?.[publicacao.id] ?? 0}
+                aoCurtir={() =>
+                  reagir.mutate({ publicacaoId: publicacao.id, emoji: EMOJI_CURTIDA })
+                }
+                aoAbrir={() => navegar(`/publicacao/${publicacao.id}`)}
+              />
+            ))}
+          </div>
         ))}
       </div>
 
