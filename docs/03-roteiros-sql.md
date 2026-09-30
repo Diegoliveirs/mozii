@@ -559,3 +559,28 @@ group by 1, 2 order by 1, 2;
    Tudo deve funcionar como antes.
 
 - [ ] Avisar no chat que as 011–016 foram aplicadas, a função foi redeployada e as conferências bateram.
+
+## Roteiro da 017_avaliacao_unica_por_casal.sql (2026-09-30)
+
+### Por que existe
+
+O índice único da 010 (`autor_id, tmdb_id`) valia para o banco inteiro, mas o app só enxerga o casal atual. Quem troca de casal (e os usuários do e2e, a cada execução) não vê a avaliação antiga, tenta avaliar de novo e recebe 23505. Na tela aparece só "Algo deu errado". A regra passa a ser por casal: `casal_id, autor_id, tmdb_id`.
+
+### Como aplicar
+
+No SQL Editor, rodar o conteúdo de `supabase/migrations/017_avaliacao_unica_por_casal.sql`. O índice novo é mais permissivo que o antigo, então a criação não falha com os dados atuais.
+
+### Queries de conferência
+
+```sql
+-- Esperado: só o índice novo, com casal_id na frente.
+select indexname, indexdef
+from pg_indexes
+where schemaname = 'public'
+  and tablename = 'publicacoes'
+  and indexname like 'publicacoes_uma_avaliacao%';
+```
+
+### Depois de aplicar
+
+Rodar `npm run testes:e2e`. O spec "sessão passada vira Como foi?" deve passar mesmo com avaliações antigas das contas de teste em casais anteriores.

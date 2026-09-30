@@ -124,8 +124,9 @@ test('perfil: estatísticas, favorito, cartão de compartilhar e avatar', async 
   // Trocar o tema regenera o cartão
   await modal.getByRole('button', { name: 'Vinho' }).click()
   await expect(modal.locator('img')).toBeVisible({ timeout: 20_000 })
+  // Esc fecha o modal (ModalBase)
   await page.keyboard.press('Escape')
-  await modal.click({ position: { x: 5, y: 5 } }).catch(() => {})
+  await expect(modal).toBeHidden()
 
   // Avatar nos Ajustes
   await page.getByRole('link', { name: 'Perfil' }).click()
