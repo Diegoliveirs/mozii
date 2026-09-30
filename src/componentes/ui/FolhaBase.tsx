@@ -44,7 +44,7 @@ export function FolhaBase({
         ref={painelRef}
         tabIndex={-1}
         onClick={(evento) => evento.stopPropagation()}
-        className="entrada-folha max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-t-2xl border-t border-borda bg-superficie p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-cartao outline-none"
+        className="entrada-folha max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-t-cartao border-t border-borda bg-superficie p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-cartao outline-none"
       >
         <div aria-hidden className="mx-auto mb-4 h-1 w-10 rounded-full bg-borda-forte" />
         {titulo && <h2 className="font-titulo text-xl text-texto">{titulo}</h2>}

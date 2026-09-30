@@ -143,3 +143,20 @@ export interface SessaoCinema {
   status: StatusSessao
   criadoEm: string
 }
+
+/**
+ * Uma nota de atualização do app (o que entrou num merge). As notas moram
+ * em `textos.novidades.notas`, da mais nova para a mais antiga.
+ */
+export interface NotaDeAtualizacao {
+  /** Rótulo da versão no ingresso (ex.: '2.1'). Único; cresce a cada nota. */
+  versao: string
+  /** Dia da publicação, AAAA-MM-DD. */
+  data: string
+  /** Título em duas vozes: "O Mozii ficou" + *Noir*. */
+  tituloInicio: string
+  tituloDestaque: string
+  novidades: readonly string[]
+  correcoes: readonly string[]
+  avisos: readonly string[]
+}

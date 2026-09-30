@@ -1,4 +1,5 @@
 import { useRegisterSW } from 'virtual:pwa-register/react'
+import { marcarNovidadesParaMostrar } from '../../lib/novidades'
 import { textos } from '../../lib/textos'
 import { Botao } from './Botao'
 
@@ -20,7 +21,15 @@ export function AvisoAtualizacao() {
         <p className="min-w-0 flex-1 text-sm text-texto-secundario">
           {textos.atualizacao.disponivel}
         </p>
-        <Botao onClick={() => updateServiceWorker(true)}>{textos.atualizacao.atualizar}</Botao>
+        <Botao
+          onClick={() => {
+            // O app novo abre a nota de atualização ao carregar.
+            marcarNovidadesParaMostrar()
+            void updateServiceWorker(true)
+          }}
+        >
+          {textos.atualizacao.atualizar}
+        </Botao>
       </div>
     </div>
   )

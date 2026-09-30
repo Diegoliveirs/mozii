@@ -78,6 +78,18 @@ Todo visual é uma pasta em `src/temas/<id>/`. O padrão é o **Noir**, e o visu
 - **Nenhum componente escreve classes de botão, campo ou modal à mão.** A exceção é o compositor de comentário, que é em pílula de propósito.
 - **Página nunca pergunta qual é o tema.** Estrutura diferente vira slot ou encaixe (`useTema()`, `<EncaixeAdereco>`).
 
+## Nota de atualização (a cada merge)
+
+Todo merge que muda algo visível ganha uma nota. Ela vira o popup depois do botão Atualizar e entra no histórico de Ajustes › Novidades.
+
+1. Em `src/lib/textos.ts`, acrescente uma entrada **no topo** de `novidades.notas`:
+   - `versao`: maior que a anterior, ex. `'2.2'`;
+   - `data`: `AAAA-MM-DD`;
+   - `tituloInicio` + `tituloDestaque`: o título em duas vozes, ex. "Chegou o" + _Natal_;
+   - `novidades`, `correcoes` e `avisos`: listas de frases curtas, em linguagem de gente, com até ~5 itens por seção. Seção vazia não aparece.
+2. Rode `npm run testes:unitarios`. O `novidades.teste.ts` confere que as versões são únicas, que as datas são válidas e estão em ordem, e que nenhuma nota fica vazia.
+3. Um merge sem nota nova simplesmente não mostra o popup.
+
 ## iOS (regras do Diego — não relaxar)
 
 1. **Notch:** o app usa `viewport-fit=cover` (desenha sob o recorte). A classe `.area-segura-topo` (`padding-top: env(safe-area-inset-top)`) vai em toda tela raiz/pública e no `CabecalhoPagina`; controles de overlay no topo (ex.: fechar do lightbox) usam `top: max(1rem, env(safe-area-inset-top))`. **Nada importante fica embaixo do notch.**

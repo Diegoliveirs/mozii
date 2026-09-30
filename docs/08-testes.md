@@ -43,6 +43,11 @@ Unitários (`src/lib/__testes__/`):
 - `codigo.teste.ts` — normalização do código de convite.
 - `sorteio.teste.ts` — a lógica pura do caça-níquel: sequência circular que termina no vencedor e atrasos crescentes.
 
+Nota de atualização:
+
+- `src/lib/__testes__/novidades.teste.ts`: quais notas mostrar (`notasDesde`) e o formato das notas publicadas.
+- `testes/e2e/novidades.spec.ts`: marca gravada, folha aberta uma vez e "Bora ver". Não faz login, então roda contra qualquer ambiente.
+
 Unitários dos temas (`src/temas/__testes__/`):
 
 - `resolverTema.teste.ts` — janela de datas (inclusive a que atravessa o ano), `?tema=` vencendo a data, pedido desconhecido ignorado, pilha base + evento.

@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { App } from './App'
 import { ProvedorRepositorios } from './dados/ContextoRepositorios'
+import { NotaAposAtualizar } from './componentes/novidades/NotaAposAtualizar'
 import { AvisoAtualizacao } from './componentes/ui/AvisoAtualizacao'
 import { ProvedorAvisos } from './componentes/ui/Avisos'
 import { FaltaConfiguracao } from './componentes/ui/FaltaConfiguracao'
@@ -67,6 +68,7 @@ async function iniciar() {
               <ProvedorAvisos>
                 <App />
                 <AvisoAtualizacao />
+                <NotaAposAtualizar />
               </ProvedorAvisos>
             </BrowserRouter>
           </ProvedorRepositorios>

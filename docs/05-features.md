@@ -20,6 +20,7 @@ Estado de cada função do app. Uma feature só muda para ✅ com esta página a
 | 14  | Redesign "cara de app" (design system, ícones, fonte)    | R    | ✅     |
 | 15  | **Notificações push + permissões do aparelho**           | 7    | 🚧     |
 | 16  | Tema Noir + sistema de temas trocáveis (`src/temas/`)    | T    | ✅     |
+| 17  | Nota de atualização (popup + Ajustes › Novidades)        | T    | ✅     |
 
 > Feature 15: o front está pronto; falta o Diego aplicar a migration 008 e deployar a Edge Function (roteiro em [03-roteiros-sql.md](03-roteiros-sql.md)).
 
@@ -111,3 +112,15 @@ O visual anterior continua disponível como tema **Clássico**.
 **Ícone e splash:** foram regenerados com as cores do Noir.
 
 **Receitas:** tema de evento, tema completo, slot novo e encaixe novo estão em [`src/temas/LEIAME.md`](../src/temas/LEIAME.md).
+
+### 17. Nota de atualização (Fase T — 30/09/2026)
+
+**O popup:** quando há versão nova, o PWA mostra o aviso com **Atualizar**. O toque marca o aparelho (`mozii:mostrar-novidades` no localStorage) antes de o service worker recarregar o app. Ao abrir, o app novo consome a marca e sobe uma folha com as notas que a pessoa ainda não viu, e o "Bora ver" registra a versão vista (`mozii:ultima-nota-vista`).
+
+**Quando não aparece:** numa instalação nova, se a versão trocou sem o botão ou num deploy sem nota nova.
+
+**O visual:** cada nota tem o ingresso da versão (número e data no canhoto, título em duas vozes) e as seções Novidades, Correções e Avisos. Só aparecem as seções com itens.
+
+**A aba:** o histórico completo fica em Ajustes › Novidades do app (`/novidades`).
+
+**Onde ficam as notas:** em `textos.novidades.notas`, da mais nova para a mais antiga. Como escrever uma nota a cada merge: [06-frontend.md](06-frontend.md).

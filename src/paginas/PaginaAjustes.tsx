@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useSair } from '../hooks/useAutenticacao'
 import {
   useAtualizarAvatar,
@@ -17,7 +17,7 @@ import { useAviso } from '../componentes/ui/Avisos'
 import { Botao } from '../componentes/ui/Botao'
 import { Campo } from '../componentes/ui/Campo'
 import { DialogoConfirmar } from '../componentes/ui/DialogoConfirmar'
-import { IconeFoto, IconeSair } from '../componentes/ui/icones'
+import { IconeAvancar, IconeComemoracao, IconeFoto, IconeSair } from '../componentes/ui/icones'
 import { textos } from '../lib/textos'
 
 export function PaginaAjustes() {
@@ -151,6 +151,15 @@ export function PaginaAjustes() {
         {/* Notificações e permissões do aparelho */}
         <SecaoNotificacoes />
         <SecaoPermissoes />
+
+        {/* Histórico das notas de atualização */}
+        <Link to="/novidades" className="cartao mt-4 flex items-center gap-3 px-5 py-4">
+          <IconeComemoracao size={20} className="text-metal" aria-hidden />
+          <span className="min-w-0 flex-1 font-medium text-texto">
+            {textos.novidades.abrirAjustes}
+          </span>
+          <IconeAvancar size={16} className="text-texto-discreto" aria-hidden />
+        </Link>
 
         {/* Sair da conta */}
         <Botao variante="fantasma" onClick={aoSairDaConta} className="mt-4 w-full">

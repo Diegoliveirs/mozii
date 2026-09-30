@@ -1,3 +1,5 @@
+import type { NotaDeAtualizacao } from '../dominio/tipos'
+
 /**
  * Todos os textos do app vivem aqui, em português do Brasil.
  * Regra: nenhum componente escreve texto de interface direto no JSX —
@@ -348,6 +350,41 @@ export const textos = {
   atualizacao: {
     disponivel: 'Nova versão do Mozii disponível!',
     atualizar: 'Atualizar',
+  },
+
+  // Notas de atualização: a cada merge, uma entrada NOVA no TOPO de `notas`
+  // (versão maior, até ~5 itens por seção, em linguagem de gente).
+  novidades: {
+    titulo: 'Novidades',
+    rotuloNota: 'Nota de atualização',
+    rotuloVersao: 'versão',
+    novidades: 'Novidades',
+    correcoes: 'Correções',
+    avisos: 'Avisos',
+    fechar: 'Bora ver',
+    abrirAjustes: 'Novidades do app',
+    notas: [
+      {
+        versao: '2.1',
+        data: '2026-09-30',
+        tituloInicio: 'O Mozii ficou',
+        tituloDestaque: 'Noir',
+        novidades: [
+          'Visual novo: quase preto, marfim e champanhe, com Fraunces nos títulos.',
+          'Barra de navegação flutuante de vidro.',
+          'Telas redesenhadas: saudação do dia no Mural, ingresso da sessão com a data grande, listas em carrossel e o filme com o título sobre o fundo.',
+          'Perfil com o seletor do casal e os números lado a lado.',
+          'Esta aba de Novidades, nos Ajustes.',
+        ],
+        correcoes: [
+          'O topo das telas não fica mais colado no notch do iPhone.',
+          'Os campos de texto voltaram a respeitar o tamanho de letra.',
+          'Dá para avaliar de novo um filme depois de trocar de casal.',
+          'As janelas do app fecham com Esc.',
+        ],
+        avisos: ['Para ver o ícone novo na tela de início, remova o Mozii e adicione de novo.'],
+      },
+    ] as const satisfies readonly NotaDeAtualizacao[],
   },
 
   // Microcopy que varia por tema (contrato em src/temas/contrato.ts).
