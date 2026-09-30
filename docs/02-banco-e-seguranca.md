@@ -31,7 +31,7 @@
 | 014 | `014_sessoes_vinculos_do_casal.sql`  | sessão só referencia item/avaliação do próprio casal                                   | ✅ aplicada (2026-09-28) |
 | 015 | `015_limites_de_tamanho.sql`         | tetos de tamanho + bucket `fotos` com 2 MB                                             | ✅ aplicada (2026-09-28) |
 | 016 | `016_push_permissoes_e_limites.sql`  | GRANTs do push + até 10 aparelhos por pessoa                                           | ✅ aplicada (2026-09-28) |
-| 017 | `017_avaliacao_unica_por_casal.sql`  | uma avaliação por pessoa e filme **dentro do casal** (a 010 valia para o banco todo)   | ⏳ aguardando o Diego    |
+| 017 | `017_avaliacao_unica_por_casal.sql`  | uma avaliação por pessoa e filme **dentro do casal** (a 010 valia para o banco todo)   | ✅ aplicada (2026-09-30) |
 
 ## Schema atual (após a 001)
 
