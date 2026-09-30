@@ -318,7 +318,8 @@ export const textos = {
 
   notificacoes: {
     titulo: 'Notificações',
-    descricao: 'Avisos quando seu par mexer no espaço de vocês.',
+    descricao:
+      'Avisos quando seu par mexer no espaço de vocês — e quando o Mozii ganhar novidades.',
     ativadas: 'Notificações ativadas 💜',
     desativadas: 'Notificações desativadas.',
     tipos: {
@@ -328,6 +329,7 @@ export const textos = {
       memorias: 'Memórias',
       listas: 'Filmes na lista',
       casal: 'Casal',
+      novidades: 'Novidades do app',
     },
     precisaInstalarIos: 'Instale o Mozii na tela inicial para ativar as notificações.',
     indisponivel: 'Este navegador não suporta notificações.',
@@ -375,6 +377,7 @@ export const textos = {
           'Telas redesenhadas: saudação do dia no Mural, ingresso da sessão com a data grande, listas em carrossel e o filme com o título sobre o fundo.',
           'Perfil com o seletor do casal e os números lado a lado.',
           'Publicações com quantas fotos vocês quiserem.',
+          'Aviso no celular quando sair versão nova — dá para desligar em Ajustes › Notificações.',
           'Esta aba de Novidades, nos Ajustes.',
         ],
         correcoes: [

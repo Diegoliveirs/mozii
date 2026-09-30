@@ -1,0 +1,69 @@
+# Push de "versão nova" para quem ativou as notificações (migration 019).
+#
+# Roda quando a Vercel termina um deploy de PRODUÇÃO (ela publica o status
+# do deploy no GitHub, no ambiente "Production" ou "Production – <projeto>").
+# Lê a nota mais nova de textos.novidades.notas e, se
+# essa versão ainda não foi avisada, chama a Edge Function enviar-push com o
+# tipo `novidades`. A tag `novidades-v<versão>` marca o que já foi avisado:
+# merge sem nota nova, redeploy e rollback não mandam push de novo.
+#
+# Requer os segredos do repositório (Settings → Secrets → Actions), cadastrados
+# pelo Diego:
+#   SUPABASE_URL      → já existe (manter-ativo.yml)
+#   SUPABASE_ANON_KEY → já existe (manter-ativo.yml)
+#   SEGREDO_GATILHO   → o MESMO valor do secret SEGREDO_GATILHO da Edge Function
+name: Avisar novidades
+
+on:
+  deployment_status:
+
+permissions:
+  contents: write # criar a tag novidades-v<versão>
+
+jobs:
+  avisar:
+    if: github.event.deployment_status.state == 'success' && startsWith(github.event.deployment.environment, 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+          fetch-depth: 0 # traz as tags
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Nota mais nova e se já foi avisada
+        id: nota
+        run: |
+          corpo=$(node scripts/nota-mais-nova.mjs)
+          versao=$(echo "$corpo" | jq -r .versao)
+          echo "corpo=$corpo" >> "$GITHUB_OUTPUT"
+          echo "tag=novidades-v$versao" >> "$GITHUB_OUTPUT"
+          if git rev-parse -q --verify "refs/tags/novidades-v$versao" > /dev/null; then
+            echo "Versão $versao já foi avisada — nada a fazer."
+            echo "avisar=nao" >> "$GITHUB_OUTPUT"
+          else
+            echo "avisar=sim" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Mandar o push
+        if: steps.nota.outputs.avisar == 'sim'
+        run: |
+          curl -sS --fail-with-body -X POST "$SUPABASE_URL/functions/v1/enviar-push" \
+            -H "Content-Type: application/json" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "X-Segredo: $SEGREDO_GATILHO" \
+            -d "$CORPO"
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SEGREDO_GATILHO: ${{ secrets.SEGREDO_GATILHO }}
+          CORPO: ${{ steps.nota.outputs.corpo }}
+
+      - name: Marcar a versão como avisada
+        if: steps.nota.outputs.avisar == 'sim'
+        run: |
+          git tag "${{ steps.nota.outputs.tag }}" "${{ github.event.deployment.sha }}"
+          git push origin "${{ steps.nota.outputs.tag }}"

@@ -26,6 +26,7 @@
 
 - **Chaves VAPID próprias** (`npx web-push generate-vapid-keys`): a pública vai no bundle (`VITE_CHAVE_PUBLICA_VAPID`); a privada só nos secrets da Edge Function.
 - **Fluxo**: triggers SQL (migration 008) → `notificar_par()` → `pg_net` → Edge Function `enviar-push` (`supabase/functions/enviar-push/`) → aparelhos inscritos (`inscricoes_push`). Textos pt-BR na função; rotas de destino relativas (o SW resolve).
+- **Versão nova** (migration 019): o deploy de produção da Vercel publica o status no GitHub → workflow `avisar-novidades.yml` → `enviar-push` com `tipo: 'novidades'` (mesmo `X-Segredo`, guardado no secret `SEGREDO_GATILHO` do repositório) → todos os inscritos, menos quem desligou o tipo. A tag `novidades-v<versão>` evita aviso repetido.
 - **Front**: `src/lib/notificacoes.ts` (suporte/permissão/inscrição), `src/hooks/useNotificacoes.ts`, seções nos Ajustes e convite no Mural. SW: `src/sw.ts` (injectManifest).
 - **iOS**: push só com a PWA instalada (16.4+); a permissão precisa nascer de um gesto — o toggle dos Ajustes e o convite do Mural são os gestos.
 - Roteiro completo de deploy/secrets/Vault: [03-roteiros-sql.md](03-roteiros-sql.md) § 008.

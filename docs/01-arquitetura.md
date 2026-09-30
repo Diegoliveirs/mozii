@@ -86,3 +86,5 @@ Registro cronológico. Cada entrada tem 3–5 linhas: contexto → decisão → 
   - Ícone, splash e manifest ficam estáticos, com as cores do tema base.
   - **Segurança:** o contraste WCAG de cada `tokens.css` é verificado no Vitest, e o e2e fixa `?tema=` para não mudar em dezembro.
   - Receitas em `src/temas/LEIAME.md`.
+
+**2026-09-30 — Push de versão nova disparado pelo GitHub, não pelo banco.** O aviso "Mozii X chegou" depende de o deploy ter terminado, e quem sabe disso é a Vercel, que publica o status no GitHub. O workflow `avisar-novidades.yml` lê a nota mais nova do próprio código e chama a mesma `enviar-push` (mesmo `X-Segredo`); uma tag `novidades-v<versão>` guarda o que já foi avisado, sem tabela nova. Consequência: o banco só ganha a preferência `novidades` (019), e o texto do push vem da nota de atualização, escrita uma vez só.

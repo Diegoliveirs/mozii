@@ -8,6 +8,7 @@ const TUDO_LIGADO: PreferenciasNotificacao = {
   memorias: true,
   listas: true,
   casal: true,
+  novidades: true,
 }
 
 async function usuarioAtualId(): Promise<string> {
@@ -17,7 +18,7 @@ async function usuarioAtualId(): Promise<string> {
   return id
 }
 
-/** Inscrições de push e preferências de notificação (migration 008). */
+/** Inscrições de push e preferências de notificação (migrations 008 e 019). */
 export const repositorioNotificacoesSupabase: RepositorioNotificacoes = {
   async salvarInscricao({ endpoint, p256dh, auth }) {
     const perfilId = await usuarioAtualId()
@@ -37,7 +38,7 @@ export const repositorioNotificacoesSupabase: RepositorioNotificacoes = {
     const perfilId = await usuarioAtualId()
     const { data, error } = await supabase
       .from('preferencias_notificacao')
-      .select('comentarios, publicacoes, curtidas, memorias, listas, casal')
+      .select('comentarios, publicacoes, curtidas, memorias, listas, casal, novidades')
       .eq('perfil_id', perfilId)
       .maybeSingle()
     if (error) throw error

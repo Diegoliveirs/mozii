@@ -19,6 +19,7 @@ const TIPOS: (keyof PreferenciasNotificacao)[] = [
   'memorias',
   'listas',
   'casal',
+  'novidades',
 ]
 
 /**

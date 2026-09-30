@@ -172,6 +172,8 @@ export interface PreferenciasNotificacao {
   memorias: boolean
   listas: boolean
   casal: boolean
+  /** Versão nova do app (o aviso vem do deploy, não do par). */
+  novidades: boolean
 }
 
 export interface RepositorioNotificacoes {

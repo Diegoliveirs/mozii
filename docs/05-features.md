@@ -124,3 +124,5 @@ O visual anterior continua disponível como tema **Clássico**.
 **A aba:** o histórico completo fica em Ajustes › Novidades do app (`/novidades`).
 
 **Onde ficam as notas:** em `textos.novidades.notas`, da mais nova para a mais antiga. Como escrever uma nota a cada merge: [06-frontend.md](06-frontend.md).
+
+**O push de versão nova:** quando a Vercel termina um deploy de produção, o workflow `.github/workflows/avisar-novidades.yml` lê a nota mais nova (`scripts/nota-mais-nova.mjs`). Se essa versão ainda não tem a tag `novidades-v<versão>`, ele chama a `enviar-push` com o tipo `novidades` e cria a tag. O push vai para **todos** os aparelhos inscritos, menos os de quem desligou "Novidades do app" nos Ajustes (migration 019). Tocar abre o app, que acha a versão nova: aparece o Atualizar e, depois dele, a nota. Merge sem nota nova, redeploy e rollback não mandam push.

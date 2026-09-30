@@ -13,26 +13,27 @@
 
 ## Mapa planejado das migrations
 
-| #   | Arquivo                               | Conteúdo                                                                               | Status                   |
-| --- | ------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------ |
-| 001 | `001_casal.sql`                       | casais, perfis, tentativas_entrada, RPCs de pareamento, exclusão com carência, pg_cron | ✅ aplicada (2026-08-01) |
-| 002 | `002_filmes.sql`                      | cache do TMDB + RPC `gravar_filme()` + limpeza de casais vazios                        | ✅ aplicada (2026-08-01) |
-| 003 | `003_listas.sql`                      | listas e itens                                                                         | ✅ aplicada (2026-08-01) |
-| 004 | `004_mural.sql`                       | publicações, comentários, reações, **bucket fotos** e **realtime** (antecipados)       | ✅ aplicada (2026-08-01) |
-| 005 | `005_momentos.sql`                    | momentos, favoritos                                                                    | ✅ aplicada (2026-08-01) |
-| 006 | `006_sessoes.sql`                     | sessões de cinema + RPC `concluir_sessao`                                              | ✅ aplicada (2026-08-01) |
-| 007 | `007_favoritos_pessoais.sql`          | favoritos passam a ser da pessoa (defeito da 005 achado pelos E2E)                     | ✅ aplicada (2026-08-01) |
-| 008 | `008_notificacoes.sql`                | Web Push: inscrições, preferências, `notificar_par()` e triggers                       | ✅ aplicada              |
-| 009 | `009_autenticar_push_pg_net.sql`      | `apikey` no `pg_net` para o gateway aceitar a chamada                                  | ✅ aplicada              |
-| 010 | `010_avaliacoes_por_filme.sql`        | uma avaliação por pessoa e filme (era a segunda "008")                                 | ✅ aplicada (2026-09-28) |
-| 011 | `011_rpcs_so_autenticados.sql`        | nenhuma função atende a chave anon                                                     | ✅ aplicada (2026-09-28) |
-| 012 | `012_entrada_no_casal_com_trava.sql`  | `for update` ao contar membros (fecha a corrida do 3º membro)                          | ✅ aplicada (2026-09-28) |
-| 013 | `013_filmes_sem_sobrescrita.sql`      | cache de filmes não aceita reescrita nem caracteres de controle                        | ✅ aplicada (2026-09-28) |
-| 014 | `014_sessoes_vinculos_do_casal.sql`   | sessão só referencia item/avaliação do próprio casal                                   | ✅ aplicada (2026-09-28) |
-| 015 | `015_limites_de_tamanho.sql`          | tetos de tamanho + bucket `fotos` com 2 MB                                             | ✅ aplicada (2026-09-28) |
-| 016 | `016_push_permissoes_e_limites.sql`   | GRANTs do push + até 10 aparelhos por pessoa                                           | ✅ aplicada (2026-09-28) |
-| 017 | `017_avaliacao_unica_por_casal.sql`   | uma avaliação por pessoa e filme **dentro do casal** (a 010 valia para o banco todo)   | ✅ aplicada (2026-09-30) |
-| 018 | `018_publicacao_com_varias_fotos.sql` | `caminho_foto` vira `caminhos_fotos text[]` (várias fotos por publicação)              | ⏳ aguardando o Diego    |
+| #   | Arquivo                               | Conteúdo                                                                                    | Status                   |
+| --- | ------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------ |
+| 001 | `001_casal.sql`                       | casais, perfis, tentativas_entrada, RPCs de pareamento, exclusão com carência, pg_cron      | ✅ aplicada (2026-08-01) |
+| 002 | `002_filmes.sql`                      | cache do TMDB + RPC `gravar_filme()` + limpeza de casais vazios                             | ✅ aplicada (2026-08-01) |
+| 003 | `003_listas.sql`                      | listas e itens                                                                              | ✅ aplicada (2026-08-01) |
+| 004 | `004_mural.sql`                       | publicações, comentários, reações, **bucket fotos** e **realtime** (antecipados)            | ✅ aplicada (2026-08-01) |
+| 005 | `005_momentos.sql`                    | momentos, favoritos                                                                         | ✅ aplicada (2026-08-01) |
+| 006 | `006_sessoes.sql`                     | sessões de cinema + RPC `concluir_sessao`                                                   | ✅ aplicada (2026-08-01) |
+| 007 | `007_favoritos_pessoais.sql`          | favoritos passam a ser da pessoa (defeito da 005 achado pelos E2E)                          | ✅ aplicada (2026-08-01) |
+| 008 | `008_notificacoes.sql`                | Web Push: inscrições, preferências, `notificar_par()` e triggers                            | ✅ aplicada              |
+| 009 | `009_autenticar_push_pg_net.sql`      | `apikey` no `pg_net` para o gateway aceitar a chamada                                       | ✅ aplicada              |
+| 010 | `010_avaliacoes_por_filme.sql`        | uma avaliação por pessoa e filme (era a segunda "008")                                      | ✅ aplicada (2026-09-28) |
+| 011 | `011_rpcs_so_autenticados.sql`        | nenhuma função atende a chave anon                                                          | ✅ aplicada (2026-09-28) |
+| 012 | `012_entrada_no_casal_com_trava.sql`  | `for update` ao contar membros (fecha a corrida do 3º membro)                               | ✅ aplicada (2026-09-28) |
+| 013 | `013_filmes_sem_sobrescrita.sql`      | cache de filmes não aceita reescrita nem caracteres de controle                             | ✅ aplicada (2026-09-28) |
+| 014 | `014_sessoes_vinculos_do_casal.sql`   | sessão só referencia item/avaliação do próprio casal                                        | ✅ aplicada (2026-09-28) |
+| 015 | `015_limites_de_tamanho.sql`          | tetos de tamanho + bucket `fotos` com 2 MB                                                  | ✅ aplicada (2026-09-28) |
+| 016 | `016_push_permissoes_e_limites.sql`   | GRANTs do push + até 10 aparelhos por pessoa                                                | ✅ aplicada (2026-09-28) |
+| 017 | `017_avaliacao_unica_por_casal.sql`   | uma avaliação por pessoa e filme **dentro do casal** (a 010 valia para o banco todo)        | ✅ aplicada (2026-09-30) |
+| 018 | `018_publicacao_com_varias_fotos.sql` | `caminho_foto` vira `caminhos_fotos text[]` (várias fotos por publicação)                   | ⏳ aguardando o Diego    |
+| 019 | `019_notificacao_de_novidades.sql`    | preferência `novidades` + leitura das preferências pela Edge Function (push de versão nova) | ⏳ aguardando o Diego    |
 
 ## Schema atual (após a 001)
 

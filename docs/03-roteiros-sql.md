@@ -619,3 +619,47 @@ where tipo = 'texto' and corpo is null and cardinality(caminhos_fotos) = 0;
 ### Depois de aplicar
 
 Rodar `npm run testes:e2e`. O teste "publicação com várias fotos" do `mural.spec.ts` deixa de pular.
+
+## Roteiro da 019_notificacao_de_novidades.sql (+ push de versão nova) (2026-09-30)
+
+### Por que existe
+
+Avisar por push quem ativou as notificações quando sai uma versão com nota de atualização. Quem dispara é o GitHub, depois do deploy de produção da Vercel (`.github/workflows/avisar-novidades.yml`), chamando a `enviar-push` com o tipo `novidades`. A 019 cria a preferência `novidades` (ligada por padrão, com toggle nos Ajustes) e deixa a Edge Function ler as preferências para pular quem desligou.
+
+### Como aplicar
+
+**Junto com o deploy desta branch** (o app novo lê a coluna `novidades` nos Ajustes), na mesma leva da 018:
+
+1. No SQL Editor, rodar o conteúdo de `supabase/migrations/019_notificacao_de_novidades.sql`.
+2. **Redeployar a Edge Function**, que ganhou o tipo `novidades`:
+
+   ```bash
+   supabase functions deploy enviar-push --no-verify-jwt
+   ```
+
+3. **GitHub → Settings → Secrets and variables → Actions → New repository secret:** `SEGREDO_GATILHO`, com o **mesmo valor** do secret `SEGREDO_GATILHO` da Edge Function (o do `supabase secrets set` da 008). `SUPABASE_URL` e `SUPABASE_ANON_KEY` já existem por causa do `manter-ativo.yml`.
+
+### Queries de conferência
+
+```sql
+-- Esperado: novidades | boolean | true
+select column_name, data_type, column_default
+from information_schema.columns
+where table_schema = 'public' and table_name = 'preferencias_notificacao'
+  and column_name = 'novidades';
+
+-- Esperado: SELECT para service_role.
+select grantee, privilege_type
+from information_schema.role_table_grants
+where table_schema = 'public' and table_name = 'preferencias_notificacao'
+  and grantee = 'service_role';
+```
+
+### Depois de aplicar
+
+1. No primeiro deploy de produção depois do merge, abrir **Actions → Avisar novidades**. O job deve mostrar a resposta da função (`{"enviadas":N,"removidas":M}`) e criar a tag `novidades-v2.1`.
+   - Se o job nem aparecer, conferir se a Vercel está publicando os deploys no GitHub (a aba **Deployments** do repositório deve listar "Production").
+   - Um redeploy da mesma versão deve terminar com "já foi avisada — nada a fazer".
+2. No iPhone com o Mozii instalado e as notificações ligadas: chega "Mozii 2.1 chegou ✨"; tocar abre o app, aparece o Atualizar e, depois dele, a nota.
+
+- [ ] Avisar no chat que a 019 foi aplicada, a função foi redeployada e o secret está cadastrado.
