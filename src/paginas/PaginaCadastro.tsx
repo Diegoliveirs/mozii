@@ -48,7 +48,7 @@ export function PaginaCadastro() {
   // Cadastro feito com confirmação de e-mail ativa: falta tocar no link.
   if (emailParaConfirmar) {
     return (
-      <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col items-center px-6 pt-24 pb-8 text-center">
+      <main className="entrada-pagina pt-seguro-24 mx-auto flex min-h-dvh max-w-md flex-col items-center px-6 pb-8 text-center">
         <SeloEnvelope />
         <p className="mt-10 rotulo-secao">{textos.confirmarEmail.antetitulo}</p>
         <h1 className="mt-3 titulo text-3xl tracking-tight text-texto">
@@ -85,7 +85,7 @@ export function PaginaCadastro() {
   }
 
   return (
-    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col px-6 pt-4 pb-8">
+    <main className="entrada-pagina pt-seguro-4 mx-auto flex min-h-dvh max-w-md flex-col px-6 pb-8">
       <div className="flex items-center justify-between">
         <Link
           to="/entrar"

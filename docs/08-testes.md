@@ -20,7 +20,11 @@ BASE_URL=https://<dominio> npx playwright test            # contra outro ambient
 
 - `workers: 1` — os specs compartilham os mesmos usuários de teste; paralelizar corromperia o estado. Nunca mudar.
 - Viewport 390×844 (o app é mobile-first).
-- E2E roda contra o Supabase **local** (`supabase start`, rodado pelo Diego) — produção nunca é bancada de teste.
+- **Duas origens de contas** (`testes/e2e/apoio.ts`):
+  - **Supabase local** (`supabase start`, rodado pelo Diego): usa as contas fixas `@mozii.test`, cadastradas na primeira execução.
+  - **Projeto remoto:** quando o `.env.local` tem `USER_TESTE_E2E_1/2` (+ `_SENHA`), os testes usam essas duas contas, que já existem e estão confirmadas, e **nunca cadastram** (o remoto recusa `.test` e limita e-mails).
+    - O teste de código inválido, que precisa de uma terceira conta, é pulado.
+    - O preparo desfaz o casal das contas e renomeia-as para "Pessoa Um/Dois" a cada execução. Por isso, essas contas são só de teste.
 
 ## Testes de segurança (a partir da Fase 1)
 

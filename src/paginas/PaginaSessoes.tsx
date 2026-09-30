@@ -98,47 +98,49 @@ function BilheteSessao({ sessao }: { sessao: SessaoCinema }) {
   const quando = new Date(sessao.agendadaPara)
 
   return (
-    <article className="relative flex overflow-hidden ingresso">
-      <div className="flex w-[100px] shrink-0 flex-col items-center justify-center border-r-2 border-dashed border-borda-forte px-2 py-4 text-center">
-        <p className="text-[11px] tracking-[0.18em] text-texto-secundario uppercase">
-          {format(quando, 'EEEEEE', { locale: ptBR })}
-        </p>
-        <p className="titulo text-5xl leading-none tracking-tight text-texto">
-          {format(quando, 'dd')}
-        </p>
-        <p className="mt-1 text-[11px] tracking-[0.12em] text-texto-secundario uppercase">
-          {format(quando, 'MMM', { locale: ptBR })} · {format(quando, 'HH:mm')}
-        </p>
-      </div>
-
-      <span
-        aria-hidden
-        className="absolute -top-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
-      />
-      <span
-        aria-hidden
-        className="absolute -bottom-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
-      />
-
-      <div className="min-w-0 flex-1 px-4 py-4">
-        <span className="inline-block rounded-full bg-afeto/20 px-2.5 py-0.5 text-[11px] font-medium text-afeto-claro">
-          {contagemRegressiva(sessao.agendadaPara)}
-        </span>
-        <Link
-          to={`/filme/${sessao.filme.tmdbId}`}
-          className="mt-2 block truncate titulo text-xl text-texto"
-        >
-          {sessao.filme.titulo}
-        </Link>
-        {sessao.observacao && (
-          <p className="mt-0.5 line-clamp-2 font-titulo text-sm text-texto-secundario italic">
-            {sessao.observacao}
+    <div>
+      <article className="relative flex overflow-hidden ingresso">
+        <div className="flex w-[100px] shrink-0 flex-col items-center justify-center border-r-2 border-dashed border-borda-forte px-2 py-4 text-center">
+          <p className="text-[11px] tracking-[0.18em] text-texto-secundario uppercase">
+            {format(quando, 'EEEEEE', { locale: ptBR })}
           </p>
-        )}
-        <div className="mt-3">
-          <AcoesSessaoAgendada sessao={sessao} />
+          <p className="titulo text-5xl leading-none tracking-tight text-texto">
+            {format(quando, 'dd')}
+          </p>
+          <p className="mt-1 text-[11px] tracking-[0.12em] text-texto-secundario uppercase">
+            {format(quando, 'MMM', { locale: ptBR })} · {format(quando, 'HH:mm')}
+          </p>
         </div>
+
+        <span
+          aria-hidden
+          className="absolute -top-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
+        />
+        <span
+          aria-hidden
+          className="absolute -bottom-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
+        />
+
+        <div className="min-w-0 flex-1 px-4 py-4">
+          <span className="inline-block rounded-full bg-afeto/20 px-2.5 py-0.5 text-[11px] font-medium text-afeto-claro">
+            {contagemRegressiva(sessao.agendadaPara)}
+          </span>
+          <Link
+            to={`/filme/${sessao.filme.tmdbId}`}
+            className="mt-2 block truncate titulo text-xl text-texto"
+          >
+            {sessao.filme.titulo}
+          </Link>
+          {sessao.observacao && (
+            <p className="mt-0.5 line-clamp-2 font-titulo text-sm text-texto-secundario italic">
+              {sessao.observacao}
+            </p>
+          )}
+        </div>
+      </article>
+      <div className="mt-3">
+        <AcoesSessaoAgendada sessao={sessao} />
       </div>
-    </article>
+    </div>
   )
 }

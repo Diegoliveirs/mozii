@@ -18,7 +18,7 @@ export function PaginaMural() {
   const agora = new Date()
 
   return (
-    <main className="area-segura-topo relative px-5 pt-10 pb-4">
+    <main className="pt-seguro-10 relative px-5 pb-4">
       <header className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="rotulo-secao">{format(agora, "EEEE, d 'de' MMMM", { locale: ptBR })}</p>

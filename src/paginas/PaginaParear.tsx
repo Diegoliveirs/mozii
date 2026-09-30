@@ -86,7 +86,7 @@ export function PaginaParear() {
   }
 
   return (
-    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col px-6 pt-16 pb-8">
+    <main className="entrada-pagina pt-seguro-16 mx-auto flex min-h-dvh max-w-md flex-col px-6 pb-8">
       <p className="rotulo-secao">{textos.parear.antetitulo}</p>
       <h1 className="mt-3 titulo text-5xl leading-none tracking-tight text-texto">
         <TituloAfetivo

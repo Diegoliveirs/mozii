@@ -85,11 +85,11 @@ function Ingresso({ sessao }: { sessao: SessaoCinema }) {
               {sessao.observacao}
             </p>
           )}
-
-          <div className="mt-3">
-            <AcoesSessaoAgendada sessao={sessao} />
-          </div>
         </div>
+      </div>
+
+      <div className="mt-3">
+        <AcoesSessaoAgendada sessao={sessao} />
       </div>
     </section>
   )

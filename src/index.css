@@ -80,10 +80,13 @@ body::before {
 }
 
 /* Campos com 16px no mínimo: evita o zoom automático do iOS ao focar */
-input,
-textarea,
-select {
-  font-size: 16px;
+/* Em @layer base para as utilities (text-2xl…) poderem aumentar; nunca menos que 16px no iOS. */
+@layer base {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
 }
 
 /*
@@ -93,6 +96,14 @@ select {
  */
 .area-segura-topo {
   padding-top: env(safe-area-inset-top);
+}
+
+/*
+ * Respiro do topo SOMADO à área segura: `pt-seguro-10` = notch + 2,5rem.
+ * (`area-segura-topo` + `pt-10` não somam — um sobrescreve o outro.)
+ */
+@utility pt-seguro-* {
+  padding-top: calc(env(safe-area-inset-top) + --spacing(--value(integer)));
 }
 
 /* Entrada suave de página — usada pela casca do app na troca de rota */

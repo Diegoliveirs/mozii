@@ -21,7 +21,7 @@ export function PaginaCinema() {
   }
 
   return (
-    <main className="area-segura-topo px-5 pt-10 pb-4">
+    <main className="pt-seguro-10 px-5 pb-4">
       <div className="flex items-center justify-between gap-3">
         <h1 className="titulo text-4xl leading-none tracking-tight text-texto">
           {textos.cinema.titulo}

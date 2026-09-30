@@ -54,7 +54,7 @@ export function PaginaMomentos() {
   const dias = montarLinhaDoTempo(linhaDoTempo.data ?? [], marcos)
 
   return (
-    <main className="area-segura-topo px-5 pt-10 pb-8">
+    <main className="pt-seguro-10 px-5 pb-8">
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="rotulo-secao">{textos.momentos.subtitulo}</p>

@@ -29,7 +29,7 @@ export function PaginaConfirmarEmail() {
   if (!erro) return <TelaAbertura />
 
   return (
-    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col items-center px-6 pt-24 pb-8 text-center">
+    <main className="entrada-pagina pt-seguro-24 mx-auto flex min-h-dvh max-w-md flex-col items-center px-6 pb-8 text-center">
       <SeloEnvelope />
       <h1 className="mt-10 titulo text-3xl tracking-tight text-texto">
         {textos.confirmarEmail.linkInvalidoTitulo}

@@ -33,7 +33,7 @@ export function PaginaEntrar() {
   }
 
   return (
-    <main className="entrada-pagina area-segura-topo mx-auto flex min-h-dvh max-w-md flex-col overflow-hidden px-6 pt-6 pb-8">
+    <main className="entrada-pagina pt-seguro-6 mx-auto flex min-h-dvh max-w-md flex-col overflow-hidden px-6 pb-8">
       <ColagemPosteres />
 
       <p className="titulo text-6xl leading-none tracking-tight text-texto">{textos.app.nome}</p>

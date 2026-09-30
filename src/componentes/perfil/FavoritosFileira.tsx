@@ -53,7 +53,7 @@ export function FavoritosFileira({ perfilId, editavel }: { perfilId: string; edi
               disabled={!editavel}
               aria-label={`${textos.perfil.favoritos} ${posicao}`}
               onClick={() => setEscolhendoPosicao(posicao)}
-              className="flex aspect-[2/3] items-center justify-center rounded-lg border border-dashed border-borda-forte text-texto-discreto disabled:opacity-40"
+              className="flex aspect-[2/3] items-center justify-center rounded-poster border border-dashed border-borda-forte text-texto-discreto disabled:opacity-40"
             >
               <IconeMais size={16} aria-hidden />
             </button>

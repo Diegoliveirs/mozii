@@ -34,11 +34,11 @@ export function AcoesSessaoAgendada({ sessao }: { sessao: SessaoCinema }) {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <button
           type="button"
           onClick={aoBaixarIcs}
-          className="flex h-9 items-center gap-1.5 rounded-full border border-vidro-borda bg-vidro px-3 text-xs text-texto-secundario"
+          className="flex h-11 items-center justify-center gap-1.5 rounded-full border border-vidro-borda bg-vidro text-[13px] text-texto-secundario transition-transform active:scale-95"
         >
           <IconeCalendario size={14} aria-hidden />
           {textos.sessao.calendario}
@@ -47,7 +47,7 @@ export function AcoesSessaoAgendada({ sessao }: { sessao: SessaoCinema }) {
           type="button"
           aria-expanded={reagendando}
           onClick={() => setReagendando((estava) => !estava)}
-          className="flex h-9 items-center gap-1.5 rounded-full border border-vidro-borda bg-vidro px-3 text-xs text-texto-secundario"
+          className="flex h-11 items-center justify-center gap-1.5 rounded-full border border-vidro-borda bg-vidro text-[13px] text-texto-secundario transition-transform active:scale-95"
         >
           <IconeReagendar size={14} aria-hidden />
           {textos.sessao.reagendar}
@@ -55,7 +55,7 @@ export function AcoesSessaoAgendada({ sessao }: { sessao: SessaoCinema }) {
         <button
           type="button"
           onClick={() => setConfirmandoCancelamento(true)}
-          className="px-1 text-xs text-texto-discreto underline"
+          className="flex h-11 items-center justify-center gap-1.5 rounded-full border border-vidro-borda bg-vidro text-[13px] text-texto-secundario transition-transform active:scale-95"
         >
           {textos.sessao.cancelar}
         </button>
@@ -68,7 +68,7 @@ export function AcoesSessaoAgendada({ sessao }: { sessao: SessaoCinema }) {
             aria-label={textos.sessao.novaDataRotulo}
             value={novoQuando}
             onChange={(evento) => setNovoQuando(evento.target.value)}
-            className="min-w-0 flex-1 text-sm"
+            className="min-w-0 flex-1"
           />
           <Botao
             carregando={reagendar.isPending}

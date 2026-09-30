@@ -34,7 +34,7 @@ export function PaginaPerfil() {
   }
 
   return (
-    <main className="area-segura-topo relative px-5 pt-8 pb-8">
+    <main className="pt-seguro-8 relative px-5 pb-8">
       <div
         aria-hidden
         className="absolute top-0 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-afeto/15 blur-3xl"

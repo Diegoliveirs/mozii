@@ -9,7 +9,7 @@ import { prepararUsuario, USUARIO_DOIS, USUARIO_TRES, USUARIO_UM, irPara } from 
 test.beforeAll(async () => {
   await prepararUsuario(USUARIO_UM)
   await prepararUsuario(USUARIO_DOIS)
-  await prepararUsuario(USUARIO_TRES)
+  if (USUARIO_TRES) await prepararUsuario(USUARIO_TRES)
 })
 
 async function entrarPelaTela(pagina: Page, usuario: typeof USUARIO_UM) {
@@ -65,10 +65,11 @@ test('o casal se forma: um cria o espaço, o outro entra com o código', async (
 })
 
 test('código de convite inválido é recusado', async ({ browser }) => {
+  test.skip(!USUARIO_TRES, 'precisa de uma terceira conta — só roda no Supabase local')
   const contexto = await browser.newContext()
   const pagina = await contexto.newPage()
 
-  await entrarPelaTela(pagina, USUARIO_TRES)
+  await entrarPelaTela(pagina, USUARIO_TRES!)
   await expect(pagina.getByRole('heading', { name: 'Falta uma pessoa' })).toBeVisible()
 
   await pagina.getByLabel('Código de convite').fill('ZZZZZ9')
