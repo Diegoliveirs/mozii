@@ -88,7 +88,7 @@ export function PaginaPublicacao() {
   }
 
   async function aoExcluir() {
-    await excluir.mutateAsync(dados.id)
+    await excluir.mutateAsync(dados)
     navegar(state?.voltarPara ?? '/', { replace: true })
   }
 

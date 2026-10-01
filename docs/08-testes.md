@@ -46,6 +46,7 @@ Unitários (`src/lib/__testes__/`):
 Nota de atualização:
 
 - `src/lib/__testes__/novidades.teste.ts`: quais notas mostrar (`notasDesde`) e o formato das notas publicadas.
+- `src/lib/__testes__/gravarComFotos.teste.ts`: nenhuma foto fica perdida no bucket — falha na gravação ou num upload do meio apaga o que já subiu.
 - `src/lib/__testes__/feed.teste.ts`: atividades seguidas do Mural viram um bloco só (`agruparAtividades`).
 - `testes/e2e/novidades.spec.ts`: marca gravada, folha aberta uma vez e "Bora ver". Não faz login, então roda contra qualquer ambiente.
 
