@@ -94,7 +94,8 @@ export interface RepositorioMural {
     corpo: string | null
   }): Promise<Publicacao>
   editarAvaliacao(id: string, dados: { nota: number; corpo: string | null }): Promise<void>
-  excluirPublicacao(id: string): Promise<void>
+  /** Apaga a publicação e, depois, as fotos dela no Storage. */
+  excluirPublicacao(publicacao: Publicacao): Promise<void>
   /**
    * Atividade gerada NO CLIENTE ("X adicionou Y à lista Z") — decisão de
    * projeto: o formato pertence ao app, o banco só valida a presença do meta.

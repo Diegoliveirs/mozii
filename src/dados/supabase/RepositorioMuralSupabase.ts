@@ -7,6 +7,7 @@ import type {
   Reacao,
 } from '../../dominio/tipos'
 import { supabase } from './cliente'
+import { repositorioArquivosSupabase } from './RepositorioArquivosSupabase'
 import { paraComentario, paraPublicacao, paraReacao, type LinhaPublicacao } from './mapeadores'
 
 const TAMANHO_PAGINA = 20
@@ -127,9 +128,13 @@ export const repositorioMuralSupabase: RepositorioMural = {
     if (error) throw error
   },
 
-  async excluirPublicacao(id) {
-    const { error } = await supabase.from('publicacoes').delete().eq('id', id)
+  async excluirPublicacao(publicacao) {
+    const { error } = await supabase.from('publicacoes').delete().eq('id', publicacao.id)
     if (error) throw error
+    // Fotos por último, melhor esforço (como nas memórias): sem a publicação,
+    // ninguém mais chega nelas. Publicação 'momento' tem caminhosFotos vazio —
+    // as fotos são da memória e saem com ela.
+    await repositorioArquivosSupabase.apagarFotos(publicacao.caminhosFotos).catch(() => {})
   },
 
   async registrarAtividade(meta: MetaAtividade) {

@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRepositorios } from '../dados/ContextoRepositorios'
 import type { Momento } from '../dominio/tipos'
-import { chaveFeed, enviarFotos } from './useMural'
+import { gravarComFotos } from '../lib/gravarComFotos'
+import { chaveFeed } from './useMural'
 
 export const chaveMomentos = ['momentos'] as const
 
@@ -26,12 +27,10 @@ export function useCriarMomento() {
   const { momentos, arquivos } = useRepositorios()
   const clienteQuery = useQueryClient()
   return useMutation({
-    mutationFn: async (dados: { legenda: string | null; aconteceuEm: string; fotos: File[] }) =>
-      momentos.criar({
-        legenda: dados.legenda,
-        aconteceuEm: dados.aconteceuEm,
-        caminhosFotos: await enviarFotos(arquivos, dados.fotos),
-      }),
+    mutationFn: (dados: { legenda: string | null; aconteceuEm: string; fotos: File[] }) =>
+      gravarComFotos(arquivos, dados.fotos, (caminhosFotos) =>
+        momentos.criar({ legenda: dados.legenda, aconteceuEm: dados.aconteceuEm, caminhosFotos }),
+      ),
     onSuccess: () => {
       clienteQuery.invalidateQueries({ queryKey: chaveMomentos })
       clienteQuery.invalidateQueries({ queryKey: chaveFeed })
