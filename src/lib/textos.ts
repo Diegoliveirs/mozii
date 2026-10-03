@@ -366,6 +366,18 @@ export const textos = {
     fechar: 'Bora ver',
     abrirAjustes: 'Novidades do app',
     notas: [
+        {
+        versao: '2.2',
+        data: '2026-10-02',
+        tituloInicio: 'Ajustes',
+        tituloDestaque: 'finos',
+        novidades: [],
+        correcoes: [
+          'O ingresso da sessão voltou a ter o recorte certinho nas bordas.',
+          'Fotos de publicações excluídas não ocupam mais espaço.',
+        ],
+        avisos: [],
+      },
       {
         versao: '2.1',
         data: '2026-09-30',
