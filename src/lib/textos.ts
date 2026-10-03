@@ -366,7 +366,7 @@ export const textos = {
     fechar: 'Bora ver',
     abrirAjustes: 'Novidades do app',
     notas: [
-        {
+      {
         versao: '2.2',
         data: '2026-10-02',
         tituloInicio: 'Ajustes',
