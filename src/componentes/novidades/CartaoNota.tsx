@@ -5,7 +5,6 @@ import type { NotaDeAtualizacao } from '../../dominio/tipos'
 import { textos } from '../../lib/textos'
 import { IconeComemoracao, IconeConfirmado, IconeSino } from '../ui/icones'
 import { TituloAfetivo } from '../ui/TituloAfetivo'
-import { Perfuracao } from '../ui/Perfuracao'
 
 function Secao({
   rotulo,
@@ -37,6 +36,8 @@ function Secao({
   )
 }
 
+const FUNDO_DAS_PERFURACOES = { fundo: 'bg-fundo', superficie: 'bg-superficie' } as const
+
 /**
  * Uma nota de atualização: o ingresso da versão (canhoto com número e
  * data, título em duas vozes) e as seções que tiverem itens. `sobre` é a
@@ -48,11 +49,11 @@ export function CartaoNota({
   sobre = 'fundo',
 }: {
   nota: NotaDeAtualizacao
-  sobre?: 'fundo' | 'superficie'
+  sobre?: keyof typeof FUNDO_DAS_PERFURACOES
 }) {
   return (
     <article>
-      <div className="relative flex ingresso">
+      <div className="relative flex overflow-hidden ingresso">
         <div className="flex w-[92px] shrink-0 flex-col items-center justify-center border-r-2 border-dashed border-borda-forte py-4 text-center">
           <p className="text-[10px] tracking-[0.18em] text-texto-secundario uppercase">
             {textos.novidades.rotuloVersao}
@@ -62,8 +63,14 @@ export function CartaoNota({
             {format(parseISO(nota.data), 'd MMM', { locale: ptBR })}
           </p>
         </div>
-        <Perfuracao lado="topo" sobre={sobre} className="left-[84px]" />
-        <Perfuracao lado="base" sobre={sobre} className="left-[84px]" />
+        <span
+          aria-hidden
+          className={`absolute -top-2 left-[84px] h-4 w-4 rounded-full border border-borda ${FUNDO_DAS_PERFURACOES[sobre]}`}
+        />
+        <span
+          aria-hidden
+          className={`absolute -bottom-2 left-[84px] h-4 w-4 rounded-full border border-borda ${FUNDO_DAS_PERFURACOES[sobre]}`}
+        />
         <div className="min-w-0 flex-1 px-4 py-4">
           <p className="rotulo-secao">
             <span className="text-afeto-claro">{textos.novidades.rotuloNota}</span>

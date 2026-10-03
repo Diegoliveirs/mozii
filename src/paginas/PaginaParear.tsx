@@ -7,7 +7,6 @@ import { IconeCoracao } from '../componentes/ui/icones'
 import { useCriarCasal, useEntrarNoCasal } from '../hooks/useCasal'
 import { codigoCompleto, normalizarCodigo } from '../lib/codigo'
 import { textos } from '../lib/textos'
-import { Perfuracao } from '../componentes/ui/Perfuracao'
 
 /**
  * Tela de pareamento: criar o espaço do casal OU entrar com o código.
@@ -56,7 +55,7 @@ export function PaginaParear() {
         </h1>
         <p className="text-texto-secundario">{textos.parear.codigoCriadoDica}</p>
 
-        <div className="relative w-full ingresso">
+        <div className="relative w-full overflow-hidden ingresso">
           <p className="px-8 pt-6 rotulo-secao">{textos.ajustes.codigoConvite}</p>
           <p
             data-testid="codigo-convite"
@@ -65,8 +64,14 @@ export function PaginaParear() {
             {codigoCriado}
           </p>
           <div className="relative border-t-2 border-dashed border-borda-forte">
-            <Perfuracao lado="esquerda" className="top-0 -translate-y-1/2" />
-            <Perfuracao lado="direita" className="top-0 -translate-y-1/2" />
+            <span
+              aria-hidden
+              className="absolute top-0 -left-2 h-4 w-4 -translate-y-1/2 rounded-full border border-borda bg-fundo"
+            />
+            <span
+              aria-hidden
+              className="absolute top-0 -right-2 h-4 w-4 -translate-y-1/2 rounded-full border border-borda bg-fundo"
+            />
             <p className="px-8 py-3 text-xs text-texto-discreto">
               {textos.parear.codigoCriadoDica}
             </p>
