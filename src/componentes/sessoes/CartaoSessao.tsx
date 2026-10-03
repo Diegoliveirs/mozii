@@ -9,6 +9,7 @@ import { textos } from '../../lib/textos'
 import { EncaixeAdereco } from '../../temas/EncaixeAdereco'
 import { IconeSessao } from '../ui/icones'
 import { AcoesSessaoAgendada } from './AcoesSessaoAgendada'
+import { Perfuracao } from '../ui/Perfuracao'
 
 /**
  * O ingresso de cinema: a próxima sessão FUTURA, em destaque no topo do
@@ -42,7 +43,7 @@ function Ingresso({ sessao }: { sessao: SessaoCinema }) {
         {textos.sessao.cartaoTitulo}
       </p>
 
-      <div className="relative mt-3 flex overflow-hidden ingresso">
+      <div className="relative mt-3 flex ingresso">
         <EncaixeAdereco nome="ingresso-canto" />
         {/* Canhoto do ingresso */}
         <div className="flex w-[100px] shrink-0 flex-col items-center justify-center border-r-2 border-dashed border-borda-forte px-2 py-4 text-center">
@@ -58,14 +59,8 @@ function Ingresso({ sessao }: { sessao: SessaoCinema }) {
         </div>
 
         {/* Perfurações do bilhete */}
-        <span
-          aria-hidden
-          className="absolute -top-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
-        />
-        <span
-          aria-hidden
-          className="absolute -bottom-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
-        />
+        <Perfuracao lado="topo" className="left-[92px]" />
+        <Perfuracao lado="base" className="left-[92px]" />
 
         {/* Corpo: o filme e as ações */}
         <div className="min-w-0 flex-1 px-4 py-4">

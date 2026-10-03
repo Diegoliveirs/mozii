@@ -12,6 +12,7 @@ import { SessaoPendente } from '../componentes/sessoes/SessoesPassadas'
 import { classesBotao } from '../componentes/ui/estiloBotao'
 import { EstadoVazio } from '../componentes/ui/EstadoVazio'
 import { IconeAlerta, IconeSessao } from '../componentes/ui/icones'
+import { Perfuracao } from '../componentes/ui/Perfuracao'
 
 /** Programação completa: todo agendamento ainda aberto, com ações no próprio ingresso. */
 export function PaginaSessoes() {
@@ -99,7 +100,7 @@ function BilheteSessao({ sessao }: { sessao: SessaoCinema }) {
 
   return (
     <div>
-      <article className="relative flex overflow-hidden ingresso">
+      <article className="relative flex ingresso">
         <div className="flex w-[100px] shrink-0 flex-col items-center justify-center border-r-2 border-dashed border-borda-forte px-2 py-4 text-center">
           <p className="text-[11px] tracking-[0.18em] text-texto-secundario uppercase">
             {format(quando, 'EEEEEE', { locale: ptBR })}
@@ -112,14 +113,8 @@ function BilheteSessao({ sessao }: { sessao: SessaoCinema }) {
           </p>
         </div>
 
-        <span
-          aria-hidden
-          className="absolute -top-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
-        />
-        <span
-          aria-hidden
-          className="absolute -bottom-2 left-[92px] h-4 w-4 rounded-full border border-borda bg-fundo"
-        />
+        <Perfuracao lado="topo" className="left-[92px]" />
+        <Perfuracao lado="base" className="left-[92px]" />
 
         <div className="min-w-0 flex-1 px-4 py-4">
           <span className="inline-block rounded-full bg-afeto/20 px-2.5 py-0.5 text-[11px] font-medium text-afeto-claro">
